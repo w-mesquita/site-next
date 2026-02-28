@@ -1,0 +1,31 @@
+---
+description: Padrão de seções dinâmicas com variantes (header, hero, footer)
+alwaysApply: true
+---
+
+# Arquitetura de seções com variantes
+
+## Princípio
+Cada seção (header, hero, footer, etc.) tem **mínimo 3 variantes** (v1, v2, v3). A combinação usada no site vem de **um único lugar**: `config/sections.json`, lido por `getSectionsConfig()` em `lib/sections-config.ts`.
+
+## Onde criar arquivos
+- Nova seção: pasta `components/sections/<nome-da-secao>/`
+- Variantes: `<Secao>V1.tsx`, `<Secao>V2.tsx`, `<Secao>V3.tsx`
+- Registry: `index.tsx` com mapa variante → componente e componente `<NomeSecao>Section` que recebe prop `variant`
+
+Exemplo para uma seção "cta":
+- `components/sections/cta/CtaV1.tsx`, `CtaV2.tsx`, `CtaV3.tsx`
+- `components/sections/cta/index.tsx` → `registry = { v1: CtaV1, v2: CtaV2, v3: CtaV3 }`, exporta `CtaSection({ variant })`
+
+## Ao criar nova seção
+1. Adicionar chave em `config/sections.json` (ex.: `"cta": "v1"`)
+2. Em `types/sections.ts`: novo tipo (ex.: `CtaVariant`), entrada em `SectionsConfig`, e em `DEFAULT_SECTIONS_CONFIG`
+3. Criar pasta e arquivos em `components/sections/<secao>/` conforme acima
+
+## Ao adicionar nova variante (V4, V5…)
+1. Criar arquivo `<Secao>V4.tsx` na pasta da seção
+2. Incluir no registry do `index.tsx` da seção
+3. Atualizar tipo de variante em `types/sections.ts` (ex.: `SectionVariant = "v1" | "v2" | "v3" | "v4"`) e `SECTION_VARIANTS`
+
+## Uso no app
+- Layout/páginas chamam `getSectionsConfig()` e passam `variant={config.header}` (ou hero, footer, etc.) para `<HeaderSection />`, `<HeroSection />`, `<FooterSection />`.

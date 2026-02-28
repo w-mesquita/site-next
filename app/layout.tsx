@@ -1,4 +1,6 @@
 import type { Metadata } from "next";
+import { getSectionsConfig } from "@/lib/sections-config";
+import { HeaderSection, FooterSection } from "@/components/sections";
 import "./globals.scss";
 
 export const metadata: Metadata = {
@@ -11,9 +13,14 @@ export default function RootLayout({
 }: Readonly<{
   children: React.ReactNode;
 }>) {
+  const config = getSectionsConfig();
   return (
     <html lang="pt-BR">
-      <body>{children}</body>
+      <body>
+        <HeaderSection variant={config.header} />
+        {children}
+        <FooterSection variant={config.footer} />
+      </body>
     </html>
   );
 }

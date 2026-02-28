@@ -37,4 +37,8 @@
   --header-height: 4rem;
   --header-bg: var(--color-background);
   --header-text: var(--color-text);
+
+  // Breakpoints (mobile-first: celular, tablet, desktop)
+  --breakpoint-tablet: 768px;
+  --breakpoint-desktop: 1024px;
 }

@@ -13,17 +13,21 @@ alwaysApply: true
 
 ## Estrutura de pastas
 - `app/` — rotas, layout raiz, `page.tsx`, `globals.scss` (importa estilos globais)
-- `components/` — por domínio: `layout/` (Header, Footer), depois `ui/`, `features/` conforme crescer
+- `components/` — `sections/` (header, hero, footer com variantes V1/V2/V3 configuráveis), depois `ui/`, `features/` conforme crescer
+- `config/` — `sections.json` (combinação de variantes por seção; ver rule section-variants-architecture)
 - `styles/` — `globals.scss` (reset + Tailwind + base), `tokens/` (design tokens)
-- `lib/` — utilitários (`utils.ts`, helpers)
-- `types/` — tipos TypeScript globais
+- `lib/` — utilitários (`utils.ts`), `sections-config.ts` (getSectionsConfig)
+- `types/` — tipos TypeScript globais, `sections.ts` (SectionsConfig e variantes)
 - `public/` — assets estáticos
 - Alias: `@/*` aponta para a raiz do projeto
 
 ## Design tokens
-- Tokens em `styles/tokens/_variables.scss` (cores, espaçamento, tipografia, header).
+- Tokens em `styles/tokens/_variables.scss` (cores, espaçamento, tipografia, header, breakpoints).
 - Customizar tema = alterar apenas esse arquivo; componentes usam `var(--color-primary)`, `var(--spacing-md)`, etc.
 - Novos tokens: adicionar em `_variables.scss` e exportar via `tokens/_index.scss`.
+
+## Responsividade
+- Três quebras: **celular** (base), **tablet** (`md:` 768px), **desktop** (`lg:` 1024px). Mobile-first. Ver rule `responsive-breakpoints.mdc`.
 
 ## SEO
 - Usar `metadata` / `generateMetadata` em layouts e páginas (title, description).

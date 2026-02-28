@@ -18,3 +18,4 @@ alwaysApply: false
 ## Uso nos componentes
 - Preferir tokens em vez de valores fixos: `color: var(--color-text);`, `padding: var(--spacing-md);`.
 - Tailwind pode usar tokens: `className="text-[var(--color-primary)]"` quando fizer sentido.
+- Breakpoints em SCSS: `var(--breakpoint-tablet)` (768px), `var(--breakpoint-desktop)` (1024px). Projeto usa 3 quebras (celular, tablet, desktop); ver rule `responsive-breakpoints.mdc`.

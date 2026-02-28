@@ -1,0 +1,23 @@
+---
+description: Breakpoints de responsividade (mobile, tablet, desktop)
+alwaysApply: true
+---
+
+# Responsividade — 3 quebras
+
+O projeto usa **três breakpoints** (mobile-first):
+
+| Dispositivo | Prefixo Tailwind | Min-width | Uso |
+|-------------|------------------|-----------|-----|
+| **Celular** | (nenhum)         | &lt; 768px | Estilos base; primeiro na ordem |
+| **Tablet**  | `md:`            | 768px     | Ajustes a partir de tablet |
+| **Desktop** | `lg:`            | 1024px    | Ajustes a partir de desktop |
+
+## Regras
+- Escrever **mobile-first**: estilos base para celular; usar `md:` e `lg:` para subir.
+- Evitar `sm:` (640px) e `xl:`/`2xl:`; manter só as 3 quebras acima.
+- Em SCSS: usar os tokens `var(--breakpoint-tablet)` (768px) e `var(--breakpoint-desktop)` (1024px) em media queries.
+
+Exemplo Tailwind: `flex flex-col md:flex-row lg:max-w-4xl`
+
+Exemplo SCSS: `@media (min-width: var(--breakpoint-desktop)) { ... }`
