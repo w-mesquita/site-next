@@ -1,0 +1,19 @@
+---
+description: Padrões de componentes e rotas Next.js
+globs: "app/**/*.tsx"
+alwaysApply: false
+---
+
+# Next.js e componentes
+
+## App Router
+- Páginas em `app/` com `page.tsx`; layouts com `layout.tsx`.
+- Metadata SEO em cada página ou layout via `export const metadata` ou `generateMetadata`.
+
+## Componentes
+- Layout: Header, Footer e wrappers em `components/layout/`; cada um em subpasta com arquivo do componente + `index.ts` (barrel).
+- Importar com alias: `import { Header } from "@/components/layout/Header"` ou `@/components/layout`.
+
+## Estilos
+- Estilos globais só em `app/globals.scss` (que importa `../styles/globals`).
+- Preferir classes Tailwind e variáveis CSS (`var(--token)`) para manter consistência com os design tokens.

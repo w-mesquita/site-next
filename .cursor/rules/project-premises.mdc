@@ -1,0 +1,34 @@
+---
+description: Premissas e arquitetura do projeto (site empresarial Next.js)
+alwaysApply: true
+---
+
+# Premissas do Projeto
+
+## Stack
+- **Next.js 14** (App Router)
+- **TypeScript**
+- **Tailwind CSS** + **Sass (SCSS)**
+- Build: Next.js (Webpack/Turbopack), não Vite
+
+## Estrutura de pastas
+- `app/` — rotas, layout raiz, `page.tsx`, `globals.scss` (importa estilos globais)
+- `components/` — por domínio: `layout/` (Header, Footer), depois `ui/`, `features/` conforme crescer
+- `styles/` — `globals.scss` (reset + Tailwind + base), `tokens/` (design tokens)
+- `lib/` — utilitários (`utils.ts`, helpers)
+- `types/` — tipos TypeScript globais
+- `public/` — assets estáticos
+- Alias: `@/*` aponta para a raiz do projeto
+
+## Design tokens
+- Tokens em `styles/tokens/_variables.scss` (cores, espaçamento, tipografia, header).
+- Customizar tema = alterar apenas esse arquivo; componentes usam `var(--color-primary)`, `var(--spacing-md)`, etc.
+- Novos tokens: adicionar em `_variables.scss` e exportar via `tokens/_index.scss`.
+
+## SEO
+- Usar `metadata` / `generateMetadata` em layouts e páginas (title, description).
+- Manter `lang="pt-BR"` no `<html>` no layout raiz.
+
+## Convenções
+- Componentes de layout em pasta própria com `ComponentName.tsx` + `index.ts` (barrel).
+- Estilos globais: importar em `app/globals.scss`; em SCSS, `@use` sempre no topo do arquivo (antes de @tailwind ou qualquer outra regra).

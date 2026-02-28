@@ -6,6 +6,11 @@ Projeto Next.js com TypeScript, Tailwind CSS e SCSS, seguindo boas práticas de 
 
 ```
 PROJETO/
+├── .cursor/
+│   └── rules/              # Regras do Cursor (premissas do projeto)
+│       ├── project-premises.mdc
+│       ├── scss-design-tokens.mdc
+│       └── next-components.mdc
 ├── app/                    # App Router (Next.js)
 │   ├── layout.tsx          # Layout raiz e metadata SEO
 │   ├── page.tsx            # Home page
