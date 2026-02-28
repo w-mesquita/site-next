@@ -23,28 +23,27 @@ export function HeaderV1() {
           Logo
         </Link>
 
-        <nav
-          className="hidden items-center gap-6 md:flex"
-          aria-label="Navegação principal"
-        >
-          {DEFAULT_NAV_LINKS.map(({ href, label }) => (
-            <Link
-              key={href}
-              href={href}
-              className="text-sm font-medium opacity-90 hover:opacity-100 hover:no-underline"
-            >
-              {label}
-            </Link>
-          ))}
-        </nav>
-
-        <div className="flex items-center gap-2">
+        <div className="flex items-center gap-4 md:gap-6">
+          <nav
+            className="hidden items-center gap-6 md:flex"
+            aria-label="Navegação principal"
+          >
+            {DEFAULT_NAV_LINKS.map(({ href, label }) => (
+              <Link
+                key={href}
+                href={href}
+                className="text-sm font-medium opacity-90 hover:opacity-100 hover:no-underline"
+              >
+                {label}
+              </Link>
+            ))}
+          </nav>
           <ThemeToggle />
           <HeaderMobileMenu
-          links={DEFAULT_NAV_LINKS}
-          isOpen={menuOpen}
-          onOpen={() => setMenuOpen(true)}
-          onClose={() => setMenuOpen(false)}
+            links={DEFAULT_NAV_LINKS}
+            isOpen={menuOpen}
+            onOpen={() => setMenuOpen(true)}
+            onClose={() => setMenuOpen(false)}
           />
         </div>
       </div>
