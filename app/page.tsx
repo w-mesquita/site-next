@@ -4,7 +4,7 @@ export default function HomePage() {
   return (
     <>
       <Header />
-      <main className="min-h-screen">
+      <main className="min-h-[calc(100dvh-64px)]">
         <section
           className="flex flex-col items-center justify-center px-6 py-24 text-center"
           aria-label="Seção principal"
