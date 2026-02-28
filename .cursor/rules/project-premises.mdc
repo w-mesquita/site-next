@@ -23,6 +23,7 @@ alwaysApply: true
 
 ## Design tokens
 - Tokens em `styles/tokens/_variables.scss` (cores, espaçamento, tipografia, header, breakpoints).
+- Tema light e dark: `:root` (light, off-white) e `.dark` (dark, preto com contraste). Ver rule `dark-mode.mdc`.
 - Customizar tema = alterar apenas esse arquivo; componentes usam `var(--color-primary)`, `var(--spacing-md)`, etc.
 - Novos tokens: adicionar em `_variables.scss` e exportar via `tokens/_index.scss`.
 

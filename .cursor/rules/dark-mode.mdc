@@ -1,0 +1,25 @@
+---
+description: Suporte a tema claro/escuro em todo o projeto
+alwaysApply: true
+---
+
+# Modo escuro (dark mode)
+
+O projeto suporta **tema light e dark**. Ao criar qualquer componente ou página, sempre incluir suporte ao modo escuro.
+
+## Como funciona
+- Tema controlado pela classe `dark` no `<html>`; Tailwind usa `darkMode: "class"`.
+- Cores vêm dos **design tokens** em `styles/tokens/_variables.scss`: `:root` (light) e `.dark` (dark).
+- Light: off-white (#fafafa), texto #171717. Dark: fundo #0a0a0a, texto #fafafa, bom contraste.
+
+## Ao criar componentes
+1. **Preferir tokens CSS** para cores: `var(--color-text)`, `var(--color-background)`, `var(--color-surface)`, `var(--color-text-muted)`, `var(--color-border)`. Assim o dark já funciona.
+2. Se precisar de classe Tailwind para cor, usar variante **dark:** junto: ex. `bg-white dark:bg-[var(--color-background)]` ou `text-gray-900 dark:text-[var(--color-text)]`.
+3. **Evitar cores fixas** (hex/rgb) em estilo inline; usar sempre tokens ou classes com `dark:`.
+
+## Toggle de tema
+- Componente `ThemeToggle` em `components/ui/ThemeToggle.tsx` (ícones sol/lua).
+- Contexto em `lib/theme-context.tsx`; preferência salva em `localStorage` e aplicada via script no layout para evitar flash.
+
+## Resumo
+Novo componente = usar tokens (`var(--color-*)`) ou classes `dark:`; nunca apenas cores estáticas sem equivalente em dark.
