@@ -1,6 +1,7 @@
 "use client";
 
 import { useTheme } from "@/lib/theme-context";
+import { Tooltip } from "./Tooltip";
 
 function SunIcon({ className }: { className?: string }) {
   return (
@@ -45,18 +46,20 @@ export function ThemeToggle() {
   const { theme, toggleTheme } = useTheme();
 
   return (
-    <button
-      type="button"
-      onClick={toggleTheme}
-      aria-label={theme === "light" ? "Ativar tema escuro" : "Ativar tema claro"}
-      className="rounded-full p-2 transition-colors hover:bg-[var(--color-surface)]"
-      style={{ color: "var(--header-text)" }}
-    >
-      {theme === "light" ? (
-        <MoonIcon className="h-5 w-5" />
-      ) : (
-        <SunIcon className="h-5 w-5" />
-      )}
-    </button>
+    <Tooltip content="Alterar tema" side="bottom">
+      <button
+        type="button"
+        onClick={toggleTheme}
+        aria-label={theme === "light" ? "Ativar tema escuro" : "Ativar tema claro"}
+        className="rounded-full p-2 transition-colors hover:bg-[var(--color-surface)]"
+        style={{ color: "var(--header-text)" }}
+      >
+        {theme === "light" ? (
+          <MoonIcon className="h-5 w-5" />
+        ) : (
+          <SunIcon className="h-5 w-5" />
+        )}
+      </button>
+    </Tooltip>
   );
 }
