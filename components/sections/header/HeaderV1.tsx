@@ -3,6 +3,7 @@
 import { useState } from "react";
 import Link from "next/link";
 import { ThemeToggle } from "@/components/ui/ThemeToggle";
+import { SettingsLink } from "@/components/ui/SettingsLink";
 import { HeaderMobileMenu } from "./HeaderMobileMenu";
 import { DEFAULT_NAV_LINKS } from "./navLinks";
 
@@ -39,6 +40,7 @@ export function HeaderV1() {
             ))}
           </nav>
           <ThemeToggle />
+          <SettingsLink />
           <HeaderMobileMenu
             links={DEFAULT_NAV_LINKS}
             isOpen={menuOpen}

@@ -19,3 +19,4 @@ export function HeroSection({ variant }: HeroSectionProps) {
 }
 
 export { HeroV1, HeroV2, HeroV3 };
+export { HeroSectionFromConfig } from "./HeroSectionFromConfig";

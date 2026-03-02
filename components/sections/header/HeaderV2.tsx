@@ -3,6 +3,7 @@
 import { useState } from "react";
 import Link from "next/link";
 import { ThemeToggle } from "@/components/ui/ThemeToggle";
+import { SettingsLink } from "@/components/ui/SettingsLink";
 import { HeaderMobileMenu } from "./HeaderMobileMenu";
 import { DEFAULT_NAV_LINKS, DEFAULT_CTA } from "./navLinks";
 
@@ -40,6 +41,7 @@ export function HeaderV2() {
 
         <div className="flex items-center gap-2">
           <ThemeToggle />
+          <SettingsLink />
           <div className="hidden md:block">
             <Link
               href={DEFAULT_CTA.href}

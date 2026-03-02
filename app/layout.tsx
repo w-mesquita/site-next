@@ -1,7 +1,8 @@
 import type { Metadata } from "next";
 import { getSectionsConfig } from "@/lib/sections-config";
-import { HeaderSection, FooterSection } from "@/components/sections";
 import { ThemeProvider } from "@/lib/theme-context";
+import { SectionsConfigProvider } from "@/lib/sections-config-context";
+import { ClientLayoutContent } from "@/components/layout/ClientLayoutContent";
 import "./globals.scss";
 
 export const metadata: Metadata = {
@@ -31,9 +32,9 @@ export default function RootLayout({
       </head>
       <body>
         <ThemeProvider>
-          <HeaderSection variant={config.header} />
-          {children}
-          <FooterSection variant={config.footer} />
+          <SectionsConfigProvider initialConfig={config}>
+            <ClientLayoutContent>{children}</ClientLayoutContent>
+          </SectionsConfigProvider>
         </ThemeProvider>
       </body>
     </html>
