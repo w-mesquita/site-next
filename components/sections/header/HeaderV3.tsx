@@ -4,6 +4,7 @@ import { useState } from "react";
 import Link from "next/link";
 import { ThemeToggle } from "@/components/ui/ThemeToggle";
 import { SettingsLink } from "@/components/ui/SettingsLink";
+import { SocialLinks } from "@/components/ui/SocialLinks";
 import { HeaderMobileMenu } from "./HeaderMobileMenu";
 import { DEFAULT_NAV_LINKS } from "./navLinks";
 
@@ -25,6 +26,7 @@ export function HeaderV3() {
         </Link>
 
         <div className="flex items-center gap-2">
+          <SocialLinks size="sm" />
           <ThemeToggle />
           <SettingsLink />
           <HeaderMobileMenu

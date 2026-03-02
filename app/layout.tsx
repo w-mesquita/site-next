@@ -3,6 +3,7 @@ import { getSectionsConfig } from "@/lib/sections-config";
 import { ThemeProvider } from "@/lib/theme-context";
 import { SectionsConfigProvider } from "@/lib/sections-config-context";
 import { WhatsAppConfigProvider } from "@/lib/whatsapp-config-context";
+import { SocialConfigProvider } from "@/lib/social-config-context";
 import { ClientLayoutContent } from "@/components/layout/ClientLayoutContent";
 import { WhatsAppFloat } from "@/components/widgets";
 import "./globals.scss";
@@ -36,8 +37,10 @@ export default function RootLayout({
         <ThemeProvider>
           <SectionsConfigProvider initialConfig={config}>
             <WhatsAppConfigProvider>
-              <ClientLayoutContent>{children}</ClientLayoutContent>
-              <WhatsAppFloat />
+              <SocialConfigProvider>
+                <ClientLayoutContent>{children}</ClientLayoutContent>
+                <WhatsAppFloat />
+              </SocialConfigProvider>
             </WhatsAppConfigProvider>
           </SectionsConfigProvider>
         </ThemeProvider>

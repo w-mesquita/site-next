@@ -1,4 +1,5 @@
 import Link from "next/link";
+import { SocialLinks } from "@/components/ui/SocialLinks";
 
 export function FooterV2() {
   return (
@@ -14,6 +15,7 @@ export function FooterV2() {
           <p className="mt-2 text-sm" style={{ color: "var(--color-text-muted)" }}>
             Descrição breve da empresa.
           </p>
+          <SocialLinks size="md" className="mt-3" />
         </div>
         <div>
           <h3 className="font-semibold" style={{ color: "var(--color-text)" }}>Links</h3>

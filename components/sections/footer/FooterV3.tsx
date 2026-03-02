@@ -1,4 +1,5 @@
 import Link from "next/link";
+import { SocialLinks } from "@/components/ui/SocialLinks";
 
 export function FooterV3() {
   return (
@@ -10,10 +11,13 @@ export function FooterV3() {
         <Link href="/" className="text-sm font-medium hover:no-underline" style={{ color: "var(--color-text)" }}>
           Logo
         </Link>
-        <nav className="flex gap-6 text-sm" aria-label="Links do rodapé">
-          <Link href="/" className="hover:underline">Início</Link>
-          <Link href="#contato" className="hover:underline">Contato</Link>
-        </nav>
+        <div className="flex flex-wrap items-center justify-center gap-6">
+          <nav className="flex gap-6 text-sm" aria-label="Links do rodapé">
+            <Link href="/" className="hover:underline">Início</Link>
+            <Link href="#contato" className="hover:underline">Contato</Link>
+          </nav>
+          <SocialLinks size="md" />
+        </div>
       </div>
       <p className="mx-auto mt-4 max-w-6xl px-4 text-center text-xs sm:px-6" style={{ color: "var(--color-text-muted)" }}>
         © {new Date().getFullYear()}
