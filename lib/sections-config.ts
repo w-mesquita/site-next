@@ -1,31 +1,98 @@
 import fs from "node:fs";
 import path from "node:path";
-import type { SectionsConfig } from "@/types/sections";
+import type {
+  SectionsConfig,
+  PageId,
+  PageConfig,
+  PageSectionSlot,
+  SectionType,
+} from "@/types/sections";
 import {
   DEFAULT_SECTIONS_CONFIG,
   SECTION_VARIANTS,
+  PAGE_IDS,
+  getDefaultPagesConfig,
 } from "@/types/sections";
 
-function isValidVariant(value: unknown): value is SectionsConfig["header"] {
-  return typeof value === "string" && SECTION_VARIANTS.includes(value as SectionsConfig["header"]);
+const VALID_SECTION_TYPES: SectionType[] = ["hero", "cta", "none"];
+
+function isValidVariant(value: unknown): value is (typeof SECTION_VARIANTS)[number] {
+  return typeof value === "string" && SECTION_VARIANTS.includes(value as (typeof SECTION_VARIANTS)[number]);
+}
+
+function isValidSectionType(value: unknown): value is SectionType {
+  return typeof value === "string" && VALID_SECTION_TYPES.includes(value as SectionType);
+}
+
+function isValidPageId(value: unknown): value is PageId {
+  return typeof value === "string" && PAGE_IDS.includes(value as PageId);
+}
+
+function parseSlot(raw: unknown): PageSectionSlot {
+  if (!raw || typeof raw !== "object") return { type: "none" };
+  const o = raw as Record<string, unknown>;
+  const type = isValidSectionType(o.type) ? o.type : "none";
+  const slot: PageSectionSlot = { type };
+  if (type !== "none" && isValidVariant(o.variant)) {
+    slot.variant = o.variant;
+  }
+  return slot;
+}
+
+function parsePageSections(raw: unknown): PageSectionSlot[] {
+  if (!Array.isArray(raw)) return [...DEFAULT_SECTIONS_CONFIG.pages.home.pageSections];
+  const slots = raw.map(parseSlot);
+  while (slots.length < 5) slots.push({ type: "none" });
+  return slots.slice(0, 5);
+}
+
+function parsePageConfig(raw: unknown): PageConfig {
+  if (!raw || typeof raw !== "object") return { pageSections: [...DEFAULT_SECTIONS_CONFIG.pages.home.pageSections] };
+  const o = raw as Record<string, unknown>;
+  return { pageSections: parsePageSections(o.pageSections) };
+}
+
+function parsePages(raw: unknown): Record<PageId, PageConfig> {
+  const defaultPages = getDefaultPagesConfig();
+  if (!raw || typeof raw !== "object") return defaultPages;
+  const o = raw as Record<string, unknown>;
+  const result = { ...defaultPages };
+  for (const id of PAGE_IDS) {
+    if (o[id] != null) {
+      result[id] = parsePageConfig(o[id]);
+    }
+  }
+  return result;
+}
+
+function parseEnabledPages(raw: unknown): PageId[] {
+  if (!Array.isArray(raw)) return [...PAGE_IDS];
+  return raw.filter(isValidPageId);
 }
 
 /**
- * Retorna a configuração de variantes das seções.
- * Lê config/sections.json do disco a cada chamada, para alterações refletirem ao recarregar a página.
+ * Retorna a configuração de seções.
+ * Lê config/sections.json e mescla com defaults.
  */
 export function getSectionsConfig(): SectionsConfig {
   const filePath = path.join(process.cwd(), "config", "sections.json");
-  let raw: Partial<SectionsConfig> = {};
+  let raw: Record<string, unknown> = {};
   try {
     const content = fs.readFileSync(filePath, "utf-8");
-    raw = JSON.parse(content) as Partial<SectionsConfig>;
+    raw = JSON.parse(content) as Record<string, unknown>;
   } catch {
     return DEFAULT_SECTIONS_CONFIG;
   }
+
+  const header = isValidVariant(raw?.header) ? raw.header : DEFAULT_SECTIONS_CONFIG.header;
+  const footer = isValidVariant(raw?.footer) ? raw.footer : DEFAULT_SECTIONS_CONFIG.footer;
+  const enabledPages = parseEnabledPages(raw?.enabledPages);
+  const pages = parsePages(raw?.pages);
+
   return {
-    header: isValidVariant(raw?.header) ? raw.header : DEFAULT_SECTIONS_CONFIG.header,
-    hero: isValidVariant(raw?.hero) ? raw.hero : DEFAULT_SECTIONS_CONFIG.hero,
-    footer: isValidVariant(raw?.footer) ? raw.footer : DEFAULT_SECTIONS_CONFIG.footer,
+    header,
+    footer,
+    enabledPages,
+    pages,
   };
 }

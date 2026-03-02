@@ -1,7 +1,9 @@
 import type { Metadata } from "next";
 import { getSectionsConfig } from "@/lib/sections-config";
+import { getSectionsContent } from "@/lib/sections-content";
 import { ThemeProvider } from "@/lib/theme-context";
 import { SectionsConfigProvider } from "@/lib/sections-config-context";
+import { SectionsContentProvider } from "@/lib/sections-content-context";
 import { WhatsAppConfigProvider } from "@/lib/whatsapp-config-context";
 import { SocialConfigProvider } from "@/lib/social-config-context";
 import { ClientLayoutContent } from "@/components/layout/ClientLayoutContent";
@@ -28,6 +30,7 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   const config = getSectionsConfig();
+  const initialContent = getSectionsContent();
   return (
     <html lang="pt-BR" suppressHydrationWarning>
       <head>
@@ -36,12 +39,14 @@ export default function RootLayout({
       <body>
         <ThemeProvider>
           <SectionsConfigProvider initialConfig={config}>
-            <WhatsAppConfigProvider>
-              <SocialConfigProvider>
-                <ClientLayoutContent>{children}</ClientLayoutContent>
-                <WhatsAppFloat />
-              </SocialConfigProvider>
-            </WhatsAppConfigProvider>
+            <SectionsContentProvider initialContent={initialContent}>
+              <WhatsAppConfigProvider>
+                <SocialConfigProvider>
+                  <ClientLayoutContent>{children}</ClientLayoutContent>
+                  <WhatsAppFloat />
+                </SocialConfigProvider>
+              </WhatsAppConfigProvider>
+            </SectionsContentProvider>
           </SectionsConfigProvider>
         </ThemeProvider>
       </body>

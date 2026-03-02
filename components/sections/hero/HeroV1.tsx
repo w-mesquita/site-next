@@ -3,8 +3,15 @@
 import Image from "next/image";
 import Link from "next/link";
 import { useState } from "react";
+import type { HeroContent } from "@/types/sections-content";
+import { DEFAULT_HERO_CONTENT } from "@/types/sections-content";
 
-export function HeroV1() {
+export interface HeroV1Props {
+  content?: HeroContent;
+}
+
+export function HeroV1({ content: contentProp }: HeroV1Props) {
+  const content = contentProp ?? DEFAULT_HERO_CONTENT;
   const [imageError, setImageError] = useState(false);
 
   return (
@@ -40,7 +47,7 @@ export function HeroV1() {
               className="h-2 w-2 animate-pulse rounded-full"
               style={{ backgroundColor: "var(--color-text-muted)" }}
             />
-            Destaque opcional
+            {content.badge}
           </div>
 
           <h1
@@ -48,10 +55,10 @@ export function HeroV1() {
             style={{ color: "var(--color-text)" }}
           >
             <span className="mb-2 block text-2xl md:text-3xl lg:text-4xl">
-              Bem-vindo ao seu site
+              {content.titleLine1}
             </span>
             <span className="mt-2 block text-5xl md:text-6xl lg:text-7xl lg:mt-4">
-              Soluções que fazem sentido
+              {content.titleLine2}
             </span>
           </h1>
 
@@ -59,26 +66,26 @@ export function HeroV1() {
             className="max-w-lg text-lg leading-relaxed md:text-xl"
             style={{ color: "var(--color-text-muted)" }}
           >
-            Estrutura base com Next.js, TypeScript, Tailwind e design tokens. Personalize o texto e a imagem ao lado.
+            {content.description}
           </p>
 
           <div className="flex flex-wrap gap-4 pt-2">
             <Link
-              href="#acao"
+              href={content.primaryAction.href}
               className="inline-block rounded-md px-6 py-3 font-medium text-white hover:no-underline"
               style={{ backgroundColor: "var(--color-primary)" }}
             >
-              Saiba mais
+              {content.primaryAction.label}
             </Link>
             <Link
-              href="#contato"
+              href={content.secondaryAction.href}
               className="inline-block rounded-md border px-6 py-3 font-medium hover:no-underline"
               style={{
                 borderColor: "var(--color-border)",
                 color: "var(--color-text)",
               }}
             >
-              Contato
+              {content.secondaryAction.label}
             </Link>
           </div>
         </div>
@@ -98,8 +105,8 @@ export function HeroV1() {
           >
             {!imageError ? (
               <Image
-                src="/hero-image.jpg"
-                alt="Destaque visual do hero"
+                src={content.imageSrc}
+                alt=""
                 width={800}
                 height={500}
                 className="h-auto w-full object-cover opacity-95 transition-opacity duration-500 hover:opacity-100"
@@ -117,7 +124,7 @@ export function HeroV1() {
               <span className="text-lg">
                 Adicione uma imagem em{" "}
                 <code className="rounded px-1" style={{ backgroundColor: "var(--color-border)" }}>
-                  public/hero-image.jpg
+                  public{content.imageSrc}
                 </code>{" "}
                 para exibir aqui.
               </span>

@@ -1,0 +1,76 @@
+"use client";
+
+import {
+  createContext,
+  useCallback,
+  useContext,
+  useEffect,
+  useState,
+} from "react";
+import type { SectionsContentConfig } from "@/types/sections-content";
+import {
+  getSectionsContentFromStorage,
+  setSectionsContentInStorage,
+} from "./sections-content-client";
+import { DEFAULT_SECTIONS_CONTENT } from "@/types/sections-content";
+
+interface SectionsContentContextValue {
+  content: SectionsContentConfig;
+  setContent: (content: SectionsContentConfig) => void;
+  setHeroContent: (hero: SectionsContentConfig["hero"]) => void;
+}
+
+const SectionsContentContext = createContext<SectionsContentContextValue | null>(
+  null
+);
+
+interface SectionsContentProviderProps {
+  children: React.ReactNode;
+  initialContent: SectionsContentConfig;
+}
+
+export function SectionsContentProvider({
+  children,
+  initialContent,
+}: SectionsContentProviderProps) {
+  const [content, setContentState] = useState<SectionsContentConfig>(initialContent);
+
+  useEffect(() => {
+    const stored = getSectionsContentFromStorage();
+    if (stored) setContentState(stored);
+  }, []);
+
+  const setContent = useCallback((newContent: SectionsContentConfig) => {
+    setContentState(newContent);
+    setSectionsContentInStorage(newContent);
+  }, []);
+
+  const setHeroContent = useCallback(
+    (hero: SectionsContentConfig["hero"]) => {
+      setContentState((prev) => {
+        const next = { ...prev, hero };
+        setSectionsContentInStorage(next);
+        return next;
+      });
+    },
+    []
+  );
+
+  return (
+    <SectionsContentContext.Provider
+      value={{ content, setContent, setHeroContent }}
+    >
+      {children}
+    </SectionsContentContext.Provider>
+  );
+}
+
+export function useSectionsContent(): SectionsContentContextValue {
+  const ctx = useContext(SectionsContentContext);
+  if (!ctx) {
+    throw new Error(
+      "useSectionsContent must be used within SectionsContentProvider"
+    );
+  }
+  return ctx;
+}

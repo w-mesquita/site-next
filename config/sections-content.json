@@ -1,0 +1,11 @@
+{
+  "hero": {
+    "badge": "Destaque opcional",
+    "titleLine1": "Bem-vindo ao seu site",
+    "titleLine2": "Soluções que fazem sentido",
+    "description": "Estrutura base com Next.js, TypeScript, Tailwind e design tokens. Personalize o texto e a imagem ao lado.",
+    "primaryAction": { "label": "Saiba mais", "href": "#acao" },
+    "secondaryAction": { "label": "Contato", "href": "#contato" },
+    "imageSrc": "/hero-image.jpg"
+  }
+}

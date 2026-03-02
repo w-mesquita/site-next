@@ -1,5 +1,34 @@
 {
   "header": "v3",
-  "hero": "v2",
-  "footer": "v1"
+  "footer": "v1",
+  "enabledPages": ["home", "contact", "about"],
+  "pages": {
+    "home": {
+      "pageSections": [
+        { "type": "hero", "variant": "v1" },
+        { "type": "none" },
+        { "type": "none" },
+        { "type": "none" },
+        { "type": "none" }
+      ]
+    },
+    "contact": {
+      "pageSections": [
+        { "type": "none" },
+        { "type": "none" },
+        { "type": "none" },
+        { "type": "none" },
+        { "type": "none" }
+      ]
+    },
+    "about": {
+      "pageSections": [
+        { "type": "hero", "variant": "v2" },
+        { "type": "none" },
+        { "type": "none" },
+        { "type": "none" },
+        { "type": "none" }
+      ]
+    }
+  }
 }

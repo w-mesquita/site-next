@@ -1,13 +1,24 @@
-import type { SectionsConfig } from "@/types/sections";
+import type { SectionsConfig, PageId, PageConfig } from "@/types/sections";
 import {
   DEFAULT_SECTIONS_CONFIG,
   SECTION_VARIANTS,
+  PAGE_IDS,
+  getDefaultPagesConfig,
 } from "@/types/sections";
 
 const STORAGE_KEY = "sections-config";
 
-function isValidVariant(value: unknown): value is SectionsConfig["header"] {
-  return typeof value === "string" && SECTION_VARIANTS.includes(value as SectionsConfig["header"]);
+function isValidVariant(value: unknown): value is (typeof SECTION_VARIANTS)[number] {
+  return typeof value === "string" && SECTION_VARIANTS.includes(value as (typeof SECTION_VARIANTS)[number]);
+}
+
+function isValidPageId(value: unknown): value is PageId {
+  return typeof value === "string" && PAGE_IDS.includes(value as PageId);
+}
+
+function isPageConfig(raw: unknown): raw is PageConfig {
+  if (!raw || typeof raw !== "object") return false;
+  return Array.isArray((raw as Record<string, unknown>).pageSections);
 }
 
 /**
@@ -19,14 +30,34 @@ export function getSectionsConfigFromStorage(): SectionsConfig | null {
   try {
     const raw = localStorage.getItem(STORAGE_KEY);
     if (!raw) return null;
-    const parsed = JSON.parse(raw) as Partial<SectionsConfig>;
+    const parsed = JSON.parse(raw) as Record<string, unknown>;
     const header = isValidVariant(parsed?.header) ? parsed.header : null;
-    const hero = isValidVariant(parsed?.hero) ? parsed.hero : null;
     const footer = isValidVariant(parsed?.footer) ? parsed.footer : null;
-    if (header && hero && footer) {
-      return { header, hero, footer };
+    if (header == null || footer == null) return null;
+
+    const defaultPages = getDefaultPagesConfig();
+    let pages: Record<PageId, PageConfig> = defaultPages;
+    if (parsed.pages && typeof parsed.pages === "object") {
+      const p = parsed.pages as Record<string, unknown>;
+      for (const id of PAGE_IDS) {
+        if (isPageConfig(p[id])) {
+          pages = { ...pages, [id]: p[id] as PageConfig };
+        }
+      }
     }
-    return null;
+
+    let enabledPages: PageId[] = [...PAGE_IDS];
+    if (Array.isArray(parsed.enabledPages)) {
+      enabledPages = parsed.enabledPages.filter(isValidPageId);
+      if (enabledPages.length === 0) enabledPages = [...PAGE_IDS];
+    }
+
+    return {
+      header,
+      footer,
+      enabledPages,
+      pages,
+    };
   } catch {
     return null;
   }
