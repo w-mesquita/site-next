@@ -1,0 +1,176 @@
+{
+  "$schema": "https://design-tokens.github.io/community-group/format/",
+  "$description": "Design tokens — convenção DTCG: Base (palette), Alias (referências {path}), formato de cor com colorSpace/components/hex. Manutenção: altere palette; alias acompanham.",
+  "color": {
+    "palette": {
+      "primary": {
+        "500": {
+          "$type": "color",
+          "$value": {
+            "colorSpace": "srgb",
+            "components": [0.231, 0.51, 0.965],
+            "alpha": 1,
+            "hex": "#3b82f6"
+          }
+        },
+        "600": {
+          "$type": "color",
+          "$value": {
+            "colorSpace": "srgb",
+            "components": [0.145, 0.388, 0.922],
+            "alpha": 1,
+            "hex": "#2563eb"
+          }
+        },
+        "700": {
+          "$type": "color",
+          "$value": {
+            "colorSpace": "srgb",
+            "components": [0.114, 0.306, 0.847],
+            "alpha": 1,
+            "hex": "#1d4ed8"
+          }
+        }
+      },
+      "neutral": {
+        "50": {
+          "$type": "color",
+          "$value": {
+            "colorSpace": "srgb",
+            "components": [0.98, 0.98, 0.98],
+            "alpha": 1,
+            "hex": "#fafafa"
+          }
+        },
+        "100": {
+          "$type": "color",
+          "$value": {
+            "colorSpace": "srgb",
+            "components": [0.961, 0.961, 0.961],
+            "alpha": 1,
+            "hex": "#f5f5f5"
+          }
+        },
+        "200": {
+          "$type": "color",
+          "$value": {
+            "colorSpace": "srgb",
+            "components": [0.898, 0.898, 0.898],
+            "alpha": 1,
+            "hex": "#e5e5e5"
+          }
+        },
+        "600": {
+          "$type": "color",
+          "$value": {
+            "colorSpace": "srgb",
+            "components": [0.322, 0.322, 0.322],
+            "alpha": 1,
+            "hex": "#525252"
+          }
+        },
+        "900": {
+          "$type": "color",
+          "$value": {
+            "colorSpace": "srgb",
+            "components": [0.09, 0.09, 0.09],
+            "alpha": 1,
+            "hex": "#171717"
+          }
+        },
+        "950": {
+          "$type": "color",
+          "$value": {
+            "colorSpace": "srgb",
+            "components": [0.039, 0.039, 0.039],
+            "alpha": 1,
+            "hex": "#0a0a0a"
+          }
+        }
+      }
+    },
+    "background": {
+      "default": { "$value": "{color.palette.neutral.50}" },
+      "surface": { "$value": "{color.palette.neutral.100}" }
+    },
+    "text": {
+      "primary": { "$value": "{color.palette.neutral.900}" },
+      "muted": { "$value": "{color.palette.neutral.600}" }
+    },
+    "border": {
+      "default": { "$value": "{color.palette.neutral.200}" }
+    },
+    "action": {
+      "primary": { "$value": "{color.palette.primary.600}" },
+      "primaryHover": { "$value": "{color.palette.primary.700}" },
+      "primaryLight": { "$value": "{color.palette.primary.500}" }
+    }
+  },
+  "dark": {
+    "color": {
+      "background": {
+        "default": { "$value": "{color.palette.neutral.950}" },
+        "surface": {
+          "$type": "color",
+          "$value": {
+            "colorSpace": "srgb",
+            "components": [0.09, 0.09, 0.09],
+            "alpha": 1,
+            "hex": "#171717"
+          }
+        }
+      },
+      "text": {
+        "primary": { "$value": "{color.palette.neutral.50}" },
+        "muted": {
+          "$type": "color",
+          "$value": {
+            "colorSpace": "srgb",
+            "components": [0.639, 0.639, 0.639],
+            "alpha": 1,
+            "hex": "#a3a3a3"
+          }
+        }
+      },
+      "border": {
+        "default": {
+          "$type": "color",
+          "$value": {
+            "colorSpace": "srgb",
+            "components": [0.149, 0.149, 0.149],
+            "alpha": 1,
+            "hex": "#262626"
+          }
+        }
+      }
+    }
+  },
+  "spacing": {
+    "1": { "$type": "dimension", "$value": "0.25rem" },
+    "2": { "$type": "dimension", "$value": "0.5rem" },
+    "4": { "$type": "dimension", "$value": "1rem" },
+    "6": { "$type": "dimension", "$value": "1.5rem" },
+    "8": { "$type": "dimension", "$value": "2rem" },
+    "12": { "$type": "dimension", "$value": "3rem" }
+  },
+  "fontFamily": {
+    "sans": { "$type": "fontFamily", "$value": "system-ui, -apple-system, sans-serif" },
+    "mono": { "$type": "fontFamily", "$value": "ui-monospace, monospace" }
+  },
+  "fontSize": {
+    "base": { "$type": "dimension", "$value": "1rem" },
+    "lg": { "$type": "dimension", "$value": "1.125rem" },
+    "xl": { "$type": "dimension", "$value": "1.25rem" },
+    "2xl": { "$type": "dimension", "$value": "1.5rem" },
+    "3xl": { "$type": "dimension", "$value": "1.875rem" }
+  },
+  "header": {
+    "height": { "$type": "dimension", "$value": "4rem" },
+    "background": { "$value": "{color.background.default}" },
+    "text": { "$value": "{color.text.primary}" }
+  },
+  "breakpoint": {
+    "tablet": { "$type": "dimension", "$value": "768px" },
+    "desktop": { "$type": "dimension", "$value": "1024px" }
+  }
+}

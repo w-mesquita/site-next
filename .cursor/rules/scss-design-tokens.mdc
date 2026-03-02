@@ -10,10 +10,16 @@ alwaysApply: false
 - **`@use` e `@forward` devem ser as primeiras linhas** do arquivo, antes de `@tailwind`, `@import` ou qualquer CSS.
 - Exemplo em `styles/globals.scss`: primeiro `@use 'tokens';`, depois `@tailwind base;`, etc.
 
-## Onde definir tokens
-- Variáveis de tema (cores, espaços, fontes) em `styles/tokens/_variables.scss`.
-- Encapsular em `:root` para uso global; referenciar nos componentes com `var(--nome-do-token)`.
-- Não definir tokens espalhados em outros arquivos SCSS; centralizar em `tokens/`.
+## Onde definir tokens (convenção DTCG, estrutura única)
+- **Fonte canônica:** `styles/tokens/design-tokens.json` — [DTCG Color](https://www.designtokens.org/tr/2025.10/color/#format): cores com `$type`/`$value` (colorSpace, components 0–1, hex); alias com `"$value": "{color.palette.neutral.50}"`.
+- **Estrutura (sem subdivisão primitive/semantic/component):**
+  - **color.palette** — Base: primary.500/600/700, neutral.50–950 (valores brutos).
+  - **color.background, color.text, color.border, color.action** — Alias que referenciam palette (ex.: background.default → palette.neutral.50).
+  - **dark.color** — Overrides para tema escuro.
+  - **spacing, fontFamily, fontSize** — dimensões e fontes.
+  - **header, breakpoint** — uso por componente (header.height, breakpoint.tablet/desktop).
+- **Consumo no CSS:** `_variables.scss` expõe como variáveis (`:root` e `.dark`). Manter em sincronia com o JSON.
+- **Manutenção:** alterar palette para mudar cores globais; alias e header/breakpoint referenciam e acompanham.
 
 ## Uso nos componentes
 - Preferir tokens em vez de valores fixos: `color: var(--color-text);`, `padding: var(--spacing-md);`.

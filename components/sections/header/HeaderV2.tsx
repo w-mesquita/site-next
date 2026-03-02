@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import Link from "next/link";
 import { ThemeToggle } from "@/components/ui/ThemeToggle";
 import { SettingsLink } from "@/components/ui/SettingsLink";
@@ -10,15 +10,22 @@ import { DEFAULT_NAV_LINKS, DEFAULT_CTA } from "./navLinks";
 
 export function HeaderV2() {
   const [menuOpen, setMenuOpen] = useState(false);
+  const [isScrolled, setIsScrolled] = useState(false);
+
+  useEffect(() => {
+    const handleScroll = () => setIsScrolled(window.scrollY > 20);
+    window.addEventListener("scroll", handleScroll);
+    return () => window.removeEventListener("scroll", handleScroll);
+  }, []);
 
   return (
     <header
-      className="sticky top-0 z-50 border-b border-[var(--color-border)]"
-      style={{
-        height: "var(--header-height)",
-        backgroundColor: "var(--header-bg)",
-        color: "var(--header-text)",
-      }}
+      className={`sticky top-0 z-50 transition-all duration-300 ${
+        isScrolled
+          ? "border-b border-[var(--color-border)] bg-[var(--color-background)]/95 backdrop-blur-sm shadow-md py-3"
+          : "border-b border-transparent bg-transparent py-5"
+      }`}
+      style={{ color: "var(--header-text)" }}
     >
       <div className="relative mx-auto flex h-full max-w-6xl items-center justify-between px-4 sm:px-6">
         <Link href="/" className="text-xl font-semibold hover:no-underline">
