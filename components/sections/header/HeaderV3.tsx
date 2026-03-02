@@ -27,7 +27,7 @@ export function HeaderV3() {
       }`}
       style={{ color: "var(--header-text)" }}
     >
-      <div className="mx-auto flex h-full max-w-6xl items-center justify-between px-4 sm:px-6">
+      <div className="mx-auto flex h-full max-w-content items-center justify-between px-4 sm:px-6">
         <Link href="/" className="text-xl font-semibold hover:no-underline">
           Logo
         </Link>

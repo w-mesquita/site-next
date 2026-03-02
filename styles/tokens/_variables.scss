@@ -23,14 +23,17 @@
   --spacing-xl: 2rem;
   --spacing-2xl: 3rem;
 
-  // Tipografia
+  // Largura máxima da área de conteúdo (estilo Fieltech)
+  --content-max-width: 80rem;
+
+  // Tipografia (escala generosa, estilo Fieltech)
   --font-sans: system-ui, -apple-system, sans-serif;
   --font-mono: ui-monospace, monospace;
-  --text-base: 1rem;
-  --text-lg: 1.125rem;
-  --text-xl: 1.25rem;
-  --text-2xl: 1.5rem;
-  --text-3xl: 1.875rem;
+  --text-base: 1.125rem;
+  --text-lg: 1.25rem;
+  --text-xl: 1.5rem;
+  --text-2xl: 1.875rem;
+  --text-3xl: 2.25rem;
 
   --header-height: 4rem;
   --header-bg: var(--color-background);

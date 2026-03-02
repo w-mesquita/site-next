@@ -1,12 +1,12 @@
 "use client";
 
-import { useState, useEffect } from "react";
-import Link from "next/link";
-import { ThemeToggle } from "@/components/ui/ThemeToggle";
 import { SettingsLink } from "@/components/ui/SettingsLink";
 import { SocialLinks } from "@/components/ui/SocialLinks";
+import { ThemeToggle } from "@/components/ui/ThemeToggle";
+import Link from "next/link";
+import { useEffect, useState } from "react";
 import { HeaderMobileMenu } from "./HeaderMobileMenu";
-import { DEFAULT_NAV_LINKS, DEFAULT_CTA } from "./navLinks";
+import { DEFAULT_CTA, DEFAULT_NAV_LINKS } from "./navLinks";
 
 export function HeaderV2() {
   const [menuOpen, setMenuOpen] = useState(false);
@@ -27,7 +27,7 @@ export function HeaderV2() {
       }`}
       style={{ color: "var(--header-text)" }}
     >
-      <div className="relative mx-auto flex h-full max-w-6xl items-center justify-between px-4 sm:px-6">
+      <div className="relative mx-auto flex h-full max-w-content items-center justify-between px-4 sm:px-6">
         <Link href="/" className="text-xl font-semibold hover:no-underline">
           Logo
         </Link>

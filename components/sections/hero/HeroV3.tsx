@@ -5,10 +5,10 @@ export function HeroV3() {
       aria-label="Banner fullscreen"
     >
       <div className="max-w-3xl text-center">
-<h1 className="text-4xl font-bold leading-tight sm:text-5xl" style={{ color: "var(--color-text)" }}>
+<h1 className="text-5xl font-bold leading-tight md:text-6xl lg:text-7xl" style={{ color: "var(--color-text)" }}>
         Título impactante
         </h1>
-        <p className="mt-6 text-lg" style={{ color: "var(--color-text-muted)" }}>
+        <p className="mt-6 text-lg md:text-xl" style={{ color: "var(--color-text-muted)" }}>
           Subtítulo ou descrição curta. Layout limpo e direto.
         </p>
       </div>

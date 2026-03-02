@@ -7,7 +7,11 @@ const config: Config = {
     "./components/**/*.{js,ts,jsx,tsx,mdx}",
   ],
   theme: {
-    extend: {},
+    extend: {
+      maxWidth: {
+        content: "var(--content-max-width)",
+      },
+    },
   },
   plugins: [],
 };

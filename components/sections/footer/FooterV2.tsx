@@ -7,7 +7,7 @@ export function FooterV2() {
       className="border-t border-[var(--color-border)] py-16"
       style={{ backgroundColor: "var(--color-surface)" }}
     >
-      <div className="mx-auto grid max-w-6xl grid-cols-1 gap-8 px-4 sm:px-6 md:grid-cols-3">
+      <div className="mx-auto grid max-w-content grid-cols-1 gap-8 px-4 sm:px-6 md:grid-cols-3">
         <div>
           <Link href="/" className="text-lg font-semibold hover:no-underline" style={{ color: "var(--color-text)" }}>
             Logo
@@ -31,7 +31,7 @@ export function FooterV2() {
           </ul>
         </div>
       </div>
-      <div className="mx-auto mt-12 max-w-6xl border-t border-[var(--color-border)] px-4 pt-8 text-center text-sm sm:px-6" style={{ color: "var(--color-text-muted)" }}>
+      <div className="mx-auto mt-12 max-w-content border-t border-[var(--color-border)] px-4 pt-8 text-center text-sm sm:px-6" style={{ color: "var(--color-text-muted)" }}>
         © {new Date().getFullYear()} Todos os direitos reservados.
       </div>
     </footer>
