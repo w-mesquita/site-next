@@ -22,10 +22,13 @@ export function HeaderV1() {
     <header
       className={`sticky top-0 z-50 transition-all duration-300 ${
         isScrolled
-          ? "border-b border-[var(--color-border)] bg-[var(--color-background)]/95 backdrop-blur-sm shadow-md py-3"
+          ? "border-b border-[var(--color-border)] shadow-md py-3"
           : "border-b border-transparent bg-transparent py-5"
       }`}
-      style={{ color: "var(--header-text)" }}
+      style={{
+        color: "var(--header-text)",
+        ...(isScrolled && { backgroundColor: "var(--header-bg-scrolled)" }),
+      }}
     >
       <div className="mx-auto flex h-full max-w-content items-center justify-between px-4 sm:px-6">
         <Link href="/" className="text-xl font-semibold hover:no-underline">
