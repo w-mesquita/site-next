@@ -1,9 +1,8 @@
 "use client";
 
-import Link from "next/link";
-import type { SectionTypeWithContent } from "@/types/sections-content";
 import { useSectionsContent } from "@/lib/sections-content-context";
-import type { HeroContent } from "@/types/sections-content";
+import type { HeroContent, SectionTypeWithContent } from "@/types/sections-content";
+import Link from "next/link";
 
 interface SectionContentFormProps {
   sectionType: SectionTypeWithContent;

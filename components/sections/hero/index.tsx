@@ -1,7 +1,7 @@
 "use client";
 
-import type { HeroVariant } from "@/types/sections";
 import { useSectionsContent } from "@/lib/sections-content-context";
+import type { HeroVariant } from "@/types/sections";
 import { HeroV1 } from "./HeroV1";
 import { HeroV2 } from "./HeroV2";
 import { HeroV3 } from "./HeroV3";
@@ -22,5 +22,5 @@ export function HeroSection({ variant }: HeroSectionProps) {
   return <Component content={content.hero} />;
 }
 
-export { HeroV1, HeroV2, HeroV3 };
 export { HeroSectionFromConfig } from "./HeroSectionFromConfig";
+export { HeroV1, HeroV2, HeroV3 };

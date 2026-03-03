@@ -1,18 +1,18 @@
-import fs from "node:fs";
-import path from "node:path";
 import type {
-  SectionsConfig,
-  PageId,
   PageConfig,
+  PageId,
   PageSectionSlot,
   SectionType,
+  SectionsConfig,
 } from "@/types/sections";
 import {
   DEFAULT_SECTIONS_CONFIG,
-  SECTION_VARIANTS,
   PAGE_IDS,
+  SECTION_VARIANTS,
   getDefaultPagesConfig,
 } from "@/types/sections";
+import fs from "node:fs";
+import path from "node:path";
 
 const VALID_SECTION_TYPES: SectionType[] = ["hero", "cta", "none"];
 

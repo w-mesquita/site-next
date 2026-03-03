@@ -1,6 +1,6 @@
-import Link from "next/link";
 import type { HeroContent } from "@/types/sections-content";
 import { DEFAULT_HERO_CONTENT } from "@/types/sections-content";
+import Link from "next/link";
 
 export interface HeroV2Props {
   content?: HeroContent;

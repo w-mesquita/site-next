@@ -1,7 +1,7 @@
+import type { PageId } from "@/types/sections";
+import { PAGE_IDS } from "@/types/sections";
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
-import { PAGE_IDS } from "@/types/sections";
-import type { PageId } from "@/types/sections";
 import { PageConfigClient } from "./PageConfigClient";
 
 export const metadata: Metadata = {

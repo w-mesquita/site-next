@@ -1,9 +1,8 @@
-import type { SectionsConfig, PageId, PageConfig } from "@/types/sections";
+import type { PageConfig, PageId, SectionsConfig } from "@/types/sections";
 import {
-  DEFAULT_SECTIONS_CONFIG,
-  SECTION_VARIANTS,
   PAGE_IDS,
-  getDefaultPagesConfig,
+  SECTION_VARIANTS,
+  getDefaultPagesConfig
 } from "@/types/sections";
 
 const STORAGE_KEY = "sections-config";

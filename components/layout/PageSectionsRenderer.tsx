@@ -1,11 +1,11 @@
 "use client";
 
-import type { PageId, PageSectionSlot } from "@/types/sections";
-import { useSectionsConfig } from "@/lib/sections-config-context";
 import {
   SECTION_COMPONENTS,
   sectionAcceptsVariant,
 } from "@/lib/page-sections-registry";
+import { useSectionsConfig } from "@/lib/sections-config-context";
+import type { PageId, PageSectionSlot } from "@/types/sections";
 
 interface PageSectionsRendererProps {
   pageId: PageId;

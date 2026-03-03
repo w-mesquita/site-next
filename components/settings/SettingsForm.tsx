@@ -1,13 +1,12 @@
 "use client";
 
 import { useSectionsConfig } from "@/lib/sections-config-context";
-import { useWhatsAppConfig } from "@/lib/whatsapp-config-context";
 import { useSocialConfig } from "@/lib/social-config-context";
-import type { SectionVariant } from "@/types/sections";
-import type { PageId } from "@/types/sections";
+import { useWhatsAppConfig } from "@/lib/whatsapp-config-context";
+import type { PageId, SectionVariant } from "@/types/sections";
+import { PAGE_IDS, SECTION_VARIANTS } from "@/types/sections";
 import type { SocialNetworkKey } from "@/types/social";
 import { SOCIAL_NETWORKS } from "@/types/social";
-import { SECTION_VARIANTS, PAGE_IDS } from "@/types/sections";
 import Link from "next/link";
 
 const PAGE_LABELS: Record<PageId, string> = {

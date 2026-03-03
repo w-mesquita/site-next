@@ -1,5 +1,6 @@
 "use client";
 
+import type { SectionsContentConfig } from "@/types/sections-content";
 import {
   createContext,
   useCallback,
@@ -7,12 +8,10 @@ import {
   useEffect,
   useState,
 } from "react";
-import type { SectionsContentConfig } from "@/types/sections-content";
 import {
   getSectionsContentFromStorage,
   setSectionsContentInStorage,
 } from "./sections-content-client";
-import { DEFAULT_SECTIONS_CONTENT } from "@/types/sections-content";
 
 interface SectionsContentContextValue {
   content: SectionsContentConfig;

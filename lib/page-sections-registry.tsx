@@ -1,8 +1,8 @@
 "use client";
 
-import type { SectionType, SectionVariant } from "@/types/sections";
-import { HeroSection } from "@/components/sections/hero";
 import { CtaSection } from "@/components/sections/cta";
+import { HeroSection } from "@/components/sections/hero";
+import type { SectionType, SectionVariant } from "@/types/sections";
 
 /** Seções que aceitam variante (v1, v2, v3). */
 const SECTIONS_WITH_VARIANT: SectionType[] = ["hero"];

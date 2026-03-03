@@ -1,7 +1,7 @@
+import type { HeroContent, SectionsContentConfig } from "@/types/sections-content";
+import { DEFAULT_SECTIONS_CONTENT } from "@/types/sections-content";
 import fs from "node:fs";
 import path from "node:path";
-import type { SectionsContentConfig, HeroContent } from "@/types/sections-content";
-import { DEFAULT_SECTIONS_CONTENT } from "@/types/sections-content";
 
 function parseHeroAction(raw: unknown): HeroContent["primaryAction"] {
   if (!raw || typeof raw !== "object") return DEFAULT_SECTIONS_CONTENT.hero.primaryAction;
