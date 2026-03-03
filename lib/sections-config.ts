@@ -1,8 +1,10 @@
 import type {
+  HeaderVariant,
   PageConfig,
   PageId,
   PageSectionSlot,
   SectionType,
+  SectionVariant,
   SectionsConfig,
 } from "@/types/sections";
 import {
@@ -16,8 +18,17 @@ import path from "node:path";
 
 const VALID_SECTION_TYPES: SectionType[] = ["hero", "cta", "none"];
 
-function isValidVariant(value: unknown): value is (typeof SECTION_VARIANTS)[number] {
-  return typeof value === "string" && SECTION_VARIANTS.includes(value as (typeof SECTION_VARIANTS)[number]);
+const HEADER_FOOTER_VARIANTS: readonly HeaderVariant[] = ["v1", "v2", "v3"];
+
+function isValidHeaderOrFooterVariant(value: unknown): value is HeaderVariant {
+  return (
+    typeof value === "string" &&
+    HEADER_FOOTER_VARIANTS.includes(value as HeaderVariant)
+  );
+}
+
+function isValidVariant(value: unknown): value is SectionVariant {
+  return typeof value === "string" && SECTION_VARIANTS.includes(value as SectionVariant);
 }
 
 function isValidSectionType(value: unknown): value is SectionType {
@@ -84,8 +95,12 @@ export function getSectionsConfig(): SectionsConfig {
     return DEFAULT_SECTIONS_CONFIG;
   }
 
-  const header = isValidVariant(raw?.header) ? raw.header : DEFAULT_SECTIONS_CONFIG.header;
-  const footer = isValidVariant(raw?.footer) ? raw.footer : DEFAULT_SECTIONS_CONFIG.footer;
+  const header = isValidHeaderOrFooterVariant(raw?.header)
+    ? raw.header
+    : DEFAULT_SECTIONS_CONFIG.header;
+  const footer = isValidHeaderOrFooterVariant(raw?.footer)
+    ? raw.footer
+    : DEFAULT_SECTIONS_CONFIG.footer;
   const enabledPages = parseEnabledPages(raw?.enabledPages);
   const pages = parsePages(raw?.pages);
 
