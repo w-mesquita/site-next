@@ -66,11 +66,15 @@ export function HeaderMobileMenu({
   useEffect(() => {
     if (isOpen) {
       document.body.style.overflow = "hidden";
+      // Previne rolagem horizontal quando menu está aberto
+      document.documentElement.style.overflowX = "hidden";
     } else {
       document.body.style.overflow = "";
+      document.documentElement.style.overflowX = "";
     }
     return () => {
       document.body.style.overflow = "";
+      document.documentElement.style.overflowX = "";
     };
   }, [isOpen]);
 
@@ -91,26 +95,23 @@ export function HeaderMobileMenu({
         <HamburgerIcon className="h-6 w-6" />
       </button>
 
-      <>
-        <div
-          role="presentation"
-          className={`fixed inset-0 z-[60] bg-black/50 transition-opacity duration-300 ${
-            isOpen ? "opacity-100" : "pointer-events-none opacity-0"
-          }`}
-          onClick={onClose}
-          aria-hidden
-        />
-        <aside
-          className={`fixed right-0 top-0 z-[70] flex h-full w-[min(100%,280px)] flex-col border-l border-[var(--color-border)] transition-transform duration-300 ease-out ${
-            isOpen ? "translate-x-0" : "translate-x-full"
-          }`}
-          style={{
-            backgroundColor: "var(--header-bg)",
-            color: "var(--header-text)",
-          }}
-          aria-label="Menu de navegação"
-          aria-hidden={!isOpen}
-        >
+      {isOpen && (
+        <>
+          <div
+            role="presentation"
+            className="fixed inset-0 z-[60] bg-black/50 transition-opacity duration-300 opacity-100"
+            onClick={onClose}
+            aria-hidden
+          />
+          <aside
+            className="fixed right-0 top-0 z-[70] flex h-full w-[min(100%,280px)] flex-col border-l border-[var(--color-border)] transition-transform duration-300 ease-out translate-x-0"
+            style={{
+              backgroundColor: "var(--header-bg)",
+              color: "var(--header-text)",
+            }}
+            aria-label="Menu de navegação"
+            aria-hidden={false}
+          >
             <div className="flex items-center justify-between border-b border-[var(--color-border)] px-4 py-4">
               <span className="text-sm font-medium">Menu</span>
               <button
@@ -146,7 +147,8 @@ export function HeaderMobileMenu({
               </div>
             )}
           </aside>
-      </>
+        </>
+      )}
     </>
   );
 }
