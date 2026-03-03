@@ -23,9 +23,11 @@ alwaysApply: true
 
 ## Design tokens
 - Tokens em `styles/tokens/_variables.scss` (cores, espaçamento, tipografia, header, breakpoints).
+- Fonte canônica: `styles/tokens/design-tokens.json` (formato DTCG); manter em sincronia com `_variables.scss`.
 - Tema light e dark: `:root` (light, off-white) e `.dark` (dark, preto com contraste). Ver rule `dark-mode.mdc`.
 - Customizar tema = alterar apenas esse arquivo; componentes usam `var(--color-primary)`, `var(--spacing-md)`, etc.
-- Novos tokens: adicionar em `_variables.scss` e exportar via `tokens/_index.scss`.
+- Novos tokens: adicionar em `_variables.scss` e em `design-tokens.json` quando for cor/estado reutilizável; exportar via `tokens/_index.scss`.
+- **Design system e documentação:** ao alterar UI/design, atualizar tokens quando couber e registrar em `docs/DESIGN-SYSTEM.md`. Ver rule `design-system-and-documentation.mdc`.
 
 ## Responsividade
 - Três quebras: **celular** (base), **tablet** (`md:` 768px), **desktop** (`lg:` 1024px). Mobile-first. Ver rule `responsive-breakpoints.mdc`.

@@ -1,0 +1,34 @@
+---
+description: Atualizar design system e documentar alterações de UI/design
+alwaysApply: true
+---
+
+# Design system e documentação
+
+## Premissa
+Sempre que houver **alterações de UI, estilos ou comportamento visual** (componentes, cores, estados, seções), é obrigatório:
+
+1. **Atualizar o design system** quando a mudança envolver tokens, temas ou padrões reutilizáveis.
+2. **Documentar o ajuste** no registro de alterações do design system.
+
+## Onde atualizar o design system
+
+- **Tokens de estilo (cores, espaçamento, estados):**
+  - `styles/tokens/_variables.scss` — variáveis CSS consumidas pelos componentes (`:root` e `.dark`).
+  - `styles/tokens/design-tokens.json` — fonte canônica no formato DTCG; manter em sincronia com `_variables.scss`.
+- **Novos tokens:** adicionar em ambos (JSON e SCSS); componentes devem usar `var(--nome-do-token)` em vez de valores fixos.
+- **Regra de referência:** `.cursor/rules/scss-design-tokens.mdc` para convenções de tokens.
+
+## Onde documentar
+
+- **Arquivo:** `docs/DESIGN-SYSTEM.md` (ou `DESIGN-SYSTEM.md` na raiz se não existir `docs/`).
+- **Conteúdo:** seção **"Registro de alterações"** (changelog) com data, escopo (ex.: Header, Hero) e descrição breve do que foi alterado e por quê.
+
+## Fluxo recomendado
+
+1. Fazer a alteração no componente ou na página.
+2. Se a alteração introduz ou modifica cor, estado, espaçamento ou padrão reutilizável → atualizar `_variables.scss` e, quando aplicável, `design-tokens.json`.
+3. Registrar a alteração em `docs/DESIGN-SYSTEM.md` (Registro de alterações).
+
+## Resumo
+Alteração de UI/design → atualizar tokens quando couber → documentar em DESIGN-SYSTEM.md.

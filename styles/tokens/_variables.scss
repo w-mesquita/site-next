@@ -37,6 +37,8 @@
 
   --header-height: 4rem;
   --header-bg: var(--color-background);
+  /** Fundo do header ao rolar a página (leve transparência) */
+  --header-bg-scrolled: rgba(255, 255, 255, 0.9);
   --header-text: var(--color-text);
 
   --breakpoint-tablet: 768px;
@@ -51,5 +53,7 @@
   --color-border: #262626;
 
   --header-bg: var(--color-background);
+  /** Fundo do header ao rolar (dark: superfície com leve transparência) */
+  --header-bg-scrolled: rgba(23, 23, 23, 0.95);
   --header-text: var(--color-text);
 }

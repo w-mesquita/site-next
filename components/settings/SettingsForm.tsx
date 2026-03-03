@@ -4,7 +4,7 @@ import { useSectionsConfig } from "@/lib/sections-config-context";
 import { useSocialConfig } from "@/lib/social-config-context";
 import { useWhatsAppConfig } from "@/lib/whatsapp-config-context";
 import type { PageId, SectionVariant } from "@/types/sections";
-import { PAGE_IDS, SECTION_VARIANTS } from "@/types/sections";
+import { PAGE_IDS, SECTION_VARIANT_LABELS } from "@/types/sections";
 import type { SocialNetworkKey } from "@/types/social";
 import { SOCIAL_NETWORKS } from "@/types/social";
 import Link from "next/link";
@@ -79,9 +79,9 @@ export function SettingsForm() {
               className="w-full rounded-lg border bg-[var(--color-background)] px-4 py-2 text-[var(--color-text)] focus:outline-none focus:ring-2 focus:ring-[var(--color-primary)]"
               style={{ borderColor: "var(--color-border)" }}
             >
-              {SECTION_VARIANTS.map((v) => (
+              {(["v1", "v2", "v3"] as const).map((v) => (
                 <option key={v} value={v}>
-                  Variante {v.toUpperCase()}
+                  Variante {SECTION_VARIANT_LABELS[v]}
                 </option>
               ))}
             </select>
@@ -101,9 +101,9 @@ export function SettingsForm() {
               className="w-full rounded-lg border bg-[var(--color-background)] px-4 py-2 text-[var(--color-text)] focus:outline-none focus:ring-2 focus:ring-[var(--color-primary)]"
               style={{ borderColor: "var(--color-border)" }}
             >
-              {SECTION_VARIANTS.map((v) => (
+              {(["v1", "v2", "v3"] as const).map((v) => (
                 <option key={v} value={v}>
-                  Variante {v.toUpperCase()}
+                  Variante {SECTION_VARIANT_LABELS[v]}
                 </option>
               ))}
             </select>

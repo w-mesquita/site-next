@@ -14,25 +14,50 @@ export function HeroV1({ content: contentProp }: HeroV1Props) {
   const content = contentProp ?? DEFAULT_HERO_CONTENT;
   const [imageError, setImageError] = useState(false);
 
+  const bgColor = content.backgroundColor?.trim() || "var(--color-surface)";
+  const bgImage = content.backgroundImage?.trim();
+  const hasImageSrc = Boolean(content.imageSrc?.trim());
+  const showImage = hasImageSrc && !imageError;
+
   return (
     <section
       className="relative overflow-hidden px-4 py-24 md:px-6 lg:py-32"
-      style={{ backgroundColor: "var(--color-surface)" }}
+      style={{
+        backgroundColor: bgColor,
+        ...(bgImage && {
+          backgroundImage: `url(${bgImage})`,
+          backgroundSize: "cover",
+          backgroundPosition: "center",
+        }),
+      }}
       aria-label="Seção principal"
     >
-      {/* Decorative blur orbs */}
+      {/* Overlay esmaecida sobre a imagem de fundo para legibilidade do texto */}
+      {bgImage && (
+        <div
+          className="absolute inset-0 z-[1]"
+          style={{
+            background: `color-mix(in srgb, var(--color-background) 65%, transparent)`,
+          }}
+          aria-hidden
+        />
+      )}
+
+      {/* Decorative blur orbs — por cima do overlay e da imagem */}
       <div
-        className="absolute -right-20 -top-20 h-96 w-96 rounded-full opacity-10 blur-3xl"
+        className="absolute -right-20 -top-20 z-[2] h-96 w-96 rounded-full opacity-10 blur-3xl"
         style={{ backgroundColor: "var(--color-primary)" }}
         aria-hidden
       />
       <div
-        className="absolute -bottom-20 -left-20 h-96 w-96 rounded-full opacity-10 blur-3xl"
+        className="absolute -bottom-20 -left-20 z-[2] h-96 w-96 rounded-full opacity-10 blur-3xl"
         style={{ backgroundColor: "var(--color-primary)" }}
         aria-hidden
       />
 
-      <div className="relative z-10 mx-auto grid max-w-content gap-12 px-4 md:px-6 lg:grid-cols-2 lg:items-center">
+      <div
+        className={`relative z-10 mx-auto grid max-w-content gap-12 px-4 md:px-6 lg:items-center ${showImage ? "lg:grid-cols-2" : ""}`}
+      >
         {/* Texto e ações à esquerda */}
         <div className="max-w-2xl space-y-6">
           <div
@@ -90,20 +115,20 @@ export function HeroV1({ content: contentProp }: HeroV1Props) {
           </div>
         </div>
 
-        {/* Imagem à direita */}
-        <div className="relative group">
-          <div
-            className="absolute inset-0 rounded-2xl opacity-20 blur-lg transition-opacity group-hover:opacity-30"
-            style={{
-              background: `linear-gradient(to right, var(--color-primary), var(--color-primary-light))`,
-            }}
-            aria-hidden
-          />
-          <div
-            className="relative overflow-hidden rounded-2xl border shadow-2xl"
-            style={{ borderColor: "var(--color-border)", backgroundColor: "var(--color-background)" }}
-          >
-            {!imageError ? (
+        {/* Imagem à direita — só exibe se houver imageSrc e a imagem carregar */}
+        {showImage && (
+          <div className="relative group">
+            <div
+              className="absolute inset-0 rounded-2xl opacity-20 blur-lg transition-opacity group-hover:opacity-30"
+              style={{
+                background: `linear-gradient(to right, var(--color-primary), var(--color-primary-light))`,
+              }}
+              aria-hidden
+            />
+            <div
+              className="relative overflow-hidden rounded-2xl border shadow-2xl"
+              style={{ borderColor: "var(--color-border)", backgroundColor: "var(--color-background)" }}
+            >
               <Image
                 src={content.imageSrc}
                 alt=""
@@ -112,25 +137,9 @@ export function HeroV1({ content: contentProp }: HeroV1Props) {
                 className="h-auto w-full object-cover opacity-95 transition-opacity duration-500 hover:opacity-100"
                 onError={() => setImageError(true)}
               />
-            ) : null}
-            <div
-              className="min-h-[280px] items-center justify-center px-8 text-center"
-              style={{
-                display: imageError ? "flex" : "none",
-                color: "var(--color-text-muted)",
-                backgroundColor: "var(--color-surface)",
-              }}
-            >
-              <span className="text-lg">
-                Adicione uma imagem em{" "}
-                <code className="rounded px-1" style={{ backgroundColor: "var(--color-border)" }}>
-                  public{content.imageSrc}
-                </code>{" "}
-                para exibir aqui.
-              </span>
             </div>
           </div>
-        </div>
+        )}
       </div>
     </section>
   );

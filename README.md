@@ -46,7 +46,7 @@ Três breakpoints (mobile-first): **celular** (estilos base), **tablet** (`md:` 
 
 ## Design tokens
 
-Altere as variáveis em `styles/tokens/_variables.scss` para customizar cores, espaçamentos, tipografia e breakpoints do site sem mexer nos componentes.
+Altere as variáveis em `styles/tokens/_variables.scss` para customizar cores, espaçamentos, tipografia e breakpoints do site sem mexer nos componentes. A definição canônica está em `styles/tokens/design-tokens.json`. Alterações de UI/design devem ser documentadas em `docs/DESIGN-SYSTEM.md` (ver regra `.cursor/rules/design-system-and-documentation.mdc`).
 
 ## Comandos
 

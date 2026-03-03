@@ -23,8 +23,23 @@ function HeroContentForm({ sectionLabel }: { sectionLabel: string }) {
   const { content, setHeroContent } = useSectionsContent();
   const hero = content.hero;
 
+  const slides =
+    hero.slides && hero.slides.length >= 3
+      ? hero.slides
+      : [
+          { imageSrc: hero.imageSrc },
+          { imageSrc: hero.imageSrc },
+          { imageSrc: hero.imageSrc },
+        ];
+
   function update<K extends keyof HeroContent>(field: K, value: HeroContent[K]) {
     setHeroContent({ ...hero, [field]: value });
+  }
+
+  function updateSlideImage(index: 0 | 1 | 2, imageSrc: string) {
+    const nextSlides = [...slides];
+    nextSlides[index] = { imageSrc };
+    setHeroContent({ ...hero, slides: nextSlides });
   }
 
   return (
@@ -253,7 +268,7 @@ function HeroContentForm({ sectionLabel }: { sectionLabel: string }) {
           className="mb-4 text-lg font-semibold"
           style={{ color: "var(--color-text)" }}
         >
-          Imagem
+          Imagem destaque mostrada no Hero 1
         </h2>
         <div>
           <label
@@ -278,6 +293,110 @@ function HeroContentForm({ sectionLabel }: { sectionLabel: string }) {
           >
             Coloque o arquivo em <code className="rounded px-1" style={{ backgroundColor: "var(--color-border)" }}>public/</code> e use o caminho começando com /.
           </p>
+        </div>
+      </section>
+
+      <section
+        className="rounded-lg border p-6"
+        style={{
+          borderColor: "var(--color-border)",
+          backgroundColor: "var(--color-surface)",
+        }}
+      >
+        <h2
+          className="mb-4 text-lg font-semibold"
+          style={{ color: "var(--color-text)" }}
+        >
+          Fundo (Hero 1 e 2)
+        </h2>
+        <p
+          className="mb-4 text-sm"
+          style={{ color: "var(--color-text-muted)" }}
+        >
+          Imagem ou cor de fundo da seção Hero 1 e Hero 2. Deixe em branco para
+          usar o padrão do tema.
+        </p>
+        <div className="space-y-4">
+          <div>
+            <label
+              htmlFor="hero-backgroundImage"
+              className="mb-1 block text-sm font-medium"
+              style={{ color: "var(--color-text)" }}
+            >
+              Imagem de fundo
+            </label>
+            <input
+              id="hero-backgroundImage"
+              type="text"
+              value={hero.backgroundImage ?? ""}
+              onChange={(e) => update("backgroundImage", e.target.value)}
+              className="w-full rounded-lg border bg-[var(--color-background)] px-4 py-2 text-[var(--color-text)] focus:outline-none focus:ring-2 focus:ring-[var(--color-primary)]"
+              style={{ borderColor: "var(--color-border)" }}
+              placeholder="/bg.jpg ou URL"
+            />
+          </div>
+          <div>
+            <label
+              htmlFor="hero-backgroundColor"
+              className="mb-1 block text-sm font-medium"
+              style={{ color: "var(--color-text)" }}
+            >
+              Cor de fundo
+            </label>
+            <input
+              id="hero-backgroundColor"
+              type="text"
+              value={hero.backgroundColor ?? ""}
+              onChange={(e) => update("backgroundColor", e.target.value)}
+              className="w-full rounded-lg border bg-[var(--color-background)] px-4 py-2 text-[var(--color-text)] focus:outline-none focus:ring-2 focus:ring-[var(--color-primary)]"
+              style={{ borderColor: "var(--color-border)" }}
+              placeholder="Ex.: #f0f0f0, rgb(240,240,240), var(--color-surface)"
+            />
+          </div>
+        </div>
+      </section>
+
+      <section
+        className="rounded-lg border p-6"
+        style={{
+          borderColor: "var(--color-border)",
+          backgroundColor: "var(--color-surface)",
+        }}
+      >
+        <h2
+          className="mb-4 text-lg font-semibold"
+          style={{ color: "var(--color-text)" }}
+        >
+          Imagens do slide (Hero V3)
+        </h2>
+        <p
+          className="mb-4 text-sm"
+          style={{ color: "var(--color-text-muted)" }}
+        >
+          Três imagens para o carrossel do Hero V3. Coloque os arquivos em{" "}
+          <code className="rounded px-1" style={{ backgroundColor: "var(--color-border)" }}>public/</code> e use o caminho começando com /.
+        </p>
+        <div className="space-y-4">
+          {([0, 1, 2] as const).map((i) => (
+            <div key={i}>
+              <label
+                htmlFor={`hero-slide-${i}`}
+                className="mb-1 block text-sm font-medium"
+                style={{ color: "var(--color-text)" }}
+              >
+                Imagem slide {i + 1}
+              </label>
+              <input
+                id={`hero-slide-${i}`}
+                type="text"
+                value={slides[i].imageSrc}
+                onChange={(e) => updateSlideImage(i, e.target.value)}
+                className="w-full rounded-lg border bg-[var(--color-background)] px-4 py-2 text-[var(--color-text)] focus:outline-none focus:ring-2 focus:ring-[var(--color-primary)]"
+                style={{ borderColor: "var(--color-border)" }}
+                placeholder={i === 0 ? "/slide1.jpg" : `/slide${i + 1}.jpg`}
+              />
+            </div>
+          ))}
         </div>
       </section>
 

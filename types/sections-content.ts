@@ -22,8 +22,14 @@ export interface HeroContent {
   primaryAction: HeroAction;
   /** Ação secundária (ex.: Contato) */
   secondaryAction: HeroAction;
-  /** Caminho da imagem (ex.: /hero-image.jpg) */
+  /** Caminho da imagem de destaque (Hero 1) */
   imageSrc: string;
+  /** Imagens do slide (Hero V3); 3 itens */
+  slides?: { imageSrc: string }[];
+  /** Imagem de fundo (Hero 1 e 2); caminho ou URL */
+  backgroundImage?: string;
+  /** Cor de fundo (Hero 1 e 2); ex.: hex, rgb, ou var(--color-surface) */
+  backgroundColor?: string;
 }
 
 export const DEFAULT_HERO_CONTENT: HeroContent = {
@@ -35,6 +41,13 @@ export const DEFAULT_HERO_CONTENT: HeroContent = {
   primaryAction: { label: "Saiba mais", href: "#acao" },
   secondaryAction: { label: "Contato", href: "#contato" },
   imageSrc: "/hero-image.jpg",
+  slides: [
+    { imageSrc: "/slide1.jpg" },
+    { imageSrc: "/slide2.jpg" },
+    { imageSrc: "/slide3.jpg" },
+  ],
+  backgroundImage: "",
+  backgroundColor: "",
 };
 
 export interface SectionsContentConfig {

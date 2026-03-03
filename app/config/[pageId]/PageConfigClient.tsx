@@ -3,7 +3,7 @@
 import Link from "next/link";
 import { useSectionsConfig } from "@/lib/sections-config-context";
 import type { PageId, PageSectionSlot, SectionType, SectionVariant } from "@/types/sections";
-import { SECTION_VARIANTS } from "@/types/sections";
+import { getVariantsForSectionType, SECTION_VARIANT_LABELS } from "@/types/sections";
 import { sectionAcceptsVariant } from "@/lib/page-sections-registry";
 import { isSectionTypeWithContent } from "@/types/sections-content";
 
@@ -41,9 +41,10 @@ export function PageConfigClient({ pageId, pageLabel }: PageConfigClientProps) {
       setSlot(index, { type: "none" });
       return;
     }
+    const defaultVariant = type === "hero" ? "v1" : (current.variant ?? "v1");
     setSlot(index, {
       type,
-      variant: sectionAcceptsVariant(type) ? (current.variant ?? "v1") : undefined,
+      variant: sectionAcceptsVariant(type) ? defaultVariant : undefined,
     });
   }
 
@@ -127,7 +128,11 @@ export function PageConfigClient({ pageId, pageLabel }: PageConfigClientProps) {
                       </label>
                       <select
                         id={`slot-${index}-variant`}
-                        value={slot.variant ?? "v1"}
+                        value={
+                          slot.type === "hero" && slot.variant === "v3"
+                            ? "slide"
+                            : (slot.variant ?? "v1")
+                        }
                         onChange={(e) =>
                           setSlotVariant(
                             index,
@@ -137,9 +142,9 @@ export function PageConfigClient({ pageId, pageLabel }: PageConfigClientProps) {
                         className="w-full rounded-lg border bg-[var(--color-background)] px-3 py-2 text-sm text-[var(--color-text)] focus:outline-none focus:ring-2 focus:ring-[var(--color-primary)]"
                         style={{ borderColor: "var(--color-border)" }}
                       >
-                        {SECTION_VARIANTS.map((v) => (
+                        {getVariantsForSectionType(slot.type).map((v) => (
                           <option key={v} value={v}>
-                            {v.toUpperCase()}
+                            {SECTION_VARIANT_LABELS[v]}
                           </option>
                         ))}
                       </select>

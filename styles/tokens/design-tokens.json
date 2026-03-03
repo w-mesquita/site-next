@@ -107,6 +107,12 @@
     }
   },
   "dark": {
+    "header": {
+      "backgroundScrolled": {
+        "$type": "color",
+        "$value": { "colorSpace": "srgb", "components": [0.09, 0.09, 0.09], "alpha": 0.95 }
+      }
+    },
     "color": {
       "background": {
         "default": { "$value": "{color.palette.neutral.950}" },
@@ -167,6 +173,10 @@
   "header": {
     "height": { "$type": "dimension", "$value": "4rem" },
     "background": { "$value": "{color.background.default}" },
+    "backgroundScrolled": {
+      "$type": "color",
+      "$value": { "colorSpace": "srgb", "components": [1, 1, 1], "alpha": 0.9 }
+    },
     "text": { "$value": "{color.text.primary}" }
   },
   "breakpoint": {
