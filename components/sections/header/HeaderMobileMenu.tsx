@@ -65,17 +65,59 @@ export function HeaderMobileMenu({
 }: HeaderMobileMenuProps) {
   useEffect(() => {
     if (isOpen) {
+      // Salva a posição atual do scroll
+      const scrollY = window.scrollY;
+      
+      // Bloqueia rolagem no body e html
+      document.body.style.position = "fixed";
+      document.body.style.top = `-${scrollY}px`;
+      document.body.style.width = "100%";
       document.body.style.overflow = "hidden";
-      // Previne rolagem horizontal quando menu está aberto
+      document.documentElement.style.overflow = "hidden";
       document.documentElement.style.overflowX = "hidden";
-    } else {
-      document.body.style.overflow = "";
-      document.documentElement.style.overflowX = "";
+      document.documentElement.style.overflowY = "hidden";
+
+      // Previne rolagem via touch em dispositivos móveis (exceto dentro do menu)
+      const preventScroll = (e: TouchEvent) => {
+        const target = e.target as HTMLElement;
+        // Permite rolagem dentro do menu (nav com overflow-auto)
+        const isInsideMenu = target.closest('aside[aria-label="Menu de navegação"]');
+        if (!isInsideMenu) {
+          e.preventDefault();
+        }
+      };
+      
+      // Previne rolagem com wheel (exceto dentro do menu)
+      const preventWheel = (e: WheelEvent) => {
+        const target = e.target as HTMLElement;
+        // Permite rolagem dentro do menu
+        const isInsideMenu = target.closest('aside[aria-label="Menu de navegação"]');
+        if (!isInsideMenu) {
+          e.preventDefault();
+        }
+      };
+      
+      document.addEventListener("touchmove", preventScroll, { passive: false });
+      document.addEventListener("wheel", preventWheel, { passive: false });
+
+      return () => {
+        // Remove listeners
+        document.removeEventListener("touchmove", preventScroll);
+        document.removeEventListener("wheel", preventWheel);
+        
+        // Restaura estilos
+        document.body.style.position = "";
+        document.body.style.top = "";
+        document.body.style.width = "";
+        document.body.style.overflow = "";
+        document.documentElement.style.overflow = "";
+        document.documentElement.style.overflowX = "";
+        document.documentElement.style.overflowY = "";
+        
+        // Restaura posição do scroll
+        window.scrollTo(0, scrollY);
+      };
     }
-    return () => {
-      document.body.style.overflow = "";
-      document.documentElement.style.overflowX = "";
-    };
   }, [isOpen]);
 
   return (
