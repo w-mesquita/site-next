@@ -1,14 +1,20 @@
-import type { PageConfig, PageId, SectionsConfig } from "@/types/sections";
-import {
-  PAGE_IDS,
-  SECTION_VARIANTS,
-  getDefaultPagesConfig
+import type {
+  HeaderVariant,
+  PageConfig,
+  PageId,
+  SectionsConfig,
 } from "@/types/sections";
+import { PAGE_IDS, getDefaultPagesConfig } from "@/types/sections";
 
 const STORAGE_KEY = "sections-config";
 
-function isValidVariant(value: unknown): value is (typeof SECTION_VARIANTS)[number] {
-  return typeof value === "string" && SECTION_VARIANTS.includes(value as (typeof SECTION_VARIANTS)[number]);
+const HEADER_FOOTER_VARIANTS: readonly HeaderVariant[] = ["v1", "v2", "v3"];
+
+function isValidHeaderOrFooterVariant(value: unknown): value is HeaderVariant {
+  return (
+    typeof value === "string" &&
+    HEADER_FOOTER_VARIANTS.includes(value as HeaderVariant)
+  );
 }
 
 function isValidPageId(value: unknown): value is PageId {
@@ -30,8 +36,12 @@ export function getSectionsConfigFromStorage(): SectionsConfig | null {
     const raw = localStorage.getItem(STORAGE_KEY);
     if (!raw) return null;
     const parsed = JSON.parse(raw) as Record<string, unknown>;
-    const header = isValidVariant(parsed?.header) ? parsed.header : null;
-    const footer = isValidVariant(parsed?.footer) ? parsed.footer : null;
+    const header = isValidHeaderOrFooterVariant(parsed?.header)
+      ? parsed.header
+      : null;
+    const footer = isValidHeaderOrFooterVariant(parsed?.footer)
+      ? parsed.footer
+      : null;
     if (header == null || footer == null) return null;
 
     const defaultPages = getDefaultPagesConfig();
