@@ -108,7 +108,7 @@ export function HeroV1({ content: contentProp }: HeroV1Props) {
                 </span>
               )}
               {showTitleLine2 && (
-                <span className="mt-2 block text-5xl md:text-6xl lg:text-7xl lg:mt-4">
+                <span className="mt-2 block text-5xl md:text-6xl lg:text-7xl lg:mt-4" data-hero-lcp>
                   {content.titleLine2}
                 </span>
               )}

@@ -59,7 +59,9 @@ export function HeroV2({ content: contentProp }: HeroV2Props) {
                 {content.titleLine1}
               </span>
             )}
-            {showTitleLine2 && content.titleLine2}
+            {showTitleLine2 && (
+              <span data-hero-lcp>{content.titleLine2}</span>
+            )}
           </h1>
         )}
         {showDescription && (

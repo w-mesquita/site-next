@@ -42,6 +42,11 @@ Manter **CLS baixo** (< 0,1 ideal) é premissa no desenvolvimento do site e na c
 - **HeroV3 / SlideHero**: Container já tem altura definida pelo pai (`min-h-[70vh]`). Garantir que imagens usem `sizes` e que o container do slide não mude de tamanho.
 - **FeaturesV1 / FeaturesV2**: Quando `hasImageSrc` é true, manter a coluna da imagem sempre (com aspect-ratio); em caso de `onError`, exibir placeholder no mesmo container em vez de remover a coluna, para evitar CLS.
 
+## LCP e caminho crítico (já aplicado no projeto)
+- **CSS crítico**: O elemento LCP (título do hero) usa `data-hero-lcp` e tem estilos inlined no `<head>` do layout, para poder pintar antes do CSS principal carregar e reduzir "atraso na renderização do elemento".
+- **Pré-conexão**: Definir `NEXT_PUBLIC_SITE_ORIGIN` (ex.: `https://gestly.netlify.app`) para adicionar `<link rel="preconnect">` no layout e reduzir latência do caminho crítico.
+- **Browserslist**: O `package.json` restringe a builds modernos (últimas 2 versões dos principais navegadores) para reduzir JavaScript legado.
+
 ## Referência
 - Core Web Vitals (CLS): https://web.dev/cls/
 - PageSpeed Insights: usar para validar após mudanças em seções críticas (hero, above the fold).
