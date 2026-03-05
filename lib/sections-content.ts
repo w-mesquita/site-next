@@ -1,19 +1,24 @@
 import type { HeroContent, CtaContent, FeaturesContent, SectionsContentConfig } from "@/types/sections-content";
-import { DEFAULT_SECTIONS_CONTENT } from "@/types/sections-content";
+import {
+  DEFAULT_SECTIONS_CONTENT,
+  DEFAULT_HERO_CONTENT,
+  DEFAULT_CTA_CONTENT,
+  DEFAULT_FEATURES_CONTENT,
+} from "@/types/sections-content";
 import fs from "node:fs";
 import path from "node:path";
 
 function parseHeroAction(raw: unknown): HeroContent["primaryAction"] {
-  if (!raw || typeof raw !== "object") return DEFAULT_SECTIONS_CONTENT.hero.primaryAction;
+  if (!raw || typeof raw !== "object") return DEFAULT_HERO_CONTENT.primaryAction;
   const o = raw as Record<string, unknown>;
   return {
-    label: typeof o.label === "string" ? o.label : DEFAULT_SECTIONS_CONTENT.hero.primaryAction.label,
-    href: typeof o.href === "string" ? o.href : DEFAULT_SECTIONS_CONTENT.hero.primaryAction.href,
+    label: typeof o.label === "string" ? o.label : DEFAULT_HERO_CONTENT.primaryAction.label,
+    href: typeof o.href === "string" ? o.href : DEFAULT_HERO_CONTENT.primaryAction.href,
   };
 }
 
 function parseHeroContent(raw: unknown): HeroContent {
-  const def = DEFAULT_SECTIONS_CONTENT.hero;
+  const def = DEFAULT_HERO_CONTENT;
   if (!raw || typeof raw !== "object") return def;
   const o = raw as Record<string, unknown>;
   return {
@@ -28,16 +33,16 @@ function parseHeroContent(raw: unknown): HeroContent {
 }
 
 function parseCtaAction(raw: unknown): CtaContent["action"] {
-  if (!raw || typeof raw !== "object") return DEFAULT_SECTIONS_CONTENT.cta.action;
+  if (!raw || typeof raw !== "object") return DEFAULT_CTA_CONTENT.action;
   const o = raw as Record<string, unknown>;
   return {
-    label: typeof o.label === "string" ? o.label : DEFAULT_SECTIONS_CONTENT.cta.action.label,
-    href: typeof o.href === "string" ? o.href : DEFAULT_SECTIONS_CONTENT.cta.action.href,
+    label: typeof o.label === "string" ? o.label : DEFAULT_CTA_CONTENT.action.label,
+    href: typeof o.href === "string" ? o.href : DEFAULT_CTA_CONTENT.action.href,
   };
 }
 
 function parseCtaContent(raw: unknown): CtaContent {
-  const def = DEFAULT_SECTIONS_CONTENT.cta;
+  const def = DEFAULT_CTA_CONTENT;
   if (!raw || typeof raw !== "object") return def;
   const o = raw as Record<string, unknown>;
   return {
@@ -50,16 +55,16 @@ function parseCtaContent(raw: unknown): CtaContent {
 }
 
 function parseFeaturesAction(raw: unknown): FeaturesContent["primaryAction"] {
-  if (!raw || typeof raw !== "object") return DEFAULT_SECTIONS_CONTENT.features.primaryAction;
+  if (!raw || typeof raw !== "object") return DEFAULT_FEATURES_CONTENT.primaryAction;
   const o = raw as Record<string, unknown>;
   return {
-    label: typeof o.label === "string" ? o.label : DEFAULT_SECTIONS_CONTENT.features.primaryAction.label,
-    href: typeof o.href === "string" ? o.href : DEFAULT_SECTIONS_CONTENT.features.primaryAction.href,
+    label: typeof o.label === "string" ? o.label : DEFAULT_FEATURES_CONTENT.primaryAction.label,
+    href: typeof o.href === "string" ? o.href : DEFAULT_FEATURES_CONTENT.primaryAction.href,
   };
 }
 
 function parseFeaturesContent(raw: unknown): FeaturesContent {
-  const def = DEFAULT_SECTIONS_CONTENT.features;
+  const def = DEFAULT_FEATURES_CONTENT;
   if (!raw || typeof raw !== "object") return def;
   const o = raw as Record<string, unknown>;
   const rawList = o.listItems;
@@ -93,6 +98,7 @@ export function getSectionsContent(): SectionsContentConfig {
     return DEFAULT_SECTIONS_CONTENT;
   }
   return {
+    contentBySlot: {},
     hero: parseHeroContent(raw.hero),
     cta: parseCtaContent(raw.cta),
     features: parseFeaturesContent(raw.features),

@@ -1,12 +1,15 @@
 "use client";
 
 import { useSectionsContent } from "@/lib/sections-content-context";
-import type { HeroContent, SectionTypeWithContent } from "@/types/sections-content";
+import type { CtaContent, FeaturesContent, HeroContent, SectionTypeWithContent, SlotContentKey } from "@/types/sections-content";
+import { getDefaultContentForSectionType } from "@/types/sections-content";
 import Link from "next/link";
 
 interface SectionContentFormProps {
   sectionType: SectionTypeWithContent;
   sectionLabel: string;
+  /** Quando definido, edita o conteúdo deste slot (cada seção salva independente). */
+  slotKey?: SlotContentKey;
 }
 
 const formSectionClass =
@@ -18,22 +21,34 @@ const inputClass =
 export function SectionContentForm({
   sectionType,
   sectionLabel,
+  slotKey,
 }: SectionContentFormProps) {
   if (sectionType === "hero") {
-    return <HeroContentForm sectionLabel={sectionLabel} />;
+    return <HeroContentForm sectionLabel={sectionLabel} slotKey={slotKey} />;
   }
   if (sectionType === "cta") {
-    return <CtaContentForm sectionLabel={sectionLabel} />;
+    return <CtaContentForm sectionLabel={sectionLabel} slotKey={slotKey} />;
   }
   if (sectionType === "features") {
-    return <FeaturesContentForm sectionLabel={sectionLabel} />;
+    return <FeaturesContentForm sectionLabel={sectionLabel} slotKey={slotKey} />;
   }
   return null;
 }
 
-function CtaContentForm({ sectionLabel }: { sectionLabel: string }) {
-  const { content, setCtaContent } = useSectionsContent();
-  const cta = content.cta;
+function CtaContentForm({
+  sectionLabel,
+  slotKey,
+}: {
+  sectionLabel: string;
+  slotKey?: SlotContentKey;
+}) {
+  const { content, getContentForSlot, setContentForSlot, setCtaContent } = useSectionsContent();
+  const cta: CtaContent = slotKey
+    ? (getContentForSlot(slotKey, "cta") as CtaContent)
+    : (content.cta ?? (getDefaultContentForSectionType("cta") as CtaContent));
+  const setCta = slotKey
+    ? (c: CtaContent) => setContentForSlot(slotKey, "cta", c)
+    : setCtaContent;
 
   return (
     <div className="mx-auto max-w-2xl space-y-8">
@@ -59,7 +74,7 @@ function CtaContentForm({ sectionLabel }: { sectionLabel: string }) {
               id="cta-title"
               type="text"
               value={cta.title}
-              onChange={(e) => setCtaContent({ ...cta, title: e.target.value })}
+              onChange={(e) => setCta({ ...cta, title: e.target.value })}
               className={inputClass}
               placeholder="Ex.: Impulsione seu tráfego conosco"
             />
@@ -72,7 +87,7 @@ function CtaContentForm({ sectionLabel }: { sectionLabel: string }) {
               id="cta-text"
               rows={3}
               value={cta.text}
-              onChange={(e) => setCtaContent({ ...cta, text: e.target.value })}
+              onChange={(e) => setCta({ ...cta, text: e.target.value })}
               className={inputClass}
               placeholder="Texto exibido na seção CTA."
             />
@@ -94,7 +109,7 @@ function CtaContentForm({ sectionLabel }: { sectionLabel: string }) {
               type="text"
               value={cta.action.label}
               onChange={(e) =>
-                setCtaContent({
+                setCta({
                   ...cta,
                   action: { ...cta.action, label: e.target.value },
                 })
@@ -112,7 +127,7 @@ function CtaContentForm({ sectionLabel }: { sectionLabel: string }) {
               type="text"
               value={cta.action.href}
               onChange={(e) =>
-                setCtaContent({
+                setCta({
                   ...cta,
                   action: { ...cta.action, href: e.target.value },
                 })
@@ -141,7 +156,7 @@ function CtaContentForm({ sectionLabel }: { sectionLabel: string }) {
               type="text"
               value={cta.backgroundImage ?? ""}
               onChange={(e) =>
-                setCtaContent({ ...cta, backgroundImage: e.target.value })
+                setCta({ ...cta, backgroundImage: e.target.value })
               }
               className={inputClass}
               placeholder="/cta-bg.jpg ou URL"
@@ -156,7 +171,7 @@ function CtaContentForm({ sectionLabel }: { sectionLabel: string }) {
               type="text"
               value={cta.backgroundColor ?? ""}
               onChange={(e) =>
-                setCtaContent({ ...cta, backgroundColor: e.target.value })
+                setCta({ ...cta, backgroundColor: e.target.value })
               }
               className={inputClass}
               placeholder="Ex.: #f5f5f5, var(--color-surface)"
@@ -175,18 +190,29 @@ function CtaContentForm({ sectionLabel }: { sectionLabel: string }) {
   );
 }
 
-function FeaturesContentForm({ sectionLabel }: { sectionLabel: string }) {
-  const { content, setFeaturesContent } = useSectionsContent();
-  const features = content.features;
+function FeaturesContentForm({
+  sectionLabel,
+  slotKey,
+}: {
+  sectionLabel: string;
+  slotKey?: SlotContentKey;
+}) {
+  const { content, getContentForSlot, setContentForSlot, setFeaturesContent } = useSectionsContent();
+  const features: FeaturesContent = slotKey
+    ? (getContentForSlot(slotKey, "features") as FeaturesContent)
+    : (content.features ?? (getDefaultContentForSectionType("features") as FeaturesContent));
+  const setFeatures = slotKey
+    ? (f: FeaturesContent) => setContentForSlot(slotKey, "features", f)
+    : setFeaturesContent;
 
   function updateListItem(index: number, value: string) {
     const next = [...features.listItems];
     next[index] = value;
-    setFeaturesContent({ ...features, listItems: next });
+    setFeatures({ ...features, listItems: next });
   }
 
   function addListItem() {
-    setFeaturesContent({
+    setFeatures({
       ...features,
       listItems: [...features.listItems, ""],
     });
@@ -194,7 +220,7 @@ function FeaturesContentForm({ sectionLabel }: { sectionLabel: string }) {
 
   function removeListItem(index: number) {
     const next = features.listItems.filter((_, i) => i !== index);
-    setFeaturesContent({ ...features, listItems: next });
+    setFeatures({ ...features, listItems: next });
   }
 
   return (
@@ -221,7 +247,7 @@ function FeaturesContentForm({ sectionLabel }: { sectionLabel: string }) {
               id="features-badge"
               type="text"
               value={features.badge}
-              onChange={(e) => setFeaturesContent({ ...features, badge: e.target.value })}
+              onChange={(e) => setFeatures({ ...features, badge: e.target.value })}
               className={inputClass}
               placeholder="Ex.: Marketing Company"
             />
@@ -234,7 +260,7 @@ function FeaturesContentForm({ sectionLabel }: { sectionLabel: string }) {
               id="features-title"
               type="text"
               value={features.title}
-              onChange={(e) => setFeaturesContent({ ...features, title: e.target.value })}
+              onChange={(e) => setFeatures({ ...features, title: e.target.value })}
               className={inputClass}
               placeholder="Ex.: Grow Your Online Business With Us & Make Success"
             />
@@ -247,7 +273,7 @@ function FeaturesContentForm({ sectionLabel }: { sectionLabel: string }) {
               id="features-description"
               rows={3}
               value={features.description}
-              onChange={(e) => setFeaturesContent({ ...features, description: e.target.value })}
+              onChange={(e) => setFeatures({ ...features, description: e.target.value })}
               className={inputClass}
               placeholder="Parágrafo descritivo da seção."
             />
@@ -305,7 +331,7 @@ function FeaturesContentForm({ sectionLabel }: { sectionLabel: string }) {
               type="text"
               value={features.primaryAction.label}
               onChange={(e) =>
-                setFeaturesContent({
+                setFeatures({
                   ...features,
                   primaryAction: { ...features.primaryAction, label: e.target.value },
                 })
@@ -323,7 +349,7 @@ function FeaturesContentForm({ sectionLabel }: { sectionLabel: string }) {
               type="text"
               value={features.primaryAction.href}
               onChange={(e) =>
-                setFeaturesContent({
+                setFeatures({
                   ...features,
                   primaryAction: { ...features.primaryAction, href: e.target.value },
                 })
@@ -347,7 +373,7 @@ function FeaturesContentForm({ sectionLabel }: { sectionLabel: string }) {
             id="features-imageSrc"
             type="text"
             value={features.imageSrc}
-            onChange={(e) => setFeaturesContent({ ...features, imageSrc: e.target.value })}
+            onChange={(e) => setFeatures({ ...features, imageSrc: e.target.value })}
             className={inputClass}
             placeholder="/features-illustration.jpg ou URL"
           />
@@ -371,7 +397,7 @@ function FeaturesContentForm({ sectionLabel }: { sectionLabel: string }) {
               type="text"
               value={features.backgroundImage ?? ""}
               onChange={(e) =>
-                setFeaturesContent({ ...features, backgroundImage: e.target.value })
+                setFeatures({ ...features, backgroundImage: e.target.value })
               }
               className={inputClass}
               placeholder="/bg.jpg ou URL"
@@ -386,7 +412,7 @@ function FeaturesContentForm({ sectionLabel }: { sectionLabel: string }) {
               type="text"
               value={features.backgroundColor ?? ""}
               onChange={(e) =>
-                setFeaturesContent({ ...features, backgroundColor: e.target.value })
+                setFeatures({ ...features, backgroundColor: e.target.value })
               }
               className={inputClass}
               placeholder="Ex.: #fff, var(--color-background)"
@@ -401,7 +427,7 @@ function FeaturesContentForm({ sectionLabel }: { sectionLabel: string }) {
               type="text"
               value={features.overlayColor ?? ""}
               onChange={(e) =>
-                setFeaturesContent({ ...features, overlayColor: e.target.value })
+                setFeatures({ ...features, overlayColor: e.target.value })
               }
               className={inputClass}
               placeholder="Ex.: rgba(0,0,0,0.2) ou transparent"
@@ -420,9 +446,20 @@ function FeaturesContentForm({ sectionLabel }: { sectionLabel: string }) {
   );
 }
 
-function HeroContentForm({ sectionLabel }: { sectionLabel: string }) {
-  const { content, setHeroContent } = useSectionsContent();
-  const hero = content.hero;
+function HeroContentForm({
+  sectionLabel,
+  slotKey,
+}: {
+  sectionLabel: string;
+  slotKey?: SlotContentKey;
+}) {
+  const { content, getContentForSlot, setContentForSlot, setHeroContent } = useSectionsContent();
+  const hero: HeroContent = slotKey
+    ? (getContentForSlot(slotKey, "hero") as HeroContent)
+    : (content.hero ?? (getDefaultContentForSectionType("hero") as HeroContent));
+  const setHero = slotKey
+    ? (h: HeroContent) => setContentForSlot(slotKey, "hero", h)
+    : setHeroContent;
 
   const slides =
     hero.slides && hero.slides.length >= 3
@@ -434,13 +471,13 @@ function HeroContentForm({ sectionLabel }: { sectionLabel: string }) {
         ];
 
   function update<K extends keyof HeroContent>(field: K, value: HeroContent[K]) {
-    setHeroContent({ ...hero, [field]: value });
+    setHero({ ...hero, [field]: value });
   }
 
   function updateSlideImage(index: 0 | 1 | 2, imageSrc: string) {
     const nextSlides = [...slides];
     nextSlides[index] = { imageSrc };
-    setHeroContent({ ...hero, slides: nextSlides });
+    setHero({ ...hero, slides: nextSlides });
   }
 
   return (

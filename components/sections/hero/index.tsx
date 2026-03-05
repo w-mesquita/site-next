@@ -3,6 +3,7 @@
 import type { ComponentType } from "react";
 import { useSectionsContent } from "@/lib/sections-content-context";
 import type { HeroContent } from "@/types/sections-content";
+import { getDefaultContentForSectionType } from "@/types/sections-content";
 import type { HeroVariant, SectionVariant } from "@/types/sections";
 import { HeroV1 } from "./HeroV1";
 import { HeroV2 } from "./HeroV2";
@@ -17,14 +18,19 @@ const registry: Record<"v1" | "v2" | "slide", ComponentType<{ content?: HeroCont
 
 export interface HeroSectionProps {
   /** Variante do hero; "v3" é tratado como "slide" (compatibilidade). */
-  variant: HeroVariant | SectionVariant;
+  variant?: HeroVariant | SectionVariant;
+  /** Chave do slot (pageId-index); quando definida, usa conteúdo próprio do slot. */
+  slotKey?: string;
 }
 
-export function HeroSection({ variant }: HeroSectionProps) {
-  const { content } = useSectionsContent();
+export function HeroSection({ variant = "v1", slotKey }: HeroSectionProps) {
+  const { content, getContentForSlot } = useSectionsContent();
   const key: "v1" | "v2" | "slide" = variant === "v3" ? "slide" : (variant as HeroVariant);
   const Component = registry[key] ?? registry.v1;
-  return <Component content={content.hero} />;
+  const heroContent: HeroContent = slotKey
+  ? getContentForSlot(slotKey, "hero") as HeroContent
+  : (content.hero ?? getDefaultContentForSectionType("hero") as HeroContent);
+  return <Component content={heroContent} />;
 }
 
 export { HeroSectionFromConfig } from "./HeroSectionFromConfig";

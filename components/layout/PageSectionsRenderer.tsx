@@ -22,15 +22,17 @@ export function PageSectionsRenderer({ pageId }: PageSectionsRendererProps) {
         if (slot.type === "none") return null;
         const Component = SECTION_COMPONENTS[slot.type as keyof typeof SECTION_COMPONENTS];
         if (!Component) return null;
+        const slotKey = `${pageId}-${index}`;
         if (sectionAcceptsVariant(slot.type)) {
           return (
             <Component
-              key={`${pageId}-slot-${index}`}
+              key={slotKey}
               variant={slot.variant ?? "v1"}
+              slotKey={slotKey}
             />
           );
         }
-        return <Component key={`${pageId}-slot-${index}`} />;
+        return <Component key={slotKey} slotKey={slotKey} />;
       })}
     </>
   );

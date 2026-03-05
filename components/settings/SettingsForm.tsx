@@ -9,15 +9,8 @@ import type { PageId, SectionVariant } from "@/types/sections";
 import { PAGE_IDS, SECTION_VARIANT_LABELS } from "@/types/sections";
 import type { SocialNetworkKey } from "@/types/social";
 import { SOCIAL_NETWORKS } from "@/types/social";
-import { SECTION_TYPES_WITH_CONTENT } from "@/types/sections-content";
 import { DEFAULT_PRIMARY_COLOR } from "@/types/global-config";
 import Link from "next/link";
-
-const CONTENT_SECTION_LABELS: Record<(typeof SECTION_TYPES_WITH_CONTENT)[number], string> = {
-  hero: "Hero",
-  cta: "CTA",
-  features: "Features",
-};
 
 const PAGE_LABELS: Record<PageId, string> = {
   home: "Home",
@@ -202,37 +195,6 @@ export function SettingsForm() {
             </select>
           </div>
         </form>
-      </section>
-
-      {/* Conteúdo das seções */}
-      <section
-        className="rounded-lg border p-6"
-        style={{ borderColor: "var(--color-border)", backgroundColor: "var(--color-surface)" }}
-        aria-labelledby="content-sections-heading"
-      >
-        <h2
-          id="content-sections-heading"
-          className="mb-4 text-lg font-semibold"
-          style={{ color: "var(--color-text)" }}
-        >
-          Conteúdo das seções
-        </h2>
-        <p className="mb-4 text-sm" style={{ color: "var(--color-text-muted)" }}>
-          Edite os textos, links e imagens exibidos nas seções Hero e CTA.
-        </p>
-        <div className="space-y-3">
-          {SECTION_TYPES_WITH_CONTENT.map((sectionType) => (
-            <Link
-              key={sectionType}
-              href={`/settings/content/${sectionType}`}
-              className="flex items-center justify-between gap-4 rounded-lg border px-4 py-3 transition hover:bg-[var(--color-background)]"
-              style={{ borderColor: "var(--color-border)", color: "var(--color-text)" }}
-            >
-              <span className="font-medium">{CONTENT_SECTION_LABELS[sectionType]}</span>
-              <ContentEditIcon className="h-5 w-5" style={{ color: "var(--color-text-muted)" }} />
-            </Link>
-          ))}
-        </div>
       </section>
 
       {/* Páginas */}
@@ -459,26 +421,6 @@ export function SettingsForm() {
         Voltar ao início
       </Link>
     </div>
-  );
-}
-
-function ContentEditIcon({ className, style }: { className?: string; style?: React.CSSProperties }) {
-  return (
-    <svg
-      xmlns="http://www.w3.org/2000/svg"
-      fill="none"
-      viewBox="0 0 24 24"
-      strokeWidth={1.5}
-      stroke="currentColor"
-      className={className}
-      style={style}
-    >
-      <path
-        strokeLinecap="round"
-        strokeLinejoin="round"
-        d="M16.862 4.487l1.687-1.688a1.875 1.875 0 112.652 2.652L10.582 16.07a4.5 4.5 0 01-1.897 1.13L6 18l.8-2.685a4.5 4.5 0 011.13-1.897l8.932-8.931zm0 0L19.5 7.125"
-      />
-    </svg>
   );
 }
 

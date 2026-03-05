@@ -12,8 +12,11 @@ export function sectionAcceptsVariant(type: SectionType): boolean {
   return SECTIONS_WITH_VARIANT.includes(type);
 }
 
-export const SECTION_COMPONENTS: Record<Exclude<SectionType, "none">, React.ComponentType<{ variant?: SectionVariant }>> = {
-  hero: HeroSection as React.ComponentType<{ variant?: SectionVariant }>,
-  cta: CtaSection as React.ComponentType<{ variant?: SectionVariant }>,
-  features: FeaturesSection as React.ComponentType<{ variant?: SectionVariant }>,
+export const SECTION_COMPONENTS: Record<
+  Exclude<SectionType, "none">,
+  React.ComponentType<{ variant?: SectionVariant; slotKey?: string }>
+> = {
+  hero: HeroSection,
+  cta: CtaSection,
+  features: FeaturesSection,
 };

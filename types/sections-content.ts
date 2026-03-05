@@ -123,21 +123,56 @@ export const DEFAULT_FEATURES_CONTENT: FeaturesContent = {
   overlayColor: "",
 };
 
+/** Chave do slot: pageId + índice (ex.: "home-0", "home-1"). Cada slot tem conteúdo independente. */
+export type SlotContentKey = string;
+
+/** Entrada de conteúdo por slot; o tipo indica qual conteúdo está armazenado. */
+export type SlotContentEntry =
+  | { type: "hero"; content: HeroContent }
+  | { type: "cta"; content: CtaContent }
+  | { type: "features"; content: FeaturesContent };
+
+/** Conteúdo editável por slot. Legado hero/cta/features mantido para migração. */
 export interface SectionsContentConfig {
-  hero: HeroContent;
-  cta: CtaContent;
-  features: FeaturesContent;
+  /** Conteúdo por slot (pageId-sectionIndex). Prioridade sobre hero/cta/features. */
+  contentBySlot?: Record<SlotContentKey, SlotContentEntry>;
+  /** @deprecated Use contentBySlot; usado como fallback quando o slot ainda não foi editado. */
+  hero?: HeroContent;
+  /** @deprecated Use contentBySlot; usado como fallback quando o slot ainda não foi editado. */
+  cta?: CtaContent;
+  /** @deprecated Use contentBySlot; usado como fallback quando o slot ainda não foi editado. */
+  features?: FeaturesContent;
 }
 
 export const DEFAULT_SECTIONS_CONTENT: SectionsContentConfig = {
+  contentBySlot: {},
   hero: DEFAULT_HERO_CONTENT,
   cta: DEFAULT_CTA_CONTENT,
   features: DEFAULT_FEATURES_CONTENT,
 };
 
+/** Gera a chave do slot para um par (pageId, sectionIndex). */
+export function getSlotContentKey(pageId: string, sectionIndex: number): SlotContentKey {
+  return `${pageId}-${sectionIndex}`;
+}
+
 /** Tipos de seção que possuem página de configuração de conteúdo */
 export const SECTION_TYPES_WITH_CONTENT = ["hero", "cta", "features"] as const;
 export type SectionTypeWithContent = (typeof SECTION_TYPES_WITH_CONTENT)[number];
+
+/** Retorna o conteúdo padrão para um tipo de seção. */
+export function getDefaultContentForSectionType(
+  type: SectionTypeWithContent
+): HeroContent | CtaContent | FeaturesContent {
+  switch (type) {
+    case "hero":
+      return DEFAULT_HERO_CONTENT;
+    case "cta":
+      return DEFAULT_CTA_CONTENT;
+    case "features":
+      return DEFAULT_FEATURES_CONTENT;
+  }
+}
 
 export function isSectionTypeWithContent(
   type: string

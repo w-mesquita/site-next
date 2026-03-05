@@ -153,11 +153,11 @@ export function PageConfigClient({ pageId, pageLabel }: PageConfigClientProps) {
                   )}
                   {slot.type !== "none" && isSectionTypeWithContent(slot.type) && (
                     <Link
-                      href={`/settings/content/${slot.type}`}
+                      href={`/settings/content/${pageId}/${index}`}
                       className="rounded p-2 transition hover:bg-[var(--color-background)]"
-                      title={`Editar conteúdo da seção ${slot.type}`}
+                      title={`Editar conteúdo do slot ${index + 1}`}
                       style={{ color: "var(--color-text-muted)" }}
-                      aria-label={`Editar conteúdo ${slot.type}`}
+                      aria-label={`Editar conteúdo slot ${index + 1}`}
                     >
                       <ContentConfigIcon className="h-5 w-5" />
                     </Link>

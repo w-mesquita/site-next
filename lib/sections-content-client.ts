@@ -1,10 +1,22 @@
-import type { SectionsContentConfig, HeroContent, CtaContent, FeaturesContent } from "@/types/sections-content";
-import { DEFAULT_SECTIONS_CONTENT } from "@/types/sections-content";
+import type {
+  SectionsContentConfig,
+  HeroContent,
+  CtaContent,
+  FeaturesContent,
+  SlotContentEntry,
+  SlotContentKey,
+} from "@/types/sections-content";
+import {
+  DEFAULT_SECTIONS_CONTENT,
+  DEFAULT_HERO_CONTENT,
+  DEFAULT_CTA_CONTENT,
+  DEFAULT_FEATURES_CONTENT,
+} from "@/types/sections-content";
 
 const STORAGE_KEY = "sections-content";
 
 function parseStoredHero(raw: unknown): HeroContent {
-  const def = DEFAULT_SECTIONS_CONTENT.hero;
+  const def = DEFAULT_SECTIONS_CONTENT.hero ?? DEFAULT_HERO_CONTENT;
   if (!raw || typeof raw !== "object") return def;
   const o = raw as Record<string, unknown>;
   const parseAction = (a: unknown): HeroContent["primaryAction"] => {
@@ -27,7 +39,7 @@ function parseStoredHero(raw: unknown): HeroContent {
 }
 
 function parseStoredCta(raw: unknown): CtaContent {
-  const def = DEFAULT_SECTIONS_CONTENT.cta;
+  const def = DEFAULT_SECTIONS_CONTENT.cta ?? DEFAULT_CTA_CONTENT;
   if (!raw || typeof raw !== "object") return def;
   const o = raw as Record<string, unknown>;
   const parseAction = (a: unknown): CtaContent["action"] => {
@@ -48,7 +60,7 @@ function parseStoredCta(raw: unknown): CtaContent {
 }
 
 function parseStoredFeatures(raw: unknown): FeaturesContent {
-  const def = DEFAULT_SECTIONS_CONTENT.features;
+  const def = DEFAULT_SECTIONS_CONTENT.features ?? DEFAULT_FEATURES_CONTENT;
   if (!raw || typeof raw !== "object") return def;
   const o = raw as Record<string, unknown>;
   const parseAction = (a: unknown): FeaturesContent["primaryAction"] => {
@@ -76,8 +88,30 @@ function parseStoredFeatures(raw: unknown): FeaturesContent {
   };
 }
 
+function parseSlotEntry(raw: unknown): SlotContentEntry | null {
+  if (!raw || typeof raw !== "object") return null;
+  const o = raw as Record<string, unknown>;
+  const t = o.type;
+  if (t === "hero") return { type: "hero", content: parseStoredHero(o.content) };
+  if (t === "cta") return { type: "cta", content: parseStoredCta(o.content) };
+  if (t === "features") return { type: "features", content: parseStoredFeatures(o.content) };
+  return null;
+}
+
+function parseContentBySlot(raw: unknown): Record<SlotContentKey, SlotContentEntry> {
+  if (!raw || typeof raw !== "object") return {};
+  const o = raw as Record<string, unknown>;
+  const out: Record<string, SlotContentEntry> = {};
+  for (const key of Object.keys(o)) {
+    const entry = parseSlotEntry(o[key]);
+    if (entry) out[key] = entry;
+  }
+  return out;
+}
+
 /**
  * Lê o conteúdo das seções do localStorage (apenas no client).
+ * Suporta contentBySlot (por slot) e legado hero/cta/features.
  */
 export function getSectionsContentFromStorage(): SectionsContentConfig | null {
   if (typeof window === "undefined") return null;
@@ -85,7 +119,9 @@ export function getSectionsContentFromStorage(): SectionsContentConfig | null {
     const raw = localStorage.getItem(STORAGE_KEY);
     if (!raw) return null;
     const parsed = JSON.parse(raw) as Record<string, unknown>;
+    const contentBySlot = parseContentBySlot(parsed.contentBySlot);
     return {
+      contentBySlot: Object.keys(contentBySlot).length > 0 ? contentBySlot : undefined,
       hero: parseStoredHero(parsed.hero),
       cta: parseStoredCta(parsed.cta),
       features: parseStoredFeatures(parsed.features),
