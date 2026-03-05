@@ -2,15 +2,23 @@ import { Button } from "@/components/ui/Button";
 import type { HeroContent } from "@/types/sections-content";
 import { DEFAULT_HERO_CONTENT } from "@/types/sections-content";
 
+function hasContent(value: string | undefined): boolean {
+  return Boolean(value?.trim());
+}
+
 export interface HeroV2Props {
   content?: HeroContent;
 }
 
 export function HeroV2({ content: contentProp }: HeroV2Props) {
   const content = contentProp ?? DEFAULT_HERO_CONTENT;
-  const title = content.titleLine2 ? `${content.titleLine1} ${content.titleLine2}` : content.titleLine1;
   const bgColor = content.backgroundColor?.trim() || "var(--color-surface)";
   const bgImage = content.backgroundImage?.trim();
+  const showTitleLine1 = hasContent(content.titleLine1);
+  const showTitleLine2 = hasContent(content.titleLine2);
+  const showTitle = showTitleLine1 || showTitleLine2;
+  const showDescription = hasContent(content.description);
+  const showPrimaryAction = hasContent(content.primaryAction?.label);
 
   return (
     <section
@@ -37,18 +45,26 @@ export function HeroV2({ content: contentProp }: HeroV2Props) {
       )}
 
       <div className="relative z-10">
-        <span className="mb-2 block text-2xl md:text-3xl lg:text-4xl">
-          {content.titleLine1}
-        </span>
-        <h1 className="text-5xl font-bold tracking-tight md:text-6xl lg:text-7xl" style={{ color: "var(--color-text)" }}>
-          {content.titleLine2}
-        </h1>
-        <p className="mt-6 max-w-2xl text-lg md:text-xl" style={{ color: "var(--color-text-muted)" }}>
-          {content.description}
-        </p>
-        <Button href={content.primaryAction.href} variant="primary" size="md" className="mt-8">
-          {content.primaryAction.label}
-        </Button>
+        {showTitle && (
+          <h1 className="text-5xl font-bold tracking-tight md:text-6xl lg:text-7xl" style={{ color: "var(--color-text)" }}>
+            {showTitleLine1 && (
+              <span className="mb-2 block text-2xl md:text-3xl lg:text-4xl">
+                {content.titleLine1}
+              </span>
+            )}
+            {showTitleLine2 && content.titleLine2}
+          </h1>
+        )}
+        {showDescription && (
+          <p className="mt-6 max-w-2xl text-lg md:text-xl" style={{ color: "var(--color-text-muted)" }}>
+            {content.description}
+          </p>
+        )}
+        {showPrimaryAction && (
+          <Button href={content.primaryAction.href || "#"} variant="primary" size="md" className="mt-8">
+            {content.primaryAction.label}
+          </Button>
+        )}
       </div>
     </section>
   );

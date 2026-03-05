@@ -5,6 +5,10 @@ import type { CtaContent } from "@/types/sections-content";
 import { DEFAULT_CTA_CONTENT } from "@/types/sections-content";
 import { CtaDefaultBackground } from "./CtaDefaultBackground";
 
+function hasContent(value: string | undefined): boolean {
+  return Boolean(value?.trim());
+}
+
 export interface CtaV3Props {
   content?: CtaContent;
 }
@@ -14,6 +18,9 @@ export function CtaV3({ content: contentProp }: CtaV3Props) {
   const hasCustomBg = Boolean(content.backgroundImage?.trim() || content.backgroundColor?.trim());
   const bgColor = content.backgroundColor?.trim() || "var(--color-surface)";
   const bgImage = content.backgroundImage?.trim();
+  const showTitle = hasContent(content.title);
+  const showText = hasContent(content.text);
+  const showAction = hasContent(content.action?.label);
 
   return (
     <section
@@ -51,15 +58,21 @@ export function CtaV3({ content: contentProp }: CtaV3Props) {
           )}
           {!hasCustomBg && <CtaDefaultBackground />}
           <div className="relative z-10">
-            <h2 className="text-3xl font-bold md:text-4xl lg:text-5xl">
-              {content.title}
-            </h2>
-            <p className="mt-4 max-w-2xl mx-auto text-base md:text-lg" style={{ color: "var(--color-text-muted)" }}>
-              {content.text}
-            </p>
-            <Button href={content.action.href} variant="neutral" size="md" className="mt-8 border-[var(--color-primary)] text-[var(--color-primary)]">
-              {content.action.label}
-            </Button>
+            {showTitle && (
+              <h2 className="text-3xl font-bold md:text-4xl lg:text-5xl">
+                {content.title}
+              </h2>
+            )}
+            {showText && (
+              <p className="mt-4 max-w-2xl mx-auto text-base md:text-lg" style={{ color: "var(--color-text-muted)" }}>
+                {content.text}
+              </p>
+            )}
+            {showAction && (
+              <Button href={content.action.href || "#"} variant="neutral" size="md" className="mt-8 border-[var(--color-primary)] text-[var(--color-primary)]">
+                {content.action.label}
+              </Button>
+            )}
           </div>
         </div>
       </div>
