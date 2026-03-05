@@ -3,6 +3,7 @@
 import type { FeaturesContent } from "@/types/sections-content";
 import { DEFAULT_FEATURES_CONTENT } from "@/types/sections-content";
 import { Button } from "@/components/ui/Button";
+import { Skeleton } from "@/components/ui/Skeleton";
 import Image from "next/image";
 import { useState } from "react";
 
@@ -60,7 +61,7 @@ export function FeaturesV1({ content: contentProp }: FeaturesV1Props) {
         />
       )}
       <div
-        className={`relative z-10 mx-auto grid max-w-[var(--content-max-width)] gap-10 px-4 md:px-6 lg:grid-cols-2 lg:items-center lg:gap-16`}
+        className={`relative z-10 mx-auto grid max-w-[var(--content-max-width)] gap-10 px-4 md:px-6 lg:items-center lg:gap-16 ${hasImageSrc ? "lg:grid-cols-2" : ""}`}
       >
         <div className="max-w-xl space-y-6">
           {showBadge && (
@@ -124,17 +125,21 @@ export function FeaturesV1({ content: contentProp }: FeaturesV1Props) {
             </div>
           )}
         </div>
-        {showImage && (
+        {hasImageSrc && (
           <div className="relative flex justify-center lg:justify-end">
             <div className="relative aspect-[4/3] w-full max-w-md overflow-hidden rounded-xl">
-              <Image
-                src={content.imageSrc}
-                alt=""
-                fill
-                className="object-cover object-center"
-                onError={() => setImageError(true)}
-                unoptimized={content.imageSrc.startsWith("http")}
-              />
+              {showImage ? (
+                <Image
+                  src={content.imageSrc}
+                  alt=""
+                  fill
+                  className="object-cover object-center"
+                  onError={() => setImageError(true)}
+                  unoptimized={content.imageSrc.startsWith("http")}
+                />
+              ) : (
+                <Skeleton className="absolute inset-0 rounded-xl" />
+              )}
             </div>
           </div>
         )}

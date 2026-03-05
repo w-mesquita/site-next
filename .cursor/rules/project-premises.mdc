@@ -36,6 +36,9 @@ alwaysApply: true
 - Usar `metadata` / `generateMetadata` em layouts e páginas (title, description).
 - Manter `lang="pt-BR"` no `<html>` no layout raiz.
 
+## Estabilidade de layout (CLS)
+- Manter **CLS baixo** é premissa: novas seções e abas devem reservar espaço para imagens e conteúdo dinâmico. Ver rule **layout-stability-cls.mdc**.
+
 ## Convenções
 - Componentes de layout em pasta própria com `ComponentName.tsx` + `index.ts` (barrel).
 - Estilos globais: importar em `app/globals.scss`; em SCSS, `@use` sempre no topo do arquivo (antes de @tailwind ou qualquer outra regra).

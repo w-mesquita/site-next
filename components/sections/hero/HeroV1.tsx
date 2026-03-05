@@ -3,6 +3,7 @@
 import type { HeroContent } from "@/types/sections-content";
 import { DEFAULT_HERO_CONTENT } from "@/types/sections-content";
 import { Button } from "@/components/ui/Button";
+import { Skeleton } from "@/components/ui/Skeleton";
 import Image from "next/image";
 import { useState } from "react";
 
@@ -75,7 +76,7 @@ export function HeroV1({ content: contentProp }: HeroV1Props) {
       />
 
       <div
-        className={`relative z-10 mx-auto grid max-w-content gap-12 px-4 md:px-6 lg:items-center ${showImage ? "lg:grid-cols-2" : ""}`}
+        className={`relative z-10 mx-auto grid max-w-content gap-12 px-4 md:px-6 lg:items-center ${hasImageSrc ? "lg:grid-cols-2" : ""}`}
       >
         {/* Texto e ações à esquerda */}
         <div className="max-w-2xl space-y-6">
@@ -139,8 +140,8 @@ export function HeroV1({ content: contentProp }: HeroV1Props) {
           )}
         </div>
 
-        {/* Imagem à direita — só exibe se houver imageSrc e a imagem carregar */}
-        {showImage && (
+        {/* Coluna da imagem reservada quando há imageSrc (reduz CLS); exibe imagem ou placeholder */}
+        {hasImageSrc && (
           <div className="relative group">
             <div
               className="absolute inset-0 rounded-2xl opacity-20 blur-lg transition-opacity group-hover:opacity-30"
@@ -150,17 +151,21 @@ export function HeroV1({ content: contentProp }: HeroV1Props) {
               aria-hidden
             />
             <div
-              className="relative overflow-hidden rounded-2xl border shadow-2xl"
+              className="relative aspect-[8/5] w-full overflow-hidden rounded-2xl border shadow-2xl"
               style={{ borderColor: "var(--color-border)", backgroundColor: "var(--color-background)" }}
             >
-              <Image
-                src={content.imageSrc}
-                alt=""
-                width={800}
-                height={500}
-                className="h-auto w-full object-cover opacity-95 transition-opacity duration-500 hover:opacity-100"
-                onError={() => setImageError(true)}
-              />
+              {showImage ? (
+                <Image
+                  src={content.imageSrc!}
+                  alt=""
+                  fill
+                  className="object-cover opacity-95 transition-opacity duration-500 hover:opacity-100"
+                  onError={() => setImageError(true)}
+                  unoptimized={content.imageSrc.startsWith("http")}
+                />
+              ) : (
+                <Skeleton className="absolute inset-0 rounded-2xl" />
+              )}
             </div>
           </div>
         )}

@@ -1,0 +1,47 @@
+---
+description: Premissa de estabilidade de layout (CLS) e boas práticas para novas seções e abas
+alwaysApply: true
+---
+
+# Estabilidade de layout e CLS (Cumulative Layout Shift)
+
+## Premissa
+Manter **CLS baixo** (< 0,1 ideal) é premissa no desenvolvimento do site e na criação de **novas seções e abas**. Elementos visíveis não devem deslocar o layout após o carregamento.
+
+## Regras obrigatórias
+
+### 1. Imagens
+- **Sempre** definir dimensões ou reservar espaço:
+  - Usar `width` e `height` no `next/image` quando o tamanho for conhecido.
+  - Para imagens responsivas, envolver em um container com **aspect-ratio** (ex.: `aspect-video`, `aspect-[4/3]`) e usar `fill` no `Image`.
+- **Não** exibir imagens sem container com altura reservada (evitar que a imagem "estoure" o layout ao carregar).
+- Para imagens de fundo via CSS (`background-image`), a **seção** deve ter altura mínima definida (ex.: `min-h-[70vh]`, `min-h-[400px]`) para evitar colapso antes do carregamento.
+
+### 2. Conteúdo condicional (texto, colunas, imagens)
+- Se um bloco pode **aparecer ou sumir** (ex.: imagem com `onError`, conteúdo vindo de API):
+  - **Reservar o espaço** mesmo quando o conteúdo não estiver visível (skeleton, placeholder ou container com `min-height`/`aspect-ratio`).
+  - **Não** mudar o número de colunas do grid (ex.: de 1 para 2) só porque uma imagem carregou ou falhou; manter a estrutura de colunas estável e usar placeholder na coluna da imagem quando aplicável.
+- Exemplo: em layout "texto + imagem", se há `imageSrc` na config, usar sempre 2 colunas e reservar o espaço da imagem (aspect-ratio); exibir imagem ou placeholder/skeleton dentro desse espaço.
+
+### 3. Novas seções e abas
+- Ao criar uma **nova seção** ou **aba**:
+  - Definir **min-height** ou **aspect-ratio** para áreas que recebem conteúdo assíncrono ou imagens.
+  - Evitar inserir conteúdo acima do fold que "empurre" o restante da página (ex.: banners que aparecem depois).
+  - Preferir **skeletons** com as **mesmas dimensões** do conteúdo final em vez de spinner genérico (spinner pequeno trocado por bloco grande gera CLS).
+- Fontes: usar `font-display: optional` ou `swap` e, se possível, fallback com métricas próximas para reduzir reflow quando a fonte carregar.
+
+### 4. Checklist antes de PR
+- [ ] Todas as imagens têm `width`/`height` ou estão em container com `aspect-ratio`.
+- [ ] Seções com imagem de fundo têm `min-height` (ou altura fixa) na seção.
+- [ ] Grids não mudam número de colunas por causa de imagem carregada/erro; espaço reservado com placeholder quando aplicável.
+- [ ] Conteúdo dinâmico/condicional não faz blocos aparecerem/desaparecerem sem espaço reservado.
+
+## Componentes atuais (ajustes recomendados)
+- **HeroV1**: O grid passa de 1 para 2 colunas quando `showImage` é true; ao carregar ou falhar a imagem o layout muda. Reservar sempre a coluna da imagem quando existir `imageSrc` (container com aspect-ratio) e exibir placeholder/skeleton até a imagem carregar ou em caso de erro.
+- **HeroV2**: Já usa `min-h-[70vh]`; manter. Se no futuro houver blocos condicionais, reservar espaço.
+- **HeroV3 / SlideHero**: Container já tem altura definida pelo pai (`min-h-[70vh]`). Garantir que imagens usem `sizes` e que o container do slide não mude de tamanho.
+- **FeaturesV1 / FeaturesV2**: Quando `hasImageSrc` é true, manter a coluna da imagem sempre (com aspect-ratio); em caso de `onError`, exibir placeholder no mesmo container em vez de remover a coluna, para evitar CLS.
+
+## Referência
+- Core Web Vitals (CLS): https://web.dev/cls/
+- PageSpeed Insights: usar para validar após mudanças em seções críticas (hero, above the fold).
