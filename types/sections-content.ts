@@ -30,6 +30,10 @@ export interface HeroContent {
   backgroundImage?: string;
   /** Cor de fundo (Hero 1 e 2); ex.: hex, rgb, ou var(--color-surface) */
   backgroundColor?: string;
+  /** Cor de sobreposição (com opacidade). Se imagem de fundo: overlay por cima; senão: usa como cor de fundo. Ex.: #000000 ou rgba(0,0,0,0.5) */
+  overlayColor?: string;
+  /** Cor do texto (títulos e corpo). Quando informada, substitui o tema; corpo usa a mesma cor com esmaecimento para contraste. Ex.: #ffffff */
+  textColor?: string;
 }
 
 export const DEFAULT_HERO_CONTENT: HeroContent = {
@@ -48,6 +52,8 @@ export const DEFAULT_HERO_CONTENT: HeroContent = {
   ],
   backgroundImage: "",
   backgroundColor: "",
+  overlayColor: "",
+  textColor: "",
 };
 
 /** Conteúdo parametrizável da seção CTA (título, texto, ação com link). */
@@ -67,6 +73,10 @@ export interface CtaContent {
   backgroundImage?: string;
   /** Cor de fundo (V1/V2: seção; V3: dentro do card). Ex.: hex, rgb ou var(--color-surface). */
   backgroundColor?: string;
+  /** Cor de sobreposição (com opacidade). Se imagem de fundo: overlay por cima; senão: usa como cor de fundo. */
+  overlayColor?: string;
+  /** Cor do texto (título e corpo). Quando informada, substitui o tema; corpo usa a mesma cor com esmaecimento. */
+  textColor?: string;
 }
 
 export const DEFAULT_CTA_CONTENT: CtaContent = {
@@ -75,6 +85,8 @@ export const DEFAULT_CTA_CONTENT: CtaContent = {
   action: { label: "Saiba mais", href: "#contato" },
   backgroundImage: "",
   backgroundColor: "",
+  overlayColor: "",
+  textColor: "",
 };
 
 /** Conteúdo da seção Features (tagline, título, descrição, lista editável, CTA, imagem). */
@@ -102,6 +114,8 @@ export interface FeaturesContent {
   backgroundColor?: string;
   /** Cor da sobreposição (overlay) — aplicada sobre fundo ou imagem; use rgba/hex com opacidade. */
   overlayColor?: string;
+  /** Cor do texto (títulos e corpo). Quando informada, substitui o tema; corpo usa a mesma cor com esmaecimento. */
+  textColor?: string;
 }
 
 export const DEFAULT_FEATURES_CONTENT: FeaturesContent = {
@@ -121,6 +135,7 @@ export const DEFAULT_FEATURES_CONTENT: FeaturesContent = {
   backgroundImage: "",
   backgroundColor: "",
   overlayColor: "",
+  textColor: "",
 };
 
 /** Chave do slot: pageId + índice (ex.: "home-0", "home-1"). Cada slot tem conteúdo independente. */

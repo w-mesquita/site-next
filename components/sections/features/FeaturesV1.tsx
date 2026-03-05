@@ -17,9 +17,14 @@ function hasContent(value: string | undefined): boolean {
 export function FeaturesV1({ content: contentProp }: FeaturesV1Props) {
   const content = contentProp ?? DEFAULT_FEATURES_CONTENT;
   const [imageError, setImageError] = useState(false);
-  const bgColor = content.backgroundColor?.trim() || "var(--color-background)";
   const bgImage = content.backgroundImage?.trim();
   const overlayColor = content.overlayColor?.trim();
+  const defaultOverlay = "color-mix(in srgb, var(--color-background) 65%, transparent)";
+  const defaultBg = "var(--color-background)";
+  const bgColor = bgImage
+    ? (content.backgroundColor?.trim() || defaultBg)
+    : (overlayColor || content.backgroundColor?.trim() || defaultBg);
+  const overlayStyle = overlayColor || defaultOverlay;
   const hasImageSrc = Boolean(content.imageSrc?.trim());
   const showImage = hasImageSrc && !imageError;
   const showBadge = hasContent(content.badge);
@@ -28,6 +33,10 @@ export function FeaturesV1({ content: contentProp }: FeaturesV1Props) {
   const listItemsWithContent = (content.listItems ?? []).filter((item) => hasContent(item));
   const showList = listItemsWithContent.length > 0;
   const showPrimaryAction = hasContent(content.primaryAction?.label);
+  const textColor = content.textColor?.trim();
+  const titleStyle = textColor ? { color: textColor } : { color: "var(--color-text)" };
+  const bodyStyle = textColor ? { color: textColor, opacity: 0.85 } : { color: "var(--color-text-muted)" };
+  const badgeStyle = textColor ? { color: textColor, opacity: 0.9 } : { color: "var(--color-text-muted)" };
 
   return (
     <section
@@ -42,17 +51,11 @@ export function FeaturesV1({ content: contentProp }: FeaturesV1Props) {
       }}
       aria-label="Recursos e destaque"
     >
-      {bgImage && overlayColor && (
+      {/* Overlay sobre imagem de fundo (cor configurável com transparência) */}
+      {bgImage && (
         <div
           className="absolute inset-0 z-[1]"
-          style={{ background: overlayColor }}
-          aria-hidden
-        />
-      )}
-      {!bgImage && overlayColor && (
-        <div
-          className="absolute inset-0 z-[1]"
-          style={{ background: overlayColor }}
+          style={{ background: overlayStyle }}
           aria-hidden
         />
       )}
@@ -64,14 +67,14 @@ export function FeaturesV1({ content: contentProp }: FeaturesV1Props) {
             <div
               className="inline-flex items-center gap-2 rounded-full border px-3 py-1 text-xs font-bold uppercase tracking-wider"
               style={{
-                backgroundColor: "color-mix(in srgb, var(--color-text-muted) 10%, transparent)",
-                borderColor: "color-mix(in srgb, var(--color-text-muted) 20%, transparent)",
-                color: "var(--color-text-muted)",
+                backgroundColor: textColor ? "color-mix(in srgb, currentColor 15%, transparent)" : "color-mix(in srgb, var(--color-text-muted) 10%, transparent)",
+                borderColor: textColor ? "color-mix(in srgb, currentColor 25%, transparent)" : "color-mix(in srgb, var(--color-text-muted) 20%, transparent)",
+                ...badgeStyle,
               }}
             >
               <span
                 className="h-2 w-2 animate-pulse rounded-full"
-                style={{ backgroundColor: "var(--color-text-muted)" }}
+                style={{ backgroundColor: "currentColor" }}
                 aria-hidden
               />
               {content.badge}
@@ -80,7 +83,7 @@ export function FeaturesV1({ content: contentProp }: FeaturesV1Props) {
           {showTitle && (
             <h2
               className="text-3xl font-bold leading-tight tracking-tight md:text-4xl lg:text-5xl"
-              style={{ color: "var(--color-text)" }}
+              style={titleStyle}
             >
               {content.title}
             </h2>
@@ -88,7 +91,7 @@ export function FeaturesV1({ content: contentProp }: FeaturesV1Props) {
           {showDescription && (
             <p
               className="text-lg leading-relaxed"
-              style={{ color: "var(--color-text-muted)" }}
+              style={bodyStyle}
             >
               {content.description}
             </p>
@@ -99,7 +102,7 @@ export function FeaturesV1({ content: contentProp }: FeaturesV1Props) {
                 <li
                   key={i}
                   className="flex items-start gap-3 text-base"
-                  style={{ color: "var(--color-text-muted)" }}
+                  style={bodyStyle}
                 >
                   <span
                     className="mt-0.5 flex h-5 w-5 flex-shrink-0 items-center justify-center rounded-full text-xs font-bold text-white"

@@ -1,6 +1,5 @@
 "use client";
 
-import { useEffect, useState } from "react";
 import { useGlobalConfig } from "@/lib/global-config-context";
 import { useSectionsConfig } from "@/lib/sections-config-context";
 import { useSocialConfig } from "@/lib/social-config-context";
@@ -10,6 +9,7 @@ import { PAGE_IDS, SECTION_VARIANT_LABELS } from "@/types/sections";
 import type { SocialNetworkKey } from "@/types/social";
 import { SOCIAL_NETWORKS } from "@/types/social";
 import { DEFAULT_PRIMARY_COLOR } from "@/types/global-config";
+import { ColorPicker } from "@/components/ui/ColorPicker";
 import Link from "next/link";
 
 const PAGE_LABELS: Record<PageId, string> = {
@@ -26,10 +26,6 @@ const SOCIAL_LABELS: Record<SocialNetworkKey, string> = {
 
 export function SettingsForm() {
   const { config: globalConfig, setPrimaryColor, setLogoUrl } = useGlobalConfig();
-  const [primaryColorInput, setPrimaryColorInput] = useState(globalConfig.primaryColor);
-  useEffect(() => {
-    setPrimaryColorInput(globalConfig.primaryColor);
-  }, [globalConfig.primaryColor]);
   const { config, setConfig } = useSectionsConfig();
   const { config: whatsappConfig, setConfig: setWhatsAppConfig } = useWhatsAppConfig();
   const { config: socialConfig, setConfig: setSocialConfig } = useSocialConfig();
@@ -75,43 +71,13 @@ export function SettingsForm() {
           Cor primária e logo aplicados em todo o site. Salvos no navegador.
         </p>
         <div className="space-y-4">
-          <div>
-            <label
-              htmlFor="settings-primary-color"
-              className="mb-2 block text-sm font-medium"
-              style={{ color: "var(--color-text)" }}
-            >
-              Cor primária
-            </label>
-            <div className="flex flex-wrap items-center gap-3">
-              <input
-                id="settings-primary-color"
-                type="color"
-                value={globalConfig.primaryColor}
-                onChange={(e) => setPrimaryColor(e.target.value)}
-                className="h-10 w-14 cursor-pointer rounded border border-[var(--color-border)] bg-transparent p-0"
-                style={{ minWidth: "3.5rem" }}
-              />
-              <input
-                type="text"
-                value={primaryColorInput}
-                onChange={(e) => {
-                  const v = e.target.value.trim();
-                  setPrimaryColorInput(v || "");
-                  if (/^#[0-9A-Fa-f]{6}$/.test(v)) setPrimaryColor(v);
-                  if (v === "") setPrimaryColor(DEFAULT_PRIMARY_COLOR);
-                }}
-                onBlur={() => {
-                  if (!/^#[0-9A-Fa-f]{6}$/.test(primaryColorInput)) {
-                    setPrimaryColorInput(globalConfig.primaryColor);
-                  }
-                }}
-                placeholder="#2563eb"
-                className="w-28 rounded-lg border bg-[var(--color-background)] px-3 py-2 text-sm text-[var(--color-text)] focus:outline-none focus:ring-2 focus:ring-[var(--color-primary)]"
-                style={{ borderColor: "var(--color-border)" }}
-              />
-            </div>
-          </div>
+          <ColorPicker
+            id="settings-primary-color"
+            label="Cor primária"
+            value={globalConfig.primaryColor || DEFAULT_PRIMARY_COLOR}
+            onChange={(v) => setPrimaryColor(v || DEFAULT_PRIMARY_COLOR)}
+            placeholder="#2563eb"
+          />
           <div>
             <label
               htmlFor="settings-logo-url"

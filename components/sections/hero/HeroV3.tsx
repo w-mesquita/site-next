@@ -40,19 +40,25 @@ export function HeroV3({ content: contentProp }: HeroV3Props) {
   const showPrimaryAction = hasContent(content.primaryAction?.label);
   const showSecondaryAction = hasContent(content.secondaryAction?.label);
 
+  const overlayColor = content.overlayColor?.trim();
+  const defaultOverlay =
+    "linear-gradient(to right, color-mix(in srgb, var(--color-background) 60%, transparent) 0%, color-mix(in srgb, var(--color-background) 30%, transparent) 70%)";
+  const overlayStyle = overlayColor || defaultOverlay;
+  const textColor = content.textColor?.trim();
+  const titleStyle = textColor ? { color: textColor } : { color: "var(--color-text)" };
+  const bodyStyle = textColor ? { color: textColor, opacity: 0.85 } : { color: "var(--color-text-muted)" };
+  const badgeStyle = textColor ? { color: textColor, opacity: 0.9 } : { color: "var(--color-text-muted)" };
+
   return (
     <section
       className="relative min-h-[70vh] overflow-hidden"
       aria-label="Seção principal com slide"
     >
       {showSlides && <SlideHero slides={slides} />}
-      {/* Overlay escuro leve para contraste do texto */}
+      {/* Overlay sobre os slides (cor configurável com transparência) */}
       <div
         className="absolute inset-0 z-[1]"
-        style={{
-          background:
-            "linear-gradient(to right, color-mix(in srgb, var(--color-background) 60%, transparent) 0%, color-mix(in srgb, var(--color-background) 30%, transparent) 70%)",
-        }}
+        style={{ background: overlayStyle }}
         aria-hidden
       />
       <div className="relative z-10 flex min-h-[70vh] items-center px-4 py-24 md:px-6 lg:py-32">
@@ -62,16 +68,14 @@ export function HeroV3({ content: contentProp }: HeroV3Props) {
               <div
                 className="inline-flex items-center gap-2 rounded-full border px-3 py-1 text-xs font-bold uppercase tracking-wider"
                 style={{
-                  backgroundColor:
-                    "color-mix(in srgb, var(--color-text-muted) 10%, transparent)",
-                  borderColor:
-                    "color-mix(in srgb, var(--color-text-muted) 20%, transparent)",
-                  color: "var(--color-text-muted)",
+                  backgroundColor: textColor ? "color-mix(in srgb, currentColor 15%, transparent)" : "color-mix(in srgb, var(--color-text-muted) 10%, transparent)",
+                  borderColor: textColor ? "color-mix(in srgb, currentColor 25%, transparent)" : "color-mix(in srgb, var(--color-text-muted) 20%, transparent)",
+                  ...badgeStyle,
                 }}
               >
                 <span
                   className="h-2 w-2 animate-pulse rounded-full"
-                  style={{ backgroundColor: "var(--color-text-muted)" }}
+                  style={{ backgroundColor: "currentColor" }}
                 />
                 {content.badge}
               </div>
@@ -80,7 +84,7 @@ export function HeroV3({ content: contentProp }: HeroV3Props) {
             {showTitle && (
               <h1
                 className="font-extrabold leading-tight tracking-tight"
-                style={{ color: "var(--color-text)" }}
+                style={titleStyle}
               >
                 {showTitleLine1 && (
                   <span className="mb-2 block text-2xl md:text-3xl lg:text-4xl">
@@ -98,7 +102,7 @@ export function HeroV3({ content: contentProp }: HeroV3Props) {
             {showDescription && (
               <p
                 className="max-w-lg text-lg leading-relaxed md:text-xl"
-                style={{ color: "var(--color-text-muted)" }}
+                style={bodyStyle}
               >
                 {content.description}
               </p>

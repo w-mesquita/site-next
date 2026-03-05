@@ -3,6 +3,7 @@
 import { useSectionsContent } from "@/lib/sections-content-context";
 import type { CtaContent, FeaturesContent, HeroContent, SectionTypeWithContent, SlotContentKey } from "@/types/sections-content";
 import { getDefaultContentForSectionType } from "@/types/sections-content";
+import { ColorPicker } from "@/components/ui/ColorPicker";
 import Link from "next/link";
 
 interface SectionContentFormProps {
@@ -92,6 +93,14 @@ function CtaContentForm({
               placeholder="Texto exibido na seção CTA."
             />
           </div>
+          <ColorPicker
+            id="cta-textColor"
+            label="Cor do texto"
+            value={cta.textColor ?? ""}
+            onChange={(v) => setCta({ ...cta, textColor: v })}
+            hint="Quando o fundo atrapalha a leitura, informe uma cor (ex.: #ffffff). Título e parágrafo usam essa cor; parágrafo com leve esmaecimento. Vazio = tema."
+            placeholder="#ffffff (vazio = tema)"
+          />
         </div>
       </section>
 
@@ -177,6 +186,15 @@ function CtaContentForm({
               placeholder="Ex.: #f5f5f5, var(--color-surface)"
             />
           </div>
+          <ColorPicker
+            id="cta-overlayColor"
+            label="Cor de sobreposição (com transparência)"
+            value={cta.overlayColor ?? ""}
+            onChange={(v) => setCta({ ...cta, overlayColor: v })}
+            withOpacity
+            hint="Com imagem de fundo: sobrepõe a cor. Sem imagem: usa como cor de fundo. Deixe vazio para o padrão."
+            placeholder="rgba ou #hex (vazio = padrão)"
+          />
         </div>
       </section>
 
@@ -278,6 +296,14 @@ function FeaturesContentForm({
               placeholder="Parágrafo descritivo da seção."
             />
           </div>
+          <ColorPicker
+            id="features-textColor"
+            label="Cor do texto"
+            value={features.textColor ?? ""}
+            onChange={(v) => setFeatures({ ...features, textColor: v })}
+            hint="Quando o fundo atrapalha a leitura, informe uma cor (ex.: #ffffff). Títulos usam essa cor; textos com leve esmaecimento. Vazio = tema."
+            placeholder="#ffffff (vazio = tema)"
+          />
         </div>
       </section>
 
@@ -418,21 +444,15 @@ function FeaturesContentForm({
               placeholder="Ex.: #fff, var(--color-background)"
             />
           </div>
-          <div>
-            <label htmlFor="features-overlayColor" className={labelClass}>
-              Cor da sobreposição (overlay)
-            </label>
-            <input
-              id="features-overlayColor"
-              type="text"
-              value={features.overlayColor ?? ""}
-              onChange={(e) =>
-                setFeatures({ ...features, overlayColor: e.target.value })
-              }
-              className={inputClass}
-              placeholder="Ex.: rgba(0,0,0,0.2) ou transparent"
-            />
-          </div>
+          <ColorPicker
+            id="features-overlayColor"
+            label="Cor de sobreposição (com transparência)"
+            value={features.overlayColor ?? ""}
+            onChange={(v) => setFeatures({ ...features, overlayColor: v })}
+            withOpacity
+            hint="Com imagem de fundo: sobrepõe a cor. Sem imagem: usa como cor de fundo. Deixe vazio para o padrão."
+            placeholder="rgba ou #hex (vazio = padrão)"
+          />
         </div>
       </section>
 
@@ -581,6 +601,14 @@ function HeroContentForm({
               style={{ borderColor: "var(--color-border)" }}
             />
           </div>
+          <ColorPicker
+            id="hero-textColor"
+            label="Cor do texto"
+            value={hero.textColor ?? ""}
+            onChange={(v) => update("textColor", v)}
+            hint="Quando o fundo atrapalha a leitura, informe uma cor (ex.: #ffffff). Títulos usam essa cor; parágrafos usam a mesma com leve esmaecimento. Vazio = cor padrão do tema."
+            placeholder="#ffffff (vazio = tema)"
+          />
         </div>
       </section>
 
@@ -791,6 +819,15 @@ function HeroContentForm({
               placeholder="Ex.: #f0f0f0, rgb(240,240,240), var(--color-surface)"
             />
           </div>
+          <ColorPicker
+            id="hero-overlayColor"
+            label="Cor de sobreposição (com transparência)"
+            value={hero.overlayColor ?? ""}
+            onChange={(v) => update("overlayColor", v)}
+            withOpacity
+            hint="Com imagem de fundo: sobrepõe a cor. Sem imagem: usa como cor de fundo. Deixe vazio para o padrão."
+            placeholder="rgba ou #hex (vazio = padrão)"
+          />
         </div>
       </section>
 

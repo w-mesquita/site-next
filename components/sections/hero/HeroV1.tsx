@@ -18,8 +18,14 @@ export function HeroV1({ content: contentProp }: HeroV1Props) {
   const content = contentProp ?? DEFAULT_HERO_CONTENT;
   const [imageError, setImageError] = useState(false);
 
-  const bgColor = content.backgroundColor?.trim() || "var(--color-surface)";
   const bgImage = content.backgroundImage?.trim();
+  const overlayColor = content.overlayColor?.trim();
+  const defaultOverlay = "color-mix(in srgb, var(--color-background) 65%, transparent)";
+  const defaultBg = "var(--color-surface)";
+  const bgColor = bgImage
+    ? (content.backgroundColor?.trim() || defaultBg)
+    : (overlayColor || content.backgroundColor?.trim() || defaultBg);
+  const overlayStyle = overlayColor || defaultOverlay;
   const hasImageSrc = Boolean(content.imageSrc?.trim());
   const showImage = hasImageSrc && !imageError;
   const showBadge = hasContent(content.badge);
@@ -29,6 +35,10 @@ export function HeroV1({ content: contentProp }: HeroV1Props) {
   const showDescription = hasContent(content.description);
   const showPrimaryAction = hasContent(content.primaryAction?.label);
   const showSecondaryAction = hasContent(content.secondaryAction?.label);
+  const textColor = content.textColor?.trim();
+  const titleStyle = textColor ? { color: textColor } : { color: "var(--color-text)" };
+  const bodyStyle = textColor ? { color: textColor, opacity: 0.85 } : { color: "var(--color-text-muted)" };
+  const badgeStyle = textColor ? { color: textColor, opacity: 0.9 } : { color: "var(--color-text-muted)" };
 
   return (
     <section
@@ -43,13 +53,11 @@ export function HeroV1({ content: contentProp }: HeroV1Props) {
       }}
       aria-label="Seção principal"
     >
-      {/* Overlay esmaecida sobre a imagem de fundo para legibilidade do texto */}
+      {/* Overlay sobre a imagem de fundo (cor configurável com transparência) */}
       {bgImage && (
         <div
           className="absolute inset-0 z-[1]"
-          style={{
-            background: `color-mix(in srgb, var(--color-background) 65%, transparent)`,
-          }}
+          style={{ background: overlayStyle }}
           aria-hidden
         />
       )}
@@ -75,14 +83,14 @@ export function HeroV1({ content: contentProp }: HeroV1Props) {
             <div
               className="inline-flex items-center gap-2 rounded-full border px-3 py-1 text-xs font-bold uppercase tracking-wider"
               style={{
-                backgroundColor: "color-mix(in srgb, var(--color-text-muted) 10%, transparent)",
-                borderColor: "color-mix(in srgb, var(--color-text-muted) 20%, transparent)",
-                color: "var(--color-text-muted)",
+                backgroundColor: textColor ? "color-mix(in srgb, currentColor 15%, transparent)" : "color-mix(in srgb, var(--color-text-muted) 10%, transparent)",
+                borderColor: textColor ? "color-mix(in srgb, currentColor 25%, transparent)" : "color-mix(in srgb, var(--color-text-muted) 20%, transparent)",
+                ...badgeStyle,
               }}
             >
               <span
                 className="h-2 w-2 animate-pulse rounded-full"
-                style={{ backgroundColor: "var(--color-text-muted)" }}
+                style={{ backgroundColor: "currentColor" }}
               />
               {content.badge}
             </div>
@@ -91,7 +99,7 @@ export function HeroV1({ content: contentProp }: HeroV1Props) {
           {showTitle && (
             <h1
               className="font-extrabold leading-tight tracking-tight"
-              style={{ color: "var(--color-text)" }}
+              style={titleStyle}
             >
               {showTitleLine1 && (
                 <span className="mb-2 block text-2xl md:text-3xl lg:text-4xl">
@@ -109,7 +117,7 @@ export function HeroV1({ content: contentProp }: HeroV1Props) {
           {showDescription && (
             <p
               className="max-w-lg text-lg leading-relaxed md:text-xl"
-              style={{ color: "var(--color-text-muted)" }}
+              style={bodyStyle}
             >
               {content.description}
             </p>

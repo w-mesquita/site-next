@@ -37,6 +37,8 @@ function parseStoredHero(raw: unknown): HeroContent {
     imageSrc: typeof o.imageSrc === "string" ? o.imageSrc : def.imageSrc,
     backgroundImage: typeof o.backgroundImage === "string" ? o.backgroundImage : (def.backgroundImage ?? ""),
     backgroundColor: typeof o.backgroundColor === "string" ? o.backgroundColor : (def.backgroundColor ?? ""),
+    overlayColor: typeof o.overlayColor === "string" ? o.overlayColor : (def.overlayColor ?? ""),
+    textColor: typeof o.textColor === "string" ? o.textColor : (def.textColor ?? ""),
   };
 }
 
@@ -58,6 +60,8 @@ function parseStoredCta(raw: unknown): CtaContent {
     action: parseAction(o.action),
     backgroundImage: typeof o.backgroundImage === "string" ? o.backgroundImage : def.backgroundImage ?? "",
     backgroundColor: typeof o.backgroundColor === "string" ? o.backgroundColor : def.backgroundColor ?? "",
+    overlayColor: typeof o.overlayColor === "string" ? o.overlayColor : def.overlayColor ?? "",
+    textColor: typeof o.textColor === "string" ? o.textColor : def.textColor ?? "",
   };
 }
 
@@ -87,6 +91,7 @@ function parseStoredFeatures(raw: unknown): FeaturesContent {
     backgroundImage: typeof o.backgroundImage === "string" ? o.backgroundImage : def.backgroundImage ?? "",
     backgroundColor: typeof o.backgroundColor === "string" ? o.backgroundColor : def.backgroundColor ?? "",
     overlayColor: typeof o.overlayColor === "string" ? o.overlayColor : def.overlayColor ?? "",
+    textColor: typeof o.textColor === "string" ? o.textColor : def.textColor ?? "",
   };
 }
 
