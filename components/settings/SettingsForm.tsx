@@ -1,5 +1,7 @@
 "use client";
 
+import { useEffect, useState } from "react";
+import { useGlobalConfig } from "@/lib/global-config-context";
 import { useSectionsConfig } from "@/lib/sections-config-context";
 import { useSocialConfig } from "@/lib/social-config-context";
 import { useWhatsAppConfig } from "@/lib/whatsapp-config-context";
@@ -8,6 +10,7 @@ import { PAGE_IDS, SECTION_VARIANT_LABELS } from "@/types/sections";
 import type { SocialNetworkKey } from "@/types/social";
 import { SOCIAL_NETWORKS } from "@/types/social";
 import { SECTION_TYPES_WITH_CONTENT } from "@/types/sections-content";
+import { DEFAULT_PRIMARY_COLOR } from "@/types/global-config";
 import Link from "next/link";
 
 const CONTENT_SECTION_LABELS: Record<(typeof SECTION_TYPES_WITH_CONTENT)[number], string> = {
@@ -28,6 +31,11 @@ const SOCIAL_LABELS: Record<SocialNetworkKey, string> = {
 };
 
 export function SettingsForm() {
+  const { config: globalConfig, setPrimaryColor, setLogoUrl } = useGlobalConfig();
+  const [primaryColorInput, setPrimaryColorInput] = useState(globalConfig.primaryColor);
+  useEffect(() => {
+    setPrimaryColorInput(globalConfig.primaryColor);
+  }, [globalConfig.primaryColor]);
   const { config, setConfig } = useSectionsConfig();
   const { config: whatsappConfig, setConfig: setWhatsAppConfig } = useWhatsAppConfig();
   const { config: socialConfig, setConfig: setSocialConfig } = useSocialConfig();
@@ -55,6 +63,84 @@ export function SettingsForm() {
           aplicadas em todo o site.
         </p>
       </div>
+
+      {/* Configurações globais */}
+      <section
+        className="rounded-lg border p-6"
+        style={{ borderColor: "var(--color-border)", backgroundColor: "var(--color-surface)" }}
+        aria-labelledby="global-settings-heading"
+      >
+        <h2
+          id="global-settings-heading"
+          className="mb-4 text-lg font-semibold"
+          style={{ color: "var(--color-text)" }}
+        >
+          Configurações globais
+        </h2>
+        <p className="mb-4 text-sm" style={{ color: "var(--color-text-muted)" }}>
+          Cor primária e logo aplicados em todo o site. Salvos no navegador.
+        </p>
+        <div className="space-y-4">
+          <div>
+            <label
+              htmlFor="settings-primary-color"
+              className="mb-2 block text-sm font-medium"
+              style={{ color: "var(--color-text)" }}
+            >
+              Cor primária
+            </label>
+            <div className="flex flex-wrap items-center gap-3">
+              <input
+                id="settings-primary-color"
+                type="color"
+                value={globalConfig.primaryColor}
+                onChange={(e) => setPrimaryColor(e.target.value)}
+                className="h-10 w-14 cursor-pointer rounded border border-[var(--color-border)] bg-transparent p-0"
+                style={{ minWidth: "3.5rem" }}
+              />
+              <input
+                type="text"
+                value={primaryColorInput}
+                onChange={(e) => {
+                  const v = e.target.value.trim();
+                  setPrimaryColorInput(v || "");
+                  if (/^#[0-9A-Fa-f]{6}$/.test(v)) setPrimaryColor(v);
+                  if (v === "") setPrimaryColor(DEFAULT_PRIMARY_COLOR);
+                }}
+                onBlur={() => {
+                  if (!/^#[0-9A-Fa-f]{6}$/.test(primaryColorInput)) {
+                    setPrimaryColorInput(globalConfig.primaryColor);
+                  }
+                }}
+                placeholder="#2563eb"
+                className="w-28 rounded-lg border bg-[var(--color-background)] px-3 py-2 text-sm text-[var(--color-text)] focus:outline-none focus:ring-2 focus:ring-[var(--color-primary)]"
+                style={{ borderColor: "var(--color-border)" }}
+              />
+            </div>
+          </div>
+          <div>
+            <label
+              htmlFor="settings-logo-url"
+              className="mb-2 block text-sm font-medium"
+              style={{ color: "var(--color-text)" }}
+            >
+              Logo (URL ou caminho)
+            </label>
+            <input
+              id="settings-logo-url"
+              type="text"
+              value={globalConfig.logoUrl}
+              onChange={(e) => setLogoUrl(e.target.value)}
+              placeholder="/logo.svg ou https://..."
+              className="w-full rounded-lg border bg-[var(--color-background)] px-4 py-2 text-[var(--color-text)] placeholder-[var(--color-text-muted)] focus:outline-none focus:ring-2 focus:ring-[var(--color-primary)]"
+              style={{ borderColor: "var(--color-border)" }}
+            />
+            <p className="mt-1 text-xs" style={{ color: "var(--color-text-muted)" }}>
+              Deixe em branco para exibir o texto &quot;Logo&quot; no header e footer.
+            </p>
+          </div>
+        </div>
+      </section>
 
       {/* Header e Footer */}
       <section

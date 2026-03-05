@@ -13,7 +13,8 @@ Regras: `.cursor/rules/scss-design-tokens.mdc`, `.cursor/rules/design-system-and
 
 ## Tokens principais
 
-- **Cores:** `--color-primary`, `--color-primary-hover`, `--color-primary-active`, `--color-background`, `--color-surface`, `--color-text`, `--color-text-muted`, `--color-border`.
+- **Cores:** `--color-primary`, `--color-primary-hover`, `--color-primary-active`, `--color-primary-light`, `--color-background`, `--color-surface`, `--color-text`, `--color-text-muted`, `--color-border`.
+- **Primary em cadeia:** Apenas `--color-primary` é a cor primitiva. As demais são derivadas em `_variables.scss` com `color-mix()`: `--color-primary-hover` (primary + black), `--color-primary-active` (primary mais escuro), `--color-primary-light` (primary + white). Para mudar a cor principal do site, altere só `--color-primary`; hover, active e light atualizam em cascata.
 - **Header:** `--header-height`, `--header-bg`, `--header-bg-scrolled`, `--header-text`.
 - **Espaçamento:** `--spacing-xs` a `--spacing-2xl`.
 - **Breakpoints:** `--breakpoint-tablet` (768px), `--breakpoint-desktop` (1024px).
@@ -21,6 +22,10 @@ Regras: `.cursor/rules/scss-design-tokens.mdc`, `.cursor/rules/design-system-and
 ## Registro de alterações
 
 ### 2025-03-06
+
+- **Configurações globais (cor primária e logo):** Nova seção em Configurações permite ao usuário escolher a cor primária (color picker + hex) e o logo (URL ou caminho, ex.: /logo.svg). Valores persistidos no localStorage; cor aplicada em tempo real via `document.documentElement.style.setProperty("--color-primary", …)`. Logo consumido por `AppLogo` em header e footer (se vazio, exibe texto "Logo"). Tipos em `types/global-config.ts`, context em `lib/global-config-context.tsx`, leitura server em `lib/global-config.ts` e `config/global.json`.
+
+- **Primary como cor primitiva (cascade):** Em `_variables.scss`, `--color-primary-hover`, `--color-primary-active` e `--color-primary-light` passam a ser derivadas de `--color-primary` via `color-mix()` (hover/active mais escuros, light mais claro). Basta alterar `--color-primary` para atualizar toda a família em cadeia. Em `.dark` é opcional definir outro `--color-primary`; as derivadas seguem.
 
 - **Componente Button:** Novo componente reutilizável em `components/ui/Button.tsx`. Variantes: `primary` (fundo primary, texto branco) e `neutral` (borda, texto, estilo secundário/contato). Tamanhos: `sm`, `md`, `lg`. Estados: hover (`--color-primary-hover`), active/click (`--color-primary-active`), focus-visible (outline), disabled. Pode ser usado como `<Button href="...">` (renderiza Next.js Link) ou `<Button type="submit">` (renderiza button). Tokens adicionados: `--color-primary-active` em `_variables.scss` e `design-tokens.json` (primary.800 / action.primaryActive).
 

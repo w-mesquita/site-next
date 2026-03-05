@@ -1,4 +1,5 @@
 import Link from "next/link";
+import { AppLogo } from "@/components/ui/AppLogo";
 import { SocialLinks } from "@/components/ui/SocialLinks";
 
 export function FooterV2() {
@@ -9,9 +10,7 @@ export function FooterV2() {
     >
       <div className="mx-auto grid max-w-content grid-cols-1 gap-8 px-4 sm:px-6 md:grid-cols-3">
         <div>
-          <Link href="/" className="text-lg font-semibold hover:no-underline" style={{ color: "var(--color-text)" }}>
-            Logo
-          </Link>
+          <AppLogo className="text-lg font-semibold hover:no-underline" style={{ color: "var(--color-text)" }} />
           <p className="mt-2 text-sm" style={{ color: "var(--color-text-muted)" }}>
             Descrição breve da empresa.
           </p>

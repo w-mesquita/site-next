@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from "react";
 import Link from "next/link";
+import { AppLogo } from "@/components/ui/AppLogo";
 import { ThemeToggle } from "@/components/ui/ThemeToggle";
 import { SettingsLink } from "@/components/ui/SettingsLink";
 import { SocialLinks } from "@/components/ui/SocialLinks";
@@ -31,9 +32,7 @@ export function HeaderV3() {
       }}
     >
       <div className="mx-auto flex h-full max-w-content items-center justify-between px-4 sm:px-6">
-        <Link href="/" className="text-xl font-semibold hover:no-underline">
-          Logo
-        </Link>
+        <AppLogo className="text-xl font-semibold hover:no-underline" style={{ color: "var(--header-text)" }} />
 
         <div className="flex items-center gap-2">
           <SocialLinks size="sm" />

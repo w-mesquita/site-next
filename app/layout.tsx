@@ -1,9 +1,11 @@
 import { ClientLayoutContent } from "@/components/layout/ClientLayoutContent";
 import { WhatsAppFloat } from "@/components/widgets";
+import { getGlobalConfig } from "@/lib/global-config";
 import { getSectionsConfig } from "@/lib/sections-config";
 import { SectionsConfigProvider } from "@/lib/sections-config-context";
 import { getSectionsContent } from "@/lib/sections-content";
 import { SectionsContentProvider } from "@/lib/sections-content-context";
+import { GlobalConfigProvider } from "@/lib/global-config-context";
 import { SocialConfigProvider } from "@/lib/social-config-context";
 import { ThemeProvider } from "@/lib/theme-context";
 import { WhatsAppConfigProvider } from "@/lib/whatsapp-config-context";
@@ -31,6 +33,7 @@ export default function RootLayout({
 }>) {
   const config = getSectionsConfig();
   const initialContent = getSectionsContent();
+  const globalConfig = getGlobalConfig();
   return (
     <html lang="pt-BR" suppressHydrationWarning>
       <head>
@@ -38,6 +41,7 @@ export default function RootLayout({
       </head>
       <body>
         <ThemeProvider>
+          <GlobalConfigProvider initialConfig={globalConfig}>
           <SectionsConfigProvider initialConfig={config}>
             <SectionsContentProvider initialContent={initialContent}>
               <WhatsAppConfigProvider>
@@ -48,6 +52,7 @@ export default function RootLayout({
               </WhatsAppConfigProvider>
             </SectionsContentProvider>
           </SectionsConfigProvider>
+          </GlobalConfigProvider>
         </ThemeProvider>
       </body>
     </html>

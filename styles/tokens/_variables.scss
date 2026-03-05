@@ -5,10 +5,11 @@
 
 :root {
   // Light theme (off-white base)
-  --color-primary: #2563eb;
-  --color-primary-hover: #1d4ed8;
-  --color-primary-active: #1e40af;
-  --color-primary-light: #3b82f6;
+  // Cor primitiva: altere apenas --color-primary; hover, active e light são derivados em cadeia
+  --color-primary: #eb4d25;
+  --color-primary-hover: color-mix(in srgb, var(--color-primary) 88%, black);
+  --color-primary-active: color-mix(in srgb, var(--color-primary) 72%, black);
+  --color-primary-light: color-mix(in srgb, var(--color-primary) 85%, white);
 
   --color-background: #fafafa;
   --color-surface: #f5f5f5;
@@ -47,7 +48,8 @@
 }
 
 .dark {
-  --color-primary-active: #1e3a8a;
+  // Opcional: defina outro --color-primary para dark; hover/active/light seguem em cadeia
+  // --color-primary: #3b82f6;
   --color-background: #0a0a0a;
   --color-surface: #171717;
   --color-text: #fafafa;
