@@ -5,7 +5,7 @@ import { HeroSection } from "@/components/sections/hero";
 import type { SectionType, SectionVariant } from "@/types/sections";
 
 /** Seções que aceitam variante (v1, v2, v3). */
-const SECTIONS_WITH_VARIANT: SectionType[] = ["hero"];
+const SECTIONS_WITH_VARIANT: SectionType[] = ["hero", "cta"];
 
 export function sectionAcceptsVariant(type: SectionType): boolean {
   return SECTIONS_WITH_VARIANT.includes(type);

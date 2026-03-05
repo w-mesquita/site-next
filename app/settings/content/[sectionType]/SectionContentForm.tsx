@@ -9,6 +9,12 @@ interface SectionContentFormProps {
   sectionLabel: string;
 }
 
+const formSectionClass =
+  "rounded-lg border p-6 border-[var(--color-border)] bg-[var(--color-surface)]";
+const labelClass = "mb-1 block text-sm font-medium text-[var(--color-text)]";
+const inputClass =
+  "w-full rounded-lg border bg-[var(--color-background)] px-4 py-2 text-[var(--color-text)] focus:outline-none focus:ring-2 focus:ring-[var(--color-primary)] border-[var(--color-border)]";
+
 export function SectionContentForm({
   sectionType,
   sectionLabel,
@@ -16,7 +22,154 @@ export function SectionContentForm({
   if (sectionType === "hero") {
     return <HeroContentForm sectionLabel={sectionLabel} />;
   }
+  if (sectionType === "cta") {
+    return <CtaContentForm sectionLabel={sectionLabel} />;
+  }
   return null;
+}
+
+function CtaContentForm({ sectionLabel }: { sectionLabel: string }) {
+  const { content, setCtaContent } = useSectionsContent();
+  const cta = content.cta;
+
+  return (
+    <div className="mx-auto max-w-2xl space-y-8">
+      <div>
+        <h1 className="text-2xl font-semibold text-[var(--color-text)]">
+          Conteúdo: {sectionLabel}
+        </h1>
+        <p className="mt-1 text-sm text-[var(--color-text-muted)]">
+          Título, texto e ação (botão/link) usados pelas variantes da seção CTA (V1, V2, V3).
+        </p>
+      </div>
+
+      <section className={formSectionClass}>
+        <h2 className="mb-4 text-lg font-semibold text-[var(--color-text)]">
+          Textos
+        </h2>
+        <div className="space-y-4">
+          <div>
+            <label htmlFor="cta-title" className={labelClass}>
+              Título
+            </label>
+            <input
+              id="cta-title"
+              type="text"
+              value={cta.title}
+              onChange={(e) => setCtaContent({ ...cta, title: e.target.value })}
+              className={inputClass}
+              placeholder="Ex.: Impulsione seu tráfego conosco"
+            />
+          </div>
+          <div>
+            <label htmlFor="cta-text" className={labelClass}>
+              Texto / Descrição
+            </label>
+            <textarea
+              id="cta-text"
+              rows={3}
+              value={cta.text}
+              onChange={(e) => setCtaContent({ ...cta, text: e.target.value })}
+              className={inputClass}
+              placeholder="Texto exibido na seção CTA."
+            />
+          </div>
+        </div>
+      </section>
+
+      <section className={formSectionClass}>
+        <h2 className="mb-4 text-lg font-semibold text-[var(--color-text)]">
+          Ação (botão/link)
+        </h2>
+        <div className="grid gap-4 md:grid-cols-2">
+          <div>
+            <label htmlFor="cta-action-label" className={labelClass}>
+              Texto do botão
+            </label>
+            <input
+              id="cta-action-label"
+              type="text"
+              value={cta.action.label}
+              onChange={(e) =>
+                setCtaContent({
+                  ...cta,
+                  action: { ...cta.action, label: e.target.value },
+                })
+              }
+              className={inputClass}
+              placeholder="Ex.: Saiba mais"
+            />
+          </div>
+          <div>
+            <label htmlFor="cta-action-href" className={labelClass}>
+              Link (URL)
+            </label>
+            <input
+              id="cta-action-href"
+              type="text"
+              value={cta.action.href}
+              onChange={(e) =>
+                setCtaContent({
+                  ...cta,
+                  action: { ...cta.action, href: e.target.value },
+                })
+              }
+              className={inputClass}
+              placeholder="#contato ou /contato"
+            />
+          </div>
+        </div>
+      </section>
+
+      <section className={formSectionClass}>
+        <h2 className="mb-4 text-lg font-semibold text-[var(--color-text)]">
+          Fundo
+        </h2>
+        <p className="mb-4 text-sm text-[var(--color-text-muted)]">
+          V1 e V2: aplicado ao fundo da seção. V3: aplicado dentro do card. Deixe em branco no V3 para usar o padrão com detalhes em SVG.
+        </p>
+        <div className="space-y-4">
+          <div>
+            <label htmlFor="cta-backgroundImage" className={labelClass}>
+              Imagem de fundo
+            </label>
+            <input
+              id="cta-backgroundImage"
+              type="text"
+              value={cta.backgroundImage ?? ""}
+              onChange={(e) =>
+                setCtaContent({ ...cta, backgroundImage: e.target.value })
+              }
+              className={inputClass}
+              placeholder="/cta-bg.jpg ou URL"
+            />
+          </div>
+          <div>
+            <label htmlFor="cta-backgroundColor" className={labelClass}>
+              Cor de fundo
+            </label>
+            <input
+              id="cta-backgroundColor"
+              type="text"
+              value={cta.backgroundColor ?? ""}
+              onChange={(e) =>
+                setCtaContent({ ...cta, backgroundColor: e.target.value })
+              }
+              className={inputClass}
+              placeholder="Ex.: #f5f5f5, var(--color-surface)"
+            />
+          </div>
+        </div>
+      </section>
+
+      <Link
+        href="/settings"
+        className="inline-block rounded-lg px-4 py-2 text-sm font-medium transition-colors hover:opacity-90 bg-[var(--color-primary)] text-white"
+      >
+        Voltar às configurações
+      </Link>
+    </div>
+  );
 }
 
 function HeroContentForm({ sectionLabel }: { sectionLabel: string }) {

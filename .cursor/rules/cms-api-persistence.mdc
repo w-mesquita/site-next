@@ -1,0 +1,43 @@
+---
+description: Modelo tipo CMS e preparação para persistência via API
+alwaysApply: true
+---
+
+# Modelo CMS e persistência via API
+
+## Premissa
+
+O projeto está sendo desenvolvido no **estilo CMS** (Content Management System): o conteúdo exibido nas seções (hero, CTA, etc.) é **parametrizável** e editável, não fixo no código. No momento os dados podem vir de JSON estático ou localStorage; **futuramente a persistência será feita por API**. O desenvolvimento deve ser **estruturado desde já** para essa evolução.
+
+## Princípios
+
+1. **Conteúdo separado da apresentação**
+   - Tipos de conteúdo em `types/sections-content.ts` (ex.: `HeroContent`, `CtaContent`).
+   - Componentes de seção recebem `content` como prop e usam apenas os campos definidos nesses tipos.
+   - Nenhum texto ou link “hardcoded” que deveria ser editável; tudo vem do objeto de conteúdo.
+
+2. **Camada de dados única e substituível**
+   - Leitura: `getSectionsContent()` (server) e `getSectionsContentFromStorage()` (client) retornam `SectionsContentConfig`.
+   - Escrita (client): `setContent` / `setHeroContent` / `setCtaContent` no context; atualmente persistem em localStorage.
+   - Ao integrar API: manter as mesmas interfaces (`SectionsContentConfig`, `HeroContent`, `CtaContent`); trocar apenas a implementação da leitura/escrita (chamadas à API em vez de JSON/localStorage).
+
+3. **Configuração de layout separada do conteúdo**
+   - O que exibir (textos, links, imagens) = conteúdo → `SectionsContentConfig`, futura API de conteúdo.
+   - Onde e qual variante exibir (slots, variantes v1/v2/v3) = configuração → `SectionsConfig`, `config/sections.json`; pode depois vir de API de configuração ou mesmo de CMS.
+
+4. **Evitar acoplamento à fonte de dados**
+   - Componentes e páginas não devem chamar `localStorage` ou `fetch` diretamente para conteúdo de seções.
+   - Usar sempre o context (`useSectionsContent()`) ou props injetadas (ex.: `initialContent` no layout).
+   - Assim, a troca para API fica restrita a `lib/sections-content.ts`, `lib/sections-content-client.ts` e eventualmente um serviço de API.
+
+## Ao criar ou alterar seções com conteúdo editável
+
+- Definir o tipo de conteúdo em `types/sections-content.ts` e adicionar a `SectionsContentConfig`.
+- Incluir defaults em `DEFAULT_SECTIONS_CONTENT`.
+- Garantir parse/validação ao ler de storage ou JSON (ex.: em `sections-content-client.ts` e `sections-content.ts`).
+- Expor setter no context se a seção for editável pela UI (ex.: `setCtaContent`).
+- Documentar em `docs/DESIGN-SYSTEM.md` quando alterar contrato de conteúdo.
+
+## Resumo
+
+Conteúdo parametrizável (tipos + context + camada de leitura/escrita) prepara o projeto para, no futuro, **persistir e carregar dados via API** sem reescrever componentes: apenas a implementação da camada de dados é trocada.

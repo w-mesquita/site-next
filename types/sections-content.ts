@@ -50,16 +50,45 @@ export const DEFAULT_HERO_CONTENT: HeroContent = {
   backgroundColor: "",
 };
 
+/** Conteúdo parametrizável da seção CTA (título, texto, ação com link). */
+export interface CtaAction {
+  label: string;
+  href: string;
+}
+
+export interface CtaContent {
+  /** Título da CTA (ex.: "Boost Your Traffic With Us") */
+  title: string;
+  /** Texto/descrição da CTA */
+  text: string;
+  /** Ação principal (botão/link) */
+  action: CtaAction;
+  /** Imagem de fundo (V1/V2: seção; V3: dentro do card). Caminho ou URL. */
+  backgroundImage?: string;
+  /** Cor de fundo (V1/V2: seção; V3: dentro do card). Ex.: hex, rgb ou var(--color-surface). */
+  backgroundColor?: string;
+}
+
+export const DEFAULT_CTA_CONTENT: CtaContent = {
+  title: "Impulsione seu tráfego conosco",
+  text: "Entre em contato ou saiba mais sobre nossos serviços. Estamos prontos para ajudar você a crescer.",
+  action: { label: "Saiba mais", href: "#contato" },
+  backgroundImage: "",
+  backgroundColor: "",
+};
+
 export interface SectionsContentConfig {
   hero: HeroContent;
+  cta: CtaContent;
 }
 
 export const DEFAULT_SECTIONS_CONTENT: SectionsContentConfig = {
   hero: DEFAULT_HERO_CONTENT,
+  cta: DEFAULT_CTA_CONTENT,
 };
 
 /** Tipos de seção que possuem página de configuração de conteúdo */
-export const SECTION_TYPES_WITH_CONTENT = ["hero"] as const;
+export const SECTION_TYPES_WITH_CONTENT = ["hero", "cta"] as const;
 export type SectionTypeWithContent = (typeof SECTION_TYPES_WITH_CONTENT)[number];
 
 export function isSectionTypeWithContent(

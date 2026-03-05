@@ -20,6 +20,12 @@ Regras: `.cursor/rules/scss-design-tokens.mdc`, `.cursor/rules/design-system-and
 
 ## Registro de alterações
 
+### 2025-03-05
+
+- **Seção CTA parametrizável (CTA1):** Nova seção CTA com conteúdo editável (título, texto, action com label e link). Três variantes: CtaV1 (bloco centralizado, fundo surface, botão primary), CtaV2 (fundo primary, layout em linha com botão outline), CtaV3 (card com borda). Conteúdo em `CtaContent` (`types/sections-content.ts`), consumido via `useSectionsContent().content.cta`. Suporte em context, storage (localStorage) e leitura server-side em `getSectionsContent()`. Referência visual: estilo "Boost Your Traffic With Us" do demo Royal Elementor.
+
+- **CTA – fundo parametrizável:** `CtaContent` ganha `backgroundImage?` e `backgroundColor?`. **V1 e V2:** fundo aplicado à seção inteira; se houver imagem, overlay para legibilidade. **V3:** fundo aplicado dentro do card; se não houver imagem nem cor, usa padrão com cor de fundo (`var(--color-surface)`) e detalhes em SVG (círculos suaves, arco, pontos) via componente `CtaDefaultBackground`. Formulário de conteúdo da CTA: nova seção "Fundo" com campos Imagem de fundo e Cor de fundo.
+
 ### 2025-03-03
 
 - **Header ao rolar:** Ajuste do fundo do header quando a página está com scroll. Antes: aspecto de vidro (backdrop-blur). Agora: fundo branco com leve transparência (light) e superfície escura com leve transparência (dark), sem blur. Novo token `--header-bg-scrolled` em `_variables.scss` e `header.backgroundScrolled` em `design-tokens.json`. Light: `rgba(255,255,255,0.9)`; dark: `rgba(23,23,23,0.95)`. Componentes: HeaderV1, HeaderV2, HeaderV3 passam a usar `var(--header-bg-scrolled)` quando `isScrolled`.

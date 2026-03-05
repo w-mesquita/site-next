@@ -1,4 +1,4 @@
-import type { SectionsContentConfig, HeroContent } from "@/types/sections-content";
+import type { SectionsContentConfig, HeroContent, CtaContent } from "@/types/sections-content";
 import { DEFAULT_SECTIONS_CONTENT } from "@/types/sections-content";
 
 const STORAGE_KEY = "sections-content";
@@ -26,6 +26,27 @@ function parseStoredHero(raw: unknown): HeroContent {
   };
 }
 
+function parseStoredCta(raw: unknown): CtaContent {
+  const def = DEFAULT_SECTIONS_CONTENT.cta;
+  if (!raw || typeof raw !== "object") return def;
+  const o = raw as Record<string, unknown>;
+  const parseAction = (a: unknown): CtaContent["action"] => {
+    if (!a || typeof a !== "object") return def.action;
+    const x = a as Record<string, unknown>;
+    return {
+      label: typeof x.label === "string" ? x.label : def.action.label,
+      href: typeof x.href === "string" ? x.href : def.action.href,
+    };
+  };
+  return {
+    title: typeof o.title === "string" ? o.title : def.title,
+    text: typeof o.text === "string" ? o.text : def.text,
+    action: parseAction(o.action),
+    backgroundImage: typeof o.backgroundImage === "string" ? o.backgroundImage : def.backgroundImage ?? "",
+    backgroundColor: typeof o.backgroundColor === "string" ? o.backgroundColor : def.backgroundColor ?? "",
+  };
+}
+
 /**
  * Lê o conteúdo das seções do localStorage (apenas no client).
  */
@@ -37,6 +58,7 @@ export function getSectionsContentFromStorage(): SectionsContentConfig | null {
     const parsed = JSON.parse(raw) as Record<string, unknown>;
     return {
       hero: parseStoredHero(parsed.hero),
+      cta: parseStoredCta(parsed.cta),
     };
   } catch {
     return null;

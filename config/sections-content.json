@@ -7,5 +7,12 @@
     "primaryAction": { "label": "Saiba mais", "href": "#acao" },
     "secondaryAction": { "label": "Contato", "href": "#contato" },
     "imageSrc": "/hero-image.jpg"
+  },
+  "cta": {
+    "title": "Impulsione seu tráfego conosco",
+    "text": "Entre em contato ou saiba mais sobre nossos serviços. Estamos prontos para ajudar você a crescer.",
+    "action": { "label": "Saiba mais", "href": "#contato" },
+    "backgroundImage": "",
+    "backgroundColor": ""
   }
 }

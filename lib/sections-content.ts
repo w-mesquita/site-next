@@ -1,4 +1,4 @@
-import type { HeroContent, SectionsContentConfig } from "@/types/sections-content";
+import type { HeroContent, CtaContent, SectionsContentConfig } from "@/types/sections-content";
 import { DEFAULT_SECTIONS_CONTENT } from "@/types/sections-content";
 import fs from "node:fs";
 import path from "node:path";
@@ -27,6 +27,28 @@ function parseHeroContent(raw: unknown): HeroContent {
   };
 }
 
+function parseCtaAction(raw: unknown): CtaContent["action"] {
+  if (!raw || typeof raw !== "object") return DEFAULT_SECTIONS_CONTENT.cta.action;
+  const o = raw as Record<string, unknown>;
+  return {
+    label: typeof o.label === "string" ? o.label : DEFAULT_SECTIONS_CONTENT.cta.action.label,
+    href: typeof o.href === "string" ? o.href : DEFAULT_SECTIONS_CONTENT.cta.action.href,
+  };
+}
+
+function parseCtaContent(raw: unknown): CtaContent {
+  const def = DEFAULT_SECTIONS_CONTENT.cta;
+  if (!raw || typeof raw !== "object") return def;
+  const o = raw as Record<string, unknown>;
+  return {
+    title: typeof o.title === "string" ? o.title : def.title,
+    text: typeof o.text === "string" ? o.text : def.text,
+    action: parseCtaAction(o.action),
+    backgroundImage: typeof o.backgroundImage === "string" ? o.backgroundImage : def.backgroundImage ?? "",
+    backgroundColor: typeof o.backgroundColor === "string" ? o.backgroundColor : def.backgroundColor ?? "",
+  };
+}
+
 /**
  * Retorna o conteúdo das seções (server-side).
  * Lê config/sections-content.json e mescla com defaults.
@@ -42,5 +64,6 @@ export function getSectionsContent(): SectionsContentConfig {
   }
   return {
     hero: parseHeroContent(raw.hero),
+    cta: parseCtaContent(raw.cta),
   };
 }

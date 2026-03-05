@@ -6,6 +6,7 @@
     "home": {
       "pageSections": [
         { "type": "hero", "variant": "v1" },
+        { "type": "cta", "variant": "v1" },
         { "type": "none" },
         { "type": "none" },
         { "type": "none" },
