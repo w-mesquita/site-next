@@ -108,8 +108,11 @@ export function SectionsContentProvider({
       if (entry && entry.type === sectionType) {
         return entry.content;
       }
-      // Sem entrada no slot: usa sempre o default do tipo para cada slot ser independente
-      // (evita que Features V1 e Features V2 compartilhem o mesmo conteúdo)
+      // Sem entrada no slot: usa conteúdo legado (hero/cta/features) como fallback
+      // para que edições feitas em /settings/content/hero (etc.) apareçam ao recarregar
+      if (sectionType === "hero" && content.hero) return content.hero;
+      if (sectionType === "cta" && content.cta) return content.cta;
+      if (sectionType === "features" && content.features) return content.features;
       return getDefaultContentForSectionType(sectionType);
     },
     [content]

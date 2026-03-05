@@ -10,6 +10,10 @@ export interface FeaturesV2Props {
   content?: FeaturesContent;
 }
 
+function hasContent(value: string | undefined): boolean {
+  return Boolean(value?.trim());
+}
+
 export function FeaturesV2({ content: contentProp }: FeaturesV2Props) {
   const content = contentProp ?? DEFAULT_FEATURES_CONTENT;
   const [imageError, setImageError] = useState(false);
@@ -18,6 +22,12 @@ export function FeaturesV2({ content: contentProp }: FeaturesV2Props) {
   const overlayColor = content.overlayColor?.trim();
   const hasImageSrc = Boolean(content.imageSrc?.trim());
   const showImage = hasImageSrc && !imageError;
+  const showBadge = hasContent(content.badge);
+  const showTitle = hasContent(content.title);
+  const showDescription = hasContent(content.description);
+  const listItemsWithContent = (content.listItems ?? []).filter((item) => hasContent(item));
+  const showList = listItemsWithContent.length > 0;
+  const showPrimaryAction = hasContent(content.primaryAction?.label);
 
   return (
     <section
@@ -66,36 +76,42 @@ export function FeaturesV2({ content: contentProp }: FeaturesV2Props) {
         <div
           className={`max-w-xl space-y-6 ${showImage ? "order-1 lg:order-2" : ""}`}
         >
-          <div
-            className="inline-flex items-center gap-2 rounded-full border px-3 py-1 text-xs font-bold uppercase tracking-wider"
-            style={{
-              backgroundColor: "color-mix(in srgb, var(--color-text-muted) 10%, transparent)",
-              borderColor: "color-mix(in srgb, var(--color-text-muted) 20%, transparent)",
-              color: "var(--color-text-muted)",
-            }}
-          >
-            <span
-              className="h-2 w-2 animate-pulse rounded-full"
-              style={{ backgroundColor: "var(--color-text-muted)" }}
-              aria-hidden
-            />
-            {content.badge}
-          </div>
-          <h2
-            className="text-3xl font-bold leading-tight tracking-tight md:text-4xl lg:text-5xl"
-            style={{ color: "var(--color-text)" }}
-          >
-            {content.title}
-          </h2>
-          <p
-            className="text-lg leading-relaxed"
-            style={{ color: "var(--color-text-muted)" }}
-          >
-            {content.description}
-          </p>
-          {content.listItems.length > 0 && (
+          {showBadge && (
+            <div
+              className="inline-flex items-center gap-2 rounded-full border px-3 py-1 text-xs font-bold uppercase tracking-wider"
+              style={{
+                backgroundColor: "color-mix(in srgb, var(--color-text-muted) 10%, transparent)",
+                borderColor: "color-mix(in srgb, var(--color-text-muted) 20%, transparent)",
+                color: "var(--color-text-muted)",
+              }}
+            >
+              <span
+                className="h-2 w-2 animate-pulse rounded-full"
+                style={{ backgroundColor: "var(--color-text-muted)" }}
+                aria-hidden
+              />
+              {content.badge}
+            </div>
+          )}
+          {showTitle && (
+            <h2
+              className="text-3xl font-bold leading-tight tracking-tight md:text-4xl lg:text-5xl"
+              style={{ color: "var(--color-text)" }}
+            >
+              {content.title}
+            </h2>
+          )}
+          {showDescription && (
+            <p
+              className="text-lg leading-relaxed"
+              style={{ color: "var(--color-text-muted)" }}
+            >
+              {content.description}
+            </p>
+          )}
+          {showList && (
             <ul className="space-y-3">
-              {content.listItems.map((item, i) => (
+              {listItemsWithContent.map((item, i) => (
                 <li
                   key={i}
                   className="flex items-start gap-3 text-base"
@@ -113,11 +129,13 @@ export function FeaturesV2({ content: contentProp }: FeaturesV2Props) {
               ))}
             </ul>
           )}
-          <div className="pt-2">
-            <Button href={content.primaryAction.href} variant="primary" size="md">
-              {content.primaryAction.label}
-            </Button>
-          </div>
+          {showPrimaryAction && (
+            <div className="pt-2">
+              <Button href={content.primaryAction.href || "#"} variant="primary" size="md">
+                {content.primaryAction.label}
+              </Button>
+            </div>
+          )}
         </div>
       </div>
     </section>

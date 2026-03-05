@@ -29,6 +29,8 @@ function parseHeroContent(raw: unknown): HeroContent {
     primaryAction: parseHeroAction(o.primaryAction),
     secondaryAction: parseHeroAction(o.secondaryAction),
     imageSrc: typeof o.imageSrc === "string" ? o.imageSrc : def.imageSrc,
+    backgroundImage: typeof o.backgroundImage === "string" ? o.backgroundImage : (def.backgroundImage ?? ""),
+    backgroundColor: typeof o.backgroundColor === "string" ? o.backgroundColor : (def.backgroundColor ?? ""),
   };
 }
 
