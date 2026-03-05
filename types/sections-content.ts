@@ -138,6 +138,62 @@ export const DEFAULT_FEATURES_CONTENT: FeaturesContent = {
   textColor: "",
 };
 
+/** Chave do ícone do card (seleção no painel de conteúdo). */
+export type ServicesCardIconKey =
+  | "gear"
+  | "mail"
+  | "headphones"
+  | "bell"
+  | "chart"
+  | "palette";
+
+export interface ServicesCardItem {
+  icon: ServicesCardIconKey;
+  title: string;
+  message: string;
+  /** Quando true, card em destaque: cor de fundo e detalhe visual (ex.: ondas). */
+  highlighted: boolean;
+}
+
+/** Conteúdo da seção Services (cards com ícone, título, mensagem e opção de destaque). */
+export interface ServicesContent {
+  /** Tagline (ex.: "Our Services") */
+  badge: string;
+  /** Título principal da seção */
+  title: string;
+  /** Descrição/parágrafo abaixo do título */
+  description: string;
+  /** Lista de cards (ícone, título, mensagem, destacado) */
+  cards: ServicesCardItem[];
+  /** Imagem de fundo da seção (opcional). */
+  backgroundImage?: string;
+  /** Cor de fundo da seção (opcional). */
+  backgroundColor?: string;
+  /** Cor da sobreposição (overlay). */
+  overlayColor?: string;
+  /** Cor do texto (títulos e corpo). */
+  textColor?: string;
+}
+
+export const DEFAULT_SERVICES_CONTENT: ServicesContent = {
+  badge: "Destaque opcional",
+  title: "Save Time Managing Your Business with Our Best Services",
+  description:
+    "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.",
+  cards: [
+    { icon: "gear", title: "Product Management", message: "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor.", highlighted: false },
+    { icon: "mail", title: "Web & Mobile Development", message: "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor.", highlighted: false },
+    { icon: "headphones", title: "Customer Support", message: "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor.", highlighted: false },
+    { icon: "bell", title: "Human Resources", message: "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor.", highlighted: false },
+    { icon: "chart", title: "Business Development", message: "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor.", highlighted: false },
+    { icon: "palette", title: "Design & Creatives", message: "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor.", highlighted: true },
+  ],
+  backgroundImage: "",
+  backgroundColor: "",
+  overlayColor: "",
+  textColor: "",
+};
+
 /** Chave do slot: pageId + índice (ex.: "home-0", "home-1"). Cada slot tem conteúdo independente. */
 export type SlotContentKey = string;
 
@@ -145,7 +201,8 @@ export type SlotContentKey = string;
 export type SlotContentEntry =
   | { type: "hero"; content: HeroContent }
   | { type: "cta"; content: CtaContent }
-  | { type: "features"; content: FeaturesContent };
+  | { type: "features"; content: FeaturesContent }
+  | { type: "services"; content: ServicesContent };
 
 /** Conteúdo editável por slot. Legado hero/cta/features mantido para migração. */
 export interface SectionsContentConfig {
@@ -157,6 +214,8 @@ export interface SectionsContentConfig {
   cta?: CtaContent;
   /** @deprecated Use contentBySlot; usado como fallback quando o slot ainda não foi editado. */
   features?: FeaturesContent;
+  /** @deprecated Use contentBySlot; usado como fallback quando o slot ainda não foi editado. */
+  services?: ServicesContent;
 }
 
 export const DEFAULT_SECTIONS_CONTENT: SectionsContentConfig = {
@@ -164,6 +223,7 @@ export const DEFAULT_SECTIONS_CONTENT: SectionsContentConfig = {
   hero: DEFAULT_HERO_CONTENT,
   cta: DEFAULT_CTA_CONTENT,
   features: DEFAULT_FEATURES_CONTENT,
+  services: DEFAULT_SERVICES_CONTENT,
 };
 
 /** Gera a chave do slot para um par (pageId, sectionIndex). */
@@ -172,13 +232,13 @@ export function getSlotContentKey(pageId: string, sectionIndex: number): SlotCon
 }
 
 /** Tipos de seção que possuem página de configuração de conteúdo */
-export const SECTION_TYPES_WITH_CONTENT = ["hero", "cta", "features"] as const;
+export const SECTION_TYPES_WITH_CONTENT = ["hero", "cta", "features", "services"] as const;
 export type SectionTypeWithContent = (typeof SECTION_TYPES_WITH_CONTENT)[number];
 
 /** Retorna o conteúdo padrão para um tipo de seção. */
 export function getDefaultContentForSectionType(
   type: SectionTypeWithContent
-): HeroContent | CtaContent | FeaturesContent {
+): HeroContent | CtaContent | FeaturesContent | ServicesContent {
   switch (type) {
     case "hero":
       return DEFAULT_HERO_CONTENT;
@@ -186,6 +246,8 @@ export function getDefaultContentForSectionType(
       return DEFAULT_CTA_CONTENT;
     case "features":
       return DEFAULT_FEATURES_CONTENT;
+    case "services":
+      return DEFAULT_SERVICES_CONTENT;
   }
 }
 

@@ -1,6 +1,6 @@
 /**
  * Tipos para a configuração de variantes das seções do site.
- * Inclui config global (header, footer), páginas ativas e 5 slots por página.
+ * Inclui config global (header, footer), páginas ativas e 7 slots por página.
  */
 
 export type SectionVariant = "v1" | "v2" | "v3" | "slide";
@@ -22,14 +22,15 @@ export const SECTION_VARIANT_LABELS: Record<SectionVariant, string> = {
   slide: "Slide",
 };
 
-/** Tipos de seção que podem aparecer nos 5 slots do corpo da página. */
-export type SectionType = "hero" | "cta" | "features" | "none";
+/** Tipos de seção que podem aparecer nos 7 slots do corpo da página. */
+export type SectionType = "hero" | "cta" | "features" | "services" | "none";
 
 /** Variantes disponíveis por tipo de seção (hero usa "Slide" em vez de "V3"). */
 export function getVariantsForSectionType(type: SectionType): readonly SectionVariant[] {
   if (type === "hero") return HERO_VARIANTS;
   if (type === "cta") return ["v1", "v2", "v3"];
   if (type === "features") return ["v1", "v2"];
+  if (type === "services") return ["v1", "v2"];
   return [];
 }
 
@@ -53,6 +54,8 @@ const DEFAULT_SLOTS: PageSectionSlot[] = [
   { type: "none" },
   { type: "none" },
   { type: "none" },
+  { type: "none" },
+  { type: "none" },
 ];
 
 function defaultPageConfig(): PageConfig {
@@ -72,7 +75,7 @@ export interface SectionsConfig {
   footer: FooterVariant;
   /** Páginas que o usuário escolheu exibir (checkboxes na config). */
   enabledPages: PageId[];
-  /** Por página, os 5 slots de seção. */
+  /** Por página, os 7 slots de seção. */
   pages: Record<PageId, PageConfig>;
 }
 

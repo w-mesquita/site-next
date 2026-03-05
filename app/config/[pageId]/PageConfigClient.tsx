@@ -12,6 +12,7 @@ const SECTION_TYPE_OPTIONS: { value: SectionType; label: string }[] = [
   { value: "hero", label: "Hero" },
   { value: "cta", label: "CTA" },
   { value: "features", label: "Features" },
+  { value: "services", label: "Services" },
 ];
 
 interface PageConfigClientProps {
@@ -28,8 +29,8 @@ export function PageConfigClient({ pageId, pageLabel }: PageConfigClientProps) {
     const newSlots = [...slots];
     while (newSlots.length <= index) newSlots.push({ type: "none" });
     newSlots[index] = slot;
-    while (newSlots.length < 5) newSlots.push({ type: "none" });
-    const pageSections = newSlots.slice(0, 5);
+    while (newSlots.length < 7) newSlots.push({ type: "none" });
+    const pageSections = newSlots.slice(0, 7);
     setConfig({
       ...config,
       pages: { ...config.pages, [pageId]: { pageSections } },
@@ -66,7 +67,7 @@ export function PageConfigClient({ pageId, pageLabel }: PageConfigClientProps) {
         className="text-sm"
         style={{ color: "var(--color-text-muted)" }}
       >
-        Selecione o tipo de seção e a variante (quando houver) para cada um dos 5
+        Selecione o tipo de seção e a variante (quando houver) para cada um dos 7
         slots do corpo da página.
       </p>
 
@@ -78,7 +79,7 @@ export function PageConfigClient({ pageId, pageLabel }: PageConfigClientProps) {
         }}
       >
         <div className="space-y-6">
-          {[0, 1, 2, 3, 4].map((index) => {
+          {[0, 1, 2, 3, 4, 5, 6].map((index) => {
             const slot = slots[index] ?? { type: "none" as const };
             const hasVariant = slot.type !== "none" && sectionAcceptsVariant(slot.type);
             return (

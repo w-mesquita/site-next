@@ -1,9 +1,10 @@
-import type { HeroContent, CtaContent, FeaturesContent, SectionsContentConfig } from "@/types/sections-content";
+import type { HeroContent, CtaContent, FeaturesContent, ServicesContent, SectionsContentConfig } from "@/types/sections-content";
 import {
   DEFAULT_SECTIONS_CONTENT,
   DEFAULT_HERO_CONTENT,
   DEFAULT_CTA_CONTENT,
   DEFAULT_FEATURES_CONTENT,
+  DEFAULT_SERVICES_CONTENT,
 } from "@/types/sections-content";
 import fs from "node:fs";
 import path from "node:path";
@@ -91,6 +92,38 @@ function parseFeaturesContent(raw: unknown): FeaturesContent {
   };
 }
 
+function parseServicesCard(raw: unknown): ServicesContent["cards"][0] {
+  const def = DEFAULT_SERVICES_CONTENT.cards[0];
+  if (!raw || typeof raw !== "object") return def;
+  const o = raw as Record<string, unknown>;
+  const icons = ["gear", "mail", "headphones", "bell", "chart", "palette"] as const;
+  const icon = typeof o.icon === "string" && icons.includes(o.icon as typeof icons[number]) ? (o.icon as typeof icons[number]) : def.icon;
+  return {
+    icon,
+    title: typeof o.title === "string" ? o.title : def.title,
+    message: typeof o.message === "string" ? o.message : def.message,
+    highlighted: typeof o.highlighted === "boolean" ? o.highlighted : def.highlighted,
+  };
+}
+
+function parseServicesContent(raw: unknown): ServicesContent {
+  const def = DEFAULT_SERVICES_CONTENT;
+  if (!raw || typeof raw !== "object") return def;
+  const o = raw as Record<string, unknown>;
+  const rawCards = o.cards;
+  const cards = Array.isArray(rawCards) ? rawCards.map(parseServicesCard) : def.cards;
+  return {
+    badge: typeof o.badge === "string" ? o.badge : def.badge,
+    title: typeof o.title === "string" ? o.title : def.title,
+    description: typeof o.description === "string" ? o.description : def.description,
+    cards: cards.length > 0 ? cards : def.cards,
+    backgroundImage: typeof o.backgroundImage === "string" ? o.backgroundImage : def.backgroundImage ?? "",
+    backgroundColor: typeof o.backgroundColor === "string" ? o.backgroundColor : def.backgroundColor ?? "",
+    overlayColor: typeof o.overlayColor === "string" ? o.overlayColor : def.overlayColor ?? "",
+    textColor: typeof o.textColor === "string" ? o.textColor : def.textColor ?? "",
+  };
+}
+
 /**
  * Retorna o conteúdo das seções (server-side).
  * Lê config/sections-content.json e mescla com defaults.
@@ -109,5 +142,6 @@ export function getSectionsContent(): SectionsContentConfig {
     hero: parseHeroContent(raw.hero),
     cta: parseCtaContent(raw.cta),
     features: parseFeaturesContent(raw.features),
+    services: parseServicesContent(raw.services),
   };
 }

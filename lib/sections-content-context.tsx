@@ -8,6 +8,7 @@ import type {
   HeroContent,
   CtaContent,
   FeaturesContent,
+  ServicesContent,
 } from "@/types/sections-content";
 import { getDefaultContentForSectionType } from "@/types/sections-content";
 import {
@@ -29,12 +30,12 @@ interface SectionsContentContextValue {
   getContentForSlot: (
     slotKey: SlotContentKey,
     sectionType: SectionTypeWithContent
-  ) => HeroContent | CtaContent | FeaturesContent;
+  ) => HeroContent | CtaContent | FeaturesContent | ServicesContent;
   /** Salva o conteúdo de um slot (cada seção salva independente). */
   setContentForSlot: (
     slotKey: SlotContentKey,
     type: SectionTypeWithContent,
-    content: HeroContent | CtaContent | FeaturesContent
+    content: HeroContent | CtaContent | FeaturesContent | ServicesContent
   ) => void;
   /** @deprecated Use setContentForSlot; mantido para compatibilidade. */
   setHeroContent: (hero: SectionsContentConfig["hero"]) => void;
@@ -42,6 +43,8 @@ interface SectionsContentContextValue {
   setCtaContent: (cta: SectionsContentConfig["cta"]) => void;
   /** @deprecated Use setContentForSlot; mantido para compatibilidade. */
   setFeaturesContent: (features: SectionsContentConfig["features"]) => void;
+  /** @deprecated Use setContentForSlot; mantido para compatibilidade. */
+  setServicesContent: (services: SectionsContentConfig["services"]) => void;
 }
 
 const SectionsContentContext = createContext<SectionsContentContextValue | null>(
@@ -102,31 +105,43 @@ export function SectionsContentProvider({
     []
   );
 
+  const setServicesContent = useCallback(
+    (services: SectionsContentConfig["services"]) => {
+      setContentState((prev) => {
+        const next = { ...prev, services };
+        setSectionsContentInStorage(next);
+        return next;
+      });
+    },
+    []
+  );
+
   const getContentForSlot = useCallback(
-    (slotKey: SlotContentKey, sectionType: SectionTypeWithContent): HeroContent | CtaContent | FeaturesContent => {
+    (slotKey: SlotContentKey, sectionType: SectionTypeWithContent): HeroContent | CtaContent | FeaturesContent | ServicesContent => {
       const entry = content.contentBySlot?.[slotKey];
       if (entry && entry.type === sectionType) {
         return entry.content;
       }
-      // Sem entrada no slot: usa conteúdo legado (hero/cta/features) como fallback
-      // para que edições feitas em /settings/content/hero (etc.) apareçam ao recarregar
       if (sectionType === "hero" && content.hero) return content.hero;
       if (sectionType === "cta" && content.cta) return content.cta;
       if (sectionType === "features" && content.features) return content.features;
+      if (sectionType === "services" && content.services) return content.services;
       return getDefaultContentForSectionType(sectionType);
     },
     [content]
   );
 
   const setContentForSlot = useCallback(
-    (slotKey: SlotContentKey, type: SectionTypeWithContent, slotContent: HeroContent | CtaContent | FeaturesContent) => {
+    (slotKey: SlotContentKey, type: SectionTypeWithContent, slotContent: HeroContent | CtaContent | FeaturesContent | ServicesContent) => {
       setContentState((prev) => {
         const entry: SlotContentEntry =
           type === "hero"
             ? { type: "hero", content: slotContent as HeroContent }
             : type === "cta"
               ? { type: "cta", content: slotContent as CtaContent }
-              : { type: "features", content: slotContent as FeaturesContent };
+              : type === "features"
+                ? { type: "features", content: slotContent as FeaturesContent }
+                : { type: "services", content: slotContent as ServicesContent };
         const bySlot: Record<SlotContentKey, SlotContentEntry> = { ...(prev.contentBySlot ?? {}), [slotKey]: entry };
         const next: SectionsContentConfig = { ...prev, contentBySlot: bySlot };
         setSectionsContentInStorage(next);
@@ -146,6 +161,7 @@ export function SectionsContentProvider({
         setHeroContent,
         setCtaContent,
         setFeaturesContent,
+        setServicesContent,
       }}
     >
       {children}

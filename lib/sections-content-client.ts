@@ -3,6 +3,9 @@ import type {
   HeroContent,
   CtaContent,
   FeaturesContent,
+  ServicesContent,
+  ServicesCardItem,
+  ServicesCardIconKey,
   SlotContentEntry,
   SlotContentKey,
 } from "@/types/sections-content";
@@ -11,6 +14,7 @@ import {
   DEFAULT_HERO_CONTENT,
   DEFAULT_CTA_CONTENT,
   DEFAULT_FEATURES_CONTENT,
+  DEFAULT_SERVICES_CONTENT,
 } from "@/types/sections-content";
 
 const STORAGE_KEY = "sections-content";
@@ -95,6 +99,43 @@ function parseStoredFeatures(raw: unknown): FeaturesContent {
   };
 }
 
+const SERVICES_ICON_KEYS: ServicesCardIconKey[] = ["gear", "mail", "headphones", "bell", "chart", "palette"];
+
+function parseCardItem(raw: unknown): ServicesCardItem {
+  const def = DEFAULT_SERVICES_CONTENT.cards[0];
+  if (!raw || typeof raw !== "object") return def;
+  const o = raw as Record<string, unknown>;
+  const icon = typeof o.icon === "string" && SERVICES_ICON_KEYS.includes(o.icon as ServicesCardIconKey)
+    ? (o.icon as ServicesCardIconKey)
+    : def.icon;
+  return {
+    icon,
+    title: typeof o.title === "string" ? o.title : def.title,
+    message: typeof o.message === "string" ? o.message : def.message,
+    highlighted: typeof o.highlighted === "boolean" ? o.highlighted : def.highlighted,
+  };
+}
+
+function parseStoredServices(raw: unknown): ServicesContent {
+  const def = DEFAULT_SECTIONS_CONTENT.services ?? DEFAULT_SERVICES_CONTENT;
+  if (!raw || typeof raw !== "object") return def;
+  const o = raw as Record<string, unknown>;
+  const rawCards = o.cards;
+  const cards = Array.isArray(rawCards)
+    ? rawCards.map((c) => parseCardItem(c)).filter(Boolean)
+    : def.cards;
+  return {
+    badge: typeof o.badge === "string" ? o.badge : def.badge,
+    title: typeof o.title === "string" ? o.title : def.title,
+    description: typeof o.description === "string" ? o.description : def.description,
+    cards: cards.length > 0 ? cards : def.cards,
+    backgroundImage: typeof o.backgroundImage === "string" ? o.backgroundImage : def.backgroundImage ?? "",
+    backgroundColor: typeof o.backgroundColor === "string" ? o.backgroundColor : def.backgroundColor ?? "",
+    overlayColor: typeof o.overlayColor === "string" ? o.overlayColor : def.overlayColor ?? "",
+    textColor: typeof o.textColor === "string" ? o.textColor : def.textColor ?? "",
+  };
+}
+
 function parseSlotEntry(raw: unknown): SlotContentEntry | null {
   if (!raw || typeof raw !== "object") return null;
   const o = raw as Record<string, unknown>;
@@ -102,6 +143,7 @@ function parseSlotEntry(raw: unknown): SlotContentEntry | null {
   if (t === "hero") return { type: "hero", content: parseStoredHero(o.content) };
   if (t === "cta") return { type: "cta", content: parseStoredCta(o.content) };
   if (t === "features") return { type: "features", content: parseStoredFeatures(o.content) };
+  if (t === "services") return { type: "services", content: parseStoredServices(o.content) };
   return null;
 }
 
@@ -132,6 +174,7 @@ export function getSectionsContentFromStorage(): SectionsContentConfig | null {
       hero: parseStoredHero(parsed.hero),
       cta: parseStoredCta(parsed.cta),
       features: parseStoredFeatures(parsed.features),
+      services: parseStoredServices(parsed.services),
     };
   } catch {
     return null;

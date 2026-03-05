@@ -53,8 +53,8 @@ function parseSlot(raw: unknown): PageSectionSlot {
 function parsePageSections(raw: unknown): PageSectionSlot[] {
   if (!Array.isArray(raw)) return [...DEFAULT_SECTIONS_CONFIG.pages.home.pageSections];
   const slots = raw.map(parseSlot);
-  while (slots.length < 5) slots.push({ type: "none" });
-  return slots.slice(0, 5);
+  while (slots.length < 7) slots.push({ type: "none" });
+  return slots.slice(0, 7);
 }
 
 function parsePageConfig(raw: unknown): PageConfig {

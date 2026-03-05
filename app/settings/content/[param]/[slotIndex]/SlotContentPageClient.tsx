@@ -12,6 +12,7 @@ const SECTION_LABELS: Record<string, string> = {
   hero: "Hero",
   cta: "CTA",
   features: "Features",
+  services: "Services",
 };
 
 const PAGE_LABELS: Record<string, string> = {

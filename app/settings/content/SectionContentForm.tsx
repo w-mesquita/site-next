@@ -1,7 +1,7 @@
 "use client";
 
 import { useSectionsContent } from "@/lib/sections-content-context";
-import type { CtaContent, FeaturesContent, HeroContent, SectionTypeWithContent, SlotContentKey } from "@/types/sections-content";
+import type { CtaContent, FeaturesContent, HeroContent, SectionTypeWithContent, ServicesContent, ServicesCardIconKey, ServicesCardItem, SlotContentKey } from "@/types/sections-content";
 import { getDefaultContentForSectionType } from "@/types/sections-content";
 import { ColorPicker } from "@/components/ui/ColorPicker";
 import Link from "next/link";
@@ -32,6 +32,9 @@ export function SectionContentForm({
   }
   if (sectionType === "features") {
     return <FeaturesContentForm sectionLabel={sectionLabel} slotKey={slotKey} />;
+  }
+  if (sectionType === "services") {
+    return <ServicesContentForm sectionLabel={sectionLabel} slotKey={slotKey} />;
   }
   return null;
 }
@@ -452,6 +455,230 @@ function FeaturesContentForm({
             withOpacity
             hint="Com imagem de fundo: sobrepõe a cor. Sem imagem: usa como cor de fundo. Deixe vazio para o padrão."
             placeholder="rgba ou #hex (vazio = padrão)"
+          />
+        </div>
+      </section>
+
+      <Link
+        href="/settings"
+        className="inline-block rounded-lg px-4 py-2 text-sm font-medium transition-colors hover:opacity-90 bg-[var(--color-primary)] text-white"
+      >
+        Voltar às configurações
+      </Link>
+    </div>
+  );
+}
+
+const SERVICES_ICON_OPTIONS: { value: ServicesCardIconKey; label: string }[] = [
+  { value: "gear", label: "Engrenagem" },
+  { value: "mail", label: "E-mail" },
+  { value: "headphones", label: "Fone" },
+  { value: "bell", label: "Sino" },
+  { value: "chart", label: "Gráfico" },
+  { value: "palette", label: "Paleta" },
+];
+
+function ServicesContentForm({
+  sectionLabel,
+  slotKey,
+}: {
+  sectionLabel: string;
+  slotKey?: SlotContentKey;
+}) {
+  const { content, getContentForSlot, setContentForSlot, setServicesContent } = useSectionsContent();
+  const services: ServicesContent = slotKey
+    ? (getContentForSlot(slotKey, "services") as ServicesContent)
+    : (content.services ?? (getDefaultContentForSectionType("services") as ServicesContent));
+  const setServices = slotKey
+    ? (s: ServicesContent) => setContentForSlot(slotKey, "services", s)
+    : setServicesContent;
+
+  const cards = services.cards?.length ? services.cards : [{ icon: "gear" as const, title: "", message: "", highlighted: false }];
+
+  function setCard(index: number, card: ServicesCardItem) {
+    const next = [...cards];
+    next[index] = card;
+    setServices({ ...services, cards: next });
+  }
+
+  function addCard() {
+    setServices({ ...services, cards: [...cards, { icon: "gear", title: "", message: "", highlighted: false }] });
+  }
+
+  function removeCard(index: number) {
+    const next = cards.filter((_, i) => i !== index);
+    setServices({ ...services, cards: next.length ? next : [{ icon: "gear", title: "", message: "", highlighted: false }] });
+  }
+
+  return (
+    <div className="mx-auto max-w-2xl space-y-8">
+      <div>
+        <h1 className="text-2xl font-semibold text-[var(--color-text)]">
+          Conteúdo: {sectionLabel}
+        </h1>
+        <p className="mt-1 text-sm text-[var(--color-text-muted)]">
+          Textos da seção e cards com ícone, título, mensagem e opção de destaque (cor e detalhe visual).
+        </p>
+      </div>
+
+      <section className={formSectionClass}>
+        <h2 className="mb-4 text-lg font-semibold text-[var(--color-text)]">Textos da seção</h2>
+        <div className="space-y-4">
+          <div>
+            <label htmlFor="services-badge" className={labelClass}>Tagline / Badge</label>
+            <input
+              id="services-badge"
+              type="text"
+              value={services.badge}
+              onChange={(e) => setServices({ ...services, badge: e.target.value })}
+              className={inputClass}
+              placeholder="Ex.: Destaque opcional"
+            />
+          </div>
+          <div>
+            <label htmlFor="services-title" className={labelClass}>Título</label>
+            <input
+              id="services-title"
+              type="text"
+              value={services.title}
+              onChange={(e) => setServices({ ...services, title: e.target.value })}
+              className={inputClass}
+              placeholder="Ex.: Save Time Managing Your Business..."
+            />
+          </div>
+          <div>
+            <label htmlFor="services-description" className={labelClass}>Descrição</label>
+            <textarea
+              id="services-description"
+              rows={3}
+              value={services.description}
+              onChange={(e) => setServices({ ...services, description: e.target.value })}
+              className={inputClass}
+              placeholder="Parágrafo abaixo do título."
+            />
+          </div>
+          <ColorPicker
+            id="services-textColor"
+            label="Cor do texto"
+            value={services.textColor ?? ""}
+            onChange={(v) => setServices({ ...services, textColor: v })}
+            hint="Opcional. Deixe vazio para usar as cores do tema."
+            placeholder="#hex (vazio = tema)"
+          />
+        </div>
+      </section>
+
+      <section className={formSectionClass}>
+        <h2 className="mb-4 text-lg font-semibold text-[var(--color-text)]">Cards</h2>
+        <p className="mb-4 text-sm text-[var(--color-text-muted)]">
+          Cada card: ícone, título, mensagem. Marque &quot;Destaque&quot; para aplicar cor de destaque e detalhe visual (como o card azul).
+        </p>
+        <div className="space-y-6">
+          {cards.map((card, index) => (
+            <div
+              key={index}
+              className="rounded-lg border border-[var(--color-border)] bg-[var(--color-background)] p-4"
+            >
+              <div className="mb-3 flex items-center justify-between">
+                <span className="text-sm font-medium text-[var(--color-text)]">Card {index + 1}</span>
+                <button
+                  type="button"
+                  onClick={() => removeCard(index)}
+                  className="rounded px-2 py-1 text-sm text-[var(--color-text-muted)] hover:bg-[var(--color-surface)]"
+                >
+                  Remover
+                </button>
+              </div>
+              <div className="grid gap-4 sm:grid-cols-2">
+                <div>
+                  <label className={labelClass}>Ícone</label>
+                  <select
+                    value={card.icon}
+                    onChange={(e) => setCard(index, { ...card, icon: e.target.value as ServicesCardIconKey })}
+                    className={inputClass}
+                  >
+                    {SERVICES_ICON_OPTIONS.map((opt) => (
+                      <option key={opt.value} value={opt.value}>{opt.label}</option>
+                    ))}
+                  </select>
+                </div>
+                <div className="flex items-end gap-2 sm:items-center">
+                  <label className="flex items-center gap-2">
+                    <input
+                      type="checkbox"
+                      checked={card.highlighted}
+                      onChange={(e) => setCard(index, { ...card, highlighted: e.target.checked })}
+                      className="rounded border-[var(--color-border)]"
+                    />
+                    <span className="text-sm font-medium text-[var(--color-text)]">Destaque (cor + detalhe)</span>
+                  </label>
+                </div>
+              </div>
+              <div className="mt-4">
+                <label className={labelClass}>Título do card</label>
+                <input
+                  type="text"
+                  value={card.title}
+                  onChange={(e) => setCard(index, { ...card, title: e.target.value })}
+                  className={inputClass}
+                  placeholder="Ex.: Product Management"
+                />
+              </div>
+              <div className="mt-4">
+                <label className={labelClass}>Mensagem</label>
+                <textarea
+                  rows={2}
+                  value={card.message}
+                  onChange={(e) => setCard(index, { ...card, message: e.target.value })}
+                  className={inputClass}
+                  placeholder="Descrição do serviço."
+                />
+              </div>
+            </div>
+          ))}
+          <button
+            type="button"
+            onClick={addCard}
+            className="rounded-lg border border-dashed border-[var(--color-border)] px-4 py-2 text-sm font-medium text-[var(--color-text-muted)] hover:bg-[var(--color-surface)]"
+          >
+            + Adicionar card
+          </button>
+        </div>
+      </section>
+
+      <section className={formSectionClass}>
+        <h2 className="mb-4 text-lg font-semibold text-[var(--color-text)]">Fundo da seção</h2>
+        <div className="space-y-4">
+          <div>
+            <label htmlFor="services-backgroundImage" className={labelClass}>Imagem de fundo</label>
+            <input
+              id="services-backgroundImage"
+              type="text"
+              value={services.backgroundImage ?? ""}
+              onChange={(e) => setServices({ ...services, backgroundImage: e.target.value })}
+              className={inputClass}
+              placeholder="/bg.jpg ou URL"
+            />
+          </div>
+          <div>
+            <label htmlFor="services-backgroundColor" className={labelClass}>Cor de fundo</label>
+            <input
+              id="services-backgroundColor"
+              type="text"
+              value={services.backgroundColor ?? ""}
+              onChange={(e) => setServices({ ...services, backgroundColor: e.target.value })}
+              className={inputClass}
+              placeholder="Ex.: #f8fafc, var(--color-surface)"
+            />
+          </div>
+          <ColorPicker
+            id="services-overlayColor"
+            label="Cor de sobreposição"
+            value={services.overlayColor ?? ""}
+            onChange={(v) => setServices({ ...services, overlayColor: v })}
+            withOpacity
+            hint="Com imagem de fundo: overlay por cima. Vazio = padrão."
+            placeholder="rgba ou #hex"
           />
         </div>
       </section>
