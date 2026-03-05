@@ -43,14 +43,16 @@ function isLinkProps(props: ButtonProps): props is ButtonAsLink {
   return "href" in props && typeof props.href === "string";
 }
 
-export function Button({
-  variant = "primary",
-  size = "md",
-  className = "",
-  disabled = false,
-  children,
-  ...rest
-}: ButtonProps) {
+export function Button(props: ButtonProps) {
+  const {
+    variant = "primary",
+    size = "md",
+    className = "",
+    disabled = false,
+    children,
+    ...rest
+  } = props;
+
   const baseClass =
     "inline-block rounded-md font-medium transition-colors duration-150 disabled:opacity-50 disabled:pointer-events-none";
 
@@ -63,8 +65,8 @@ export function Button({
     .filter(Boolean)
     .join(" ");
 
-  if (isLinkProps(rest)) {
-    const { href, ...linkRest } = rest;
+  if (isLinkProps(props)) {
+    const { href, ...linkRest } = props;
     return (
       <Link href={href} className={combinedClass} {...linkRest}>
         {children}
@@ -72,13 +74,15 @@ export function Button({
     );
   }
 
-  const { type = "button", ...buttonRest } = rest;
+  // Neste ramo props é ButtonAsButton; rest contém apenas props nativas do button
+  const buttonRest = rest as Omit<ComponentPropsWithoutRef<"button">, keyof ButtonBaseProps>;
+  const { type = "button", ...nativeButtonProps } = buttonRest;
   return (
     <button
       type={type}
       disabled={disabled}
       className={combinedClass}
-      {...buttonRest}
+      {...nativeButtonProps}
     >
       {children}
     </button>
