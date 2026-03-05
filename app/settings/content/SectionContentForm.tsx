@@ -11,6 +11,8 @@ interface SectionContentFormProps {
   sectionLabel: string;
   /** Quando definido, edita o conteúdo deste slot (cada seção salva independente). */
   slotKey?: SlotContentKey;
+  /** Quando definido com slotKey, exibe botão "Voltar à configuração da página" (ex.: /config/home). */
+  backToConfigHref?: string;
 }
 
 const formSectionClass =
@@ -23,20 +25,45 @@ export function SectionContentForm({
   sectionType,
   sectionLabel,
   slotKey,
+  backToConfigHref,
 }: SectionContentFormProps) {
+  const backToConfigLink =
+    slotKey && backToConfigHref ? (
+      <Link
+        href={backToConfigHref}
+        className="mb-6 inline-flex items-center gap-2 rounded-lg border px-4 py-2 text-sm font-medium transition-colors hover:bg-[var(--color-surface)]"
+        style={{ borderColor: "var(--color-border)", color: "var(--color-text)" }}
+      >
+        <BackIcon className="h-4 w-4" />
+        Voltar à configuração da página
+      </Link>
+    ) : null;
+
+  let form: React.ReactNode = null;
   if (sectionType === "hero") {
-    return <HeroContentForm sectionLabel={sectionLabel} slotKey={slotKey} />;
+    form = <HeroContentForm sectionLabel={sectionLabel} slotKey={slotKey} />;
+  } else if (sectionType === "cta") {
+    form = <CtaContentForm sectionLabel={sectionLabel} slotKey={slotKey} />;
+  } else if (sectionType === "features") {
+    form = <FeaturesContentForm sectionLabel={sectionLabel} slotKey={slotKey} />;
+  } else if (sectionType === "services") {
+    form = <ServicesContentForm sectionLabel={sectionLabel} slotKey={slotKey} />;
   }
-  if (sectionType === "cta") {
-    return <CtaContentForm sectionLabel={sectionLabel} slotKey={slotKey} />;
-  }
-  if (sectionType === "features") {
-    return <FeaturesContentForm sectionLabel={sectionLabel} slotKey={slotKey} />;
-  }
-  if (sectionType === "services") {
-    return <ServicesContentForm sectionLabel={sectionLabel} slotKey={slotKey} />;
-  }
-  return null;
+
+  return (
+    <div className="mx-auto max-w-2xl">
+      {backToConfigLink}
+      {form}
+    </div>
+  );
+}
+
+function BackIcon({ className }: { className?: string }) {
+  return (
+    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor" className={className}>
+      <path strokeLinecap="round" strokeLinejoin="round" d="M10.5 19.5L3 12m0 0l7.5-7.5M3 12h18" />
+    </svg>
+  );
 }
 
 function CtaContentForm({

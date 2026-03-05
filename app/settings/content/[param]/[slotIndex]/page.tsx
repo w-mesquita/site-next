@@ -14,7 +14,7 @@ interface PageProps {
 export default async function SlotContentPage({ params }: PageProps) {
   const { param: pageId, slotIndex } = await params;
   const index = parseInt(slotIndex, 10);
-  if (!Number.isInteger(index) || index < 0 || index > 4) notFound();
+  if (!Number.isInteger(index) || index < 0 || index > 6) notFound();
   return (
     <main className="min-h-[calc(100dvh-64px)] px-6 py-12">
       <SlotContentPageClient pageId={pageId} slotIndex={index} />

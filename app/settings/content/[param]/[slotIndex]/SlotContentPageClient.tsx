@@ -40,6 +40,7 @@ export function SlotContentPageClient({ pageId, slotIndex }: SlotContentPageClie
       sectionType={slot.type}
       sectionLabel={sectionLabel}
       slotKey={slotKey}
+      backToConfigHref={`/config/${pageId}`}
     />
   );
 }
