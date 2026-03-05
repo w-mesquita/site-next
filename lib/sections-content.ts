@@ -1,4 +1,4 @@
-import type { HeroContent, CtaContent, SectionsContentConfig } from "@/types/sections-content";
+import type { HeroContent, CtaContent, FeaturesContent, SectionsContentConfig } from "@/types/sections-content";
 import { DEFAULT_SECTIONS_CONTENT } from "@/types/sections-content";
 import fs from "node:fs";
 import path from "node:path";
@@ -49,6 +49,36 @@ function parseCtaContent(raw: unknown): CtaContent {
   };
 }
 
+function parseFeaturesAction(raw: unknown): FeaturesContent["primaryAction"] {
+  if (!raw || typeof raw !== "object") return DEFAULT_SECTIONS_CONTENT.features.primaryAction;
+  const o = raw as Record<string, unknown>;
+  return {
+    label: typeof o.label === "string" ? o.label : DEFAULT_SECTIONS_CONTENT.features.primaryAction.label,
+    href: typeof o.href === "string" ? o.href : DEFAULT_SECTIONS_CONTENT.features.primaryAction.href,
+  };
+}
+
+function parseFeaturesContent(raw: unknown): FeaturesContent {
+  const def = DEFAULT_SECTIONS_CONTENT.features;
+  if (!raw || typeof raw !== "object") return def;
+  const o = raw as Record<string, unknown>;
+  const rawList = o.listItems;
+  const listItems = Array.isArray(rawList)
+    ? rawList.filter((item): item is string => typeof item === "string")
+    : def.listItems;
+  return {
+    badge: typeof o.badge === "string" ? o.badge : def.badge,
+    title: typeof o.title === "string" ? o.title : def.title,
+    description: typeof o.description === "string" ? o.description : def.description,
+    listItems: listItems.length > 0 ? listItems : def.listItems,
+    primaryAction: parseFeaturesAction(o.primaryAction),
+    imageSrc: typeof o.imageSrc === "string" ? o.imageSrc : def.imageSrc,
+    backgroundImage: typeof o.backgroundImage === "string" ? o.backgroundImage : def.backgroundImage ?? "",
+    backgroundColor: typeof o.backgroundColor === "string" ? o.backgroundColor : def.backgroundColor ?? "",
+    overlayColor: typeof o.overlayColor === "string" ? o.overlayColor : def.overlayColor ?? "",
+  };
+}
+
 /**
  * Retorna o conteúdo das seções (server-side).
  * Lê config/sections-content.json e mescla com defaults.
@@ -65,5 +95,6 @@ export function getSectionsContent(): SectionsContentConfig {
   return {
     hero: parseHeroContent(raw.hero),
     cta: parseCtaContent(raw.cta),
+    features: parseFeaturesContent(raw.features),
   };
 }

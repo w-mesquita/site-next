@@ -18,6 +18,7 @@ interface SectionsContentContextValue {
   setContent: (content: SectionsContentConfig) => void;
   setHeroContent: (hero: SectionsContentConfig["hero"]) => void;
   setCtaContent: (cta: SectionsContentConfig["cta"]) => void;
+  setFeaturesContent: (features: SectionsContentConfig["features"]) => void;
 }
 
 const SectionsContentContext = createContext<SectionsContentContextValue | null>(
@@ -67,9 +68,20 @@ export function SectionsContentProvider({
     []
   );
 
+  const setFeaturesContent = useCallback(
+    (features: SectionsContentConfig["features"]) => {
+      setContentState((prev) => {
+        const next = { ...prev, features };
+        setSectionsContentInStorage(next);
+        return next;
+      });
+    },
+    []
+  );
+
   return (
     <SectionsContentContext.Provider
-      value={{ content, setContent, setHeroContent, setCtaContent }}
+      value={{ content, setContent, setHeroContent, setCtaContent, setFeaturesContent }}
     >
       {children}
     </SectionsContentContext.Provider>

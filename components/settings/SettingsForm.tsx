@@ -16,6 +16,7 @@ import Link from "next/link";
 const CONTENT_SECTION_LABELS: Record<(typeof SECTION_TYPES_WITH_CONTENT)[number], string> = {
   hero: "Hero",
   cta: "CTA",
+  features: "Features",
 };
 
 const PAGE_LABELS: Record<PageId, string> = {

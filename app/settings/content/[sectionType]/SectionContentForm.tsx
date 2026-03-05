@@ -25,6 +25,9 @@ export function SectionContentForm({
   if (sectionType === "cta") {
     return <CtaContentForm sectionLabel={sectionLabel} />;
   }
+  if (sectionType === "features") {
+    return <FeaturesContentForm sectionLabel={sectionLabel} />;
+  }
   return null;
 }
 
@@ -157,6 +160,251 @@ function CtaContentForm({ sectionLabel }: { sectionLabel: string }) {
               }
               className={inputClass}
               placeholder="Ex.: #f5f5f5, var(--color-surface)"
+            />
+          </div>
+        </div>
+      </section>
+
+      <Link
+        href="/settings"
+        className="inline-block rounded-lg px-4 py-2 text-sm font-medium transition-colors hover:opacity-90 bg-[var(--color-primary)] text-white"
+      >
+        Voltar às configurações
+      </Link>
+    </div>
+  );
+}
+
+function FeaturesContentForm({ sectionLabel }: { sectionLabel: string }) {
+  const { content, setFeaturesContent } = useSectionsContent();
+  const features = content.features;
+
+  function updateListItem(index: number, value: string) {
+    const next = [...features.listItems];
+    next[index] = value;
+    setFeaturesContent({ ...features, listItems: next });
+  }
+
+  function addListItem() {
+    setFeaturesContent({
+      ...features,
+      listItems: [...features.listItems, ""],
+    });
+  }
+
+  function removeListItem(index: number) {
+    const next = features.listItems.filter((_, i) => i !== index);
+    setFeaturesContent({ ...features, listItems: next });
+  }
+
+  return (
+    <div className="mx-auto max-w-2xl space-y-8">
+      <div>
+        <h1 className="text-2xl font-semibold text-[var(--color-text)]">
+          Conteúdo: {sectionLabel}
+        </h1>
+        <p className="mt-1 text-sm text-[var(--color-text-muted)]">
+          V1: texto à esquerda, imagem à direita. V2: imagem à esquerda, texto e lista à direita. Tagline, título, descrição, lista editável e botão.
+        </p>
+      </div>
+
+      <section className={formSectionClass}>
+        <h2 className="mb-4 text-lg font-semibold text-[var(--color-text)]">
+          Textos
+        </h2>
+        <div className="space-y-4">
+          <div>
+            <label htmlFor="features-badge" className={labelClass}>
+              Tagline / Categoria
+            </label>
+            <input
+              id="features-badge"
+              type="text"
+              value={features.badge}
+              onChange={(e) => setFeaturesContent({ ...features, badge: e.target.value })}
+              className={inputClass}
+              placeholder="Ex.: Marketing Company"
+            />
+          </div>
+          <div>
+            <label htmlFor="features-title" className={labelClass}>
+              Título
+            </label>
+            <input
+              id="features-title"
+              type="text"
+              value={features.title}
+              onChange={(e) => setFeaturesContent({ ...features, title: e.target.value })}
+              className={inputClass}
+              placeholder="Ex.: Grow Your Online Business With Us & Make Success"
+            />
+          </div>
+          <div>
+            <label htmlFor="features-description" className={labelClass}>
+              Descrição
+            </label>
+            <textarea
+              id="features-description"
+              rows={3}
+              value={features.description}
+              onChange={(e) => setFeaturesContent({ ...features, description: e.target.value })}
+              className={inputClass}
+              placeholder="Parágrafo descritivo da seção."
+            />
+          </div>
+        </div>
+      </section>
+
+      <section className={formSectionClass}>
+        <h2 className="mb-4 text-lg font-semibold text-[var(--color-text)]">
+          Lista de itens (com ícone de check)
+        </h2>
+        <p className="mb-4 text-sm text-[var(--color-text-muted)]">
+          Adicione ou remova itens. Cada item aparece com um check ao lado.
+        </p>
+        <div className="space-y-3">
+          {features.listItems.map((item, index) => (
+            <div key={index} className="flex gap-2">
+              <input
+                type="text"
+                value={item}
+                onChange={(e) => updateListItem(index, e.target.value)}
+                className={inputClass + " flex-1"}
+                placeholder={`Item ${index + 1}`}
+              />
+              <button
+                type="button"
+                onClick={() => removeListItem(index)}
+                className="rounded-lg border border-[var(--color-border)] px-3 py-2 text-sm font-medium text-[var(--color-text)] hover:bg-[var(--color-surface)]"
+              >
+                Remover
+              </button>
+            </div>
+          ))}
+          <button
+            type="button"
+            onClick={addListItem}
+            className="rounded-lg border border-dashed border-[var(--color-border)] px-4 py-2 text-sm font-medium text-[var(--color-text-muted)] hover:bg-[var(--color-surface)]"
+          >
+            + Adicionar item
+          </button>
+        </div>
+      </section>
+
+      <section className={formSectionClass}>
+        <h2 className="mb-4 text-lg font-semibold text-[var(--color-text)]">
+          Ação (botão)
+        </h2>
+        <div className="grid gap-4 md:grid-cols-2">
+          <div>
+            <label htmlFor="features-action-label" className={labelClass}>
+              Texto do botão
+            </label>
+            <input
+              id="features-action-label"
+              type="text"
+              value={features.primaryAction.label}
+              onChange={(e) =>
+                setFeaturesContent({
+                  ...features,
+                  primaryAction: { ...features.primaryAction, label: e.target.value },
+                })
+              }
+              className={inputClass}
+              placeholder="Ex.: Explore More"
+            />
+          </div>
+          <div>
+            <label htmlFor="features-action-href" className={labelClass}>
+              Link (URL)
+            </label>
+            <input
+              id="features-action-href"
+              type="text"
+              value={features.primaryAction.href}
+              onChange={(e) =>
+                setFeaturesContent({
+                  ...features,
+                  primaryAction: { ...features.primaryAction, href: e.target.value },
+                })
+              }
+              className={inputClass}
+              placeholder="# ou /contato"
+            />
+          </div>
+        </div>
+      </section>
+
+      <section className={formSectionClass}>
+        <h2 className="mb-4 text-lg font-semibold text-[var(--color-text)]">
+          Imagem da seção
+        </h2>
+        <div>
+          <label htmlFor="features-imageSrc" className={labelClass}>
+            Caminho ou URL da ilustração/imagem
+          </label>
+          <input
+            id="features-imageSrc"
+            type="text"
+            value={features.imageSrc}
+            onChange={(e) => setFeaturesContent({ ...features, imageSrc: e.target.value })}
+            className={inputClass}
+            placeholder="/features-illustration.jpg ou URL"
+          />
+        </div>
+      </section>
+
+      <section className={formSectionClass}>
+        <h2 className="mb-4 text-lg font-semibold text-[var(--color-text)]">
+          Fundo e sobreposição
+        </h2>
+        <p className="mb-4 text-sm text-[var(--color-text-muted)]">
+          Imagem e/ou cor de fundo; opcionalmente uma cor de sobreposição (ex.: rgba(0,0,0,0.3)) aplicada por cima.
+        </p>
+        <div className="space-y-4">
+          <div>
+            <label htmlFor="features-backgroundImage" className={labelClass}>
+              Imagem de fundo
+            </label>
+            <input
+              id="features-backgroundImage"
+              type="text"
+              value={features.backgroundImage ?? ""}
+              onChange={(e) =>
+                setFeaturesContent({ ...features, backgroundImage: e.target.value })
+              }
+              className={inputClass}
+              placeholder="/bg.jpg ou URL"
+            />
+          </div>
+          <div>
+            <label htmlFor="features-backgroundColor" className={labelClass}>
+              Cor de fundo
+            </label>
+            <input
+              id="features-backgroundColor"
+              type="text"
+              value={features.backgroundColor ?? ""}
+              onChange={(e) =>
+                setFeaturesContent({ ...features, backgroundColor: e.target.value })
+              }
+              className={inputClass}
+              placeholder="Ex.: #fff, var(--color-background)"
+            />
+          </div>
+          <div>
+            <label htmlFor="features-overlayColor" className={labelClass}>
+              Cor da sobreposição (overlay)
+            </label>
+            <input
+              id="features-overlayColor"
+              type="text"
+              value={features.overlayColor ?? ""}
+              onChange={(e) =>
+                setFeaturesContent({ ...features, overlayColor: e.target.value })
+              }
+              className={inputClass}
+              placeholder="Ex.: rgba(0,0,0,0.2) ou transparent"
             />
           </div>
         </div>

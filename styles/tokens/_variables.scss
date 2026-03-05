@@ -6,7 +6,7 @@
 :root {
   // Light theme (off-white base)
   // Cor primitiva: altere apenas --color-primary; hover, active e light são derivados em cadeia
-  --color-primary: #eb4d25;
+  --color-primary: #2563eb;
   --color-primary-hover: color-mix(in srgb, var(--color-primary) 88%, black);
   --color-primary-active: color-mix(in srgb, var(--color-primary) 72%, black);
   --color-primary-light: color-mix(in srgb, var(--color-primary) 85%, white);

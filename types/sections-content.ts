@@ -77,18 +77,66 @@ export const DEFAULT_CTA_CONTENT: CtaContent = {
   backgroundColor: "",
 };
 
+/** Conteúdo da seção Features (tagline, título, descrição, lista editável, CTA, imagem). */
+export interface FeaturesAction {
+  label: string;
+  href: string;
+}
+
+export interface FeaturesContent {
+  /** Tagline/categoria (ex.: "Marketing Company") */
+  badge: string;
+  /** Título principal */
+  title: string;
+  /** Parágrafo descritivo */
+  description: string;
+  /** Itens da lista (com ícone de check) — editável pelo usuário */
+  listItems: string[];
+  /** Ação principal (botão) */
+  primaryAction: FeaturesAction;
+  /** Imagem/ilustração da seção (caminho ou URL) */
+  imageSrc: string;
+  /** Imagem de fundo da seção (opcional). */
+  backgroundImage?: string;
+  /** Cor de fundo da seção (opcional). */
+  backgroundColor?: string;
+  /** Cor da sobreposição (overlay) — aplicada sobre fundo ou imagem; use rgba/hex com opacidade. */
+  overlayColor?: string;
+}
+
+export const DEFAULT_FEATURES_CONTENT: FeaturesContent = {
+  badge: "Marketing Company",
+  title: "Grow Your Online Business With Us & Make Success",
+  description:
+    "Too cultivated use solicitude frequently. Dashwood likewise up consider continue entrance ladyship oh. Wrong guest given purse power is no.",
+  listItems: [
+    "Expenses as material breeding insisted building to in.",
+    "Continual so distrusts pronounce by unwilling listening.",
+    "Thing do taste on we manor. Him had wound use found hoped.",
+    "Of distrusts immediate enjoyment curiosity do.",
+    "Marianne numerous saw thoughts the humoured.",
+  ],
+  primaryAction: { label: "Explore More", href: "#" },
+  imageSrc: "",
+  backgroundImage: "",
+  backgroundColor: "",
+  overlayColor: "",
+};
+
 export interface SectionsContentConfig {
   hero: HeroContent;
   cta: CtaContent;
+  features: FeaturesContent;
 }
 
 export const DEFAULT_SECTIONS_CONTENT: SectionsContentConfig = {
   hero: DEFAULT_HERO_CONTENT,
   cta: DEFAULT_CTA_CONTENT,
+  features: DEFAULT_FEATURES_CONTENT,
 };
 
 /** Tipos de seção que possuem página de configuração de conteúdo */
-export const SECTION_TYPES_WITH_CONTENT = ["hero", "cta"] as const;
+export const SECTION_TYPES_WITH_CONTENT = ["hero", "cta", "features"] as const;
 export type SectionTypeWithContent = (typeof SECTION_TYPES_WITH_CONTENT)[number];
 
 export function isSectionTypeWithContent(

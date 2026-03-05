@@ -14,6 +14,7 @@ export const metadata: Metadata = {
 const SECTION_LABELS: Record<(typeof SECTION_TYPES_WITH_CONTENT)[number], string> = {
   hero: "Hero",
   cta: "CTA",
+  features: "Features",
 };
 
 interface PageProps {

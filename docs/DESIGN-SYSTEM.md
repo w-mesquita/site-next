@@ -23,6 +23,8 @@ Regras: `.cursor/rules/scss-design-tokens.mdc`, `.cursor/rules/design-system-and
 
 ### 2025-03-06
 
+- **Seção Features:** Nova seção com conteúdo editável (tagline, título, descrição, lista de itens com check, botão, imagem). **V1:** texto à esquerda, imagem à direita (estilo referência). **V2:** imagem à esquerda, texto e lista à direita. Suporte a fundo: `backgroundImage`, `backgroundColor`, `overlayColor` (sobreposição com cor ou somente cor de sobreposição). Lista editável em Configurações → Conteúdo → Features (adicionar/remover itens). Tipo `features` em `SectionType`; variantes v1 e v2 em `getVariantsForSectionType`. Componentes em `components/sections/features/`; conteúdo em `FeaturesContent` e `useSectionsContent().content.features`.
+
 - **Configurações globais (cor primária e logo):** Nova seção em Configurações permite ao usuário escolher a cor primária (color picker + hex) e o logo (URL ou caminho, ex.: /logo.svg). Valores persistidos no localStorage; cor aplicada em tempo real via `document.documentElement.style.setProperty("--color-primary", …)`. Logo consumido por `AppLogo` em header e footer (se vazio, exibe texto "Logo"). Tipos em `types/global-config.ts`, context em `lib/global-config-context.tsx`, leitura server em `lib/global-config.ts` e `config/global.json`.
 
 - **Primary como cor primitiva (cascade):** Em `_variables.scss`, `--color-primary-hover`, `--color-primary-active` e `--color-primary-light` passam a ser derivadas de `--color-primary` via `color-mix()` (hover/active mais escuros, light mais claro). Basta alterar `--color-primary` para atualizar toda a família em cadeia. Em `.dark` é opcional definir outro `--color-primary`; as derivadas seguem.

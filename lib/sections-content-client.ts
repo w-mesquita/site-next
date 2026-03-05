@@ -1,4 +1,4 @@
-import type { SectionsContentConfig, HeroContent, CtaContent } from "@/types/sections-content";
+import type { SectionsContentConfig, HeroContent, CtaContent, FeaturesContent } from "@/types/sections-content";
 import { DEFAULT_SECTIONS_CONTENT } from "@/types/sections-content";
 
 const STORAGE_KEY = "sections-content";
@@ -47,6 +47,35 @@ function parseStoredCta(raw: unknown): CtaContent {
   };
 }
 
+function parseStoredFeatures(raw: unknown): FeaturesContent {
+  const def = DEFAULT_SECTIONS_CONTENT.features;
+  if (!raw || typeof raw !== "object") return def;
+  const o = raw as Record<string, unknown>;
+  const parseAction = (a: unknown): FeaturesContent["primaryAction"] => {
+    if (!a || typeof a !== "object") return def.primaryAction;
+    const x = a as Record<string, unknown>;
+    return {
+      label: typeof x.label === "string" ? x.label : def.primaryAction.label,
+      href: typeof x.href === "string" ? x.href : def.primaryAction.href,
+    };
+  };
+  const rawList = o.listItems;
+  const listItems = Array.isArray(rawList)
+    ? rawList.filter((item): item is string => typeof item === "string")
+    : def.listItems;
+  return {
+    badge: typeof o.badge === "string" ? o.badge : def.badge,
+    title: typeof o.title === "string" ? o.title : def.title,
+    description: typeof o.description === "string" ? o.description : def.description,
+    listItems: listItems.length > 0 ? listItems : def.listItems,
+    primaryAction: parseAction(o.primaryAction),
+    imageSrc: typeof o.imageSrc === "string" ? o.imageSrc : def.imageSrc,
+    backgroundImage: typeof o.backgroundImage === "string" ? o.backgroundImage : def.backgroundImage ?? "",
+    backgroundColor: typeof o.backgroundColor === "string" ? o.backgroundColor : def.backgroundColor ?? "",
+    overlayColor: typeof o.overlayColor === "string" ? o.overlayColor : def.overlayColor ?? "",
+  };
+}
+
 /**
  * Lê o conteúdo das seções do localStorage (apenas no client).
  */
@@ -59,6 +88,7 @@ export function getSectionsContentFromStorage(): SectionsContentConfig | null {
     return {
       hero: parseStoredHero(parsed.hero),
       cta: parseStoredCta(parsed.cta),
+      features: parseStoredFeatures(parsed.features),
     };
   } catch {
     return null;
