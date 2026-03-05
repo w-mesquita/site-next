@@ -53,6 +53,12 @@ export function ColorPicker({
   defaultOpacity = 0.5,
   className = "",
 }: ColorPickerProps) {
+  const [textInput, setTextInput] = useState(value);
+
+  useEffect(() => {
+    setTextInput(value);
+  }, [value]);
+
   if (withOpacity) {
     return (
       <ColorPickerWithOpacity
@@ -68,11 +74,6 @@ export function ColorPicker({
       />
     );
   }
-
-  const [textInput, setTextInput] = useState(value);
-  useEffect(() => {
-    setTextInput(value);
-  }, [value]);
 
   const handleColorChange = (hex: string) => {
     const normalized = toHexColor(hex);
