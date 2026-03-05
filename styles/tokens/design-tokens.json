@@ -30,6 +30,15 @@
             "alpha": 1,
             "hex": "#1d4ed8"
           }
+        },
+        "800": {
+          "$type": "color",
+          "$value": {
+            "colorSpace": "srgb",
+            "components": [0.118, 0.251, 0.686],
+            "alpha": 1,
+            "hex": "#1e40af"
+          }
         }
       },
       "neutral": {
@@ -103,6 +112,7 @@
     "action": {
       "primary": { "$value": "{color.palette.primary.600}" },
       "primaryHover": { "$value": "{color.palette.primary.700}" },
+      "primaryActive": { "$value": "{color.palette.primary.800}" },
       "primaryLight": { "$value": "{color.palette.primary.500}" }
     }
   },

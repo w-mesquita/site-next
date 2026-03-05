@@ -1,8 +1,8 @@
 "use client";
 
+import { Button } from "@/components/ui/Button";
 import type { CtaContent } from "@/types/sections-content";
 import { DEFAULT_CTA_CONTENT } from "@/types/sections-content";
-import Link from "next/link";
 
 export interface CtaV2Props {
   content?: CtaContent;
@@ -46,12 +46,9 @@ export function CtaV2({ content: contentProp }: CtaV2Props) {
           </p>
         </div>
         <div className="mt-8 flex justify-center md:mt-0 md:justify-end md:flex-shrink-0">
-          <Link
-            href={content.action.href}
-            className="inline-block rounded-md border-2 border-white bg-transparent px-6 py-3 font-medium text-white hover:bg-white hover:text-[var(--color-primary)] transition-colors"
-          >
+          <Button href={content.action.href} variant="inverse" size="md">
             {content.action.label}
-          </Link>
+          </Button>
         </div>
       </div>
     </section>

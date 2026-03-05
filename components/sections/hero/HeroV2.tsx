@@ -1,6 +1,6 @@
+import { Button } from "@/components/ui/Button";
 import type { HeroContent } from "@/types/sections-content";
 import { DEFAULT_HERO_CONTENT } from "@/types/sections-content";
-import Link from "next/link";
 
 export interface HeroV2Props {
   content?: HeroContent;
@@ -46,12 +46,9 @@ export function HeroV2({ content: contentProp }: HeroV2Props) {
         <p className="mt-6 max-w-2xl text-lg md:text-xl" style={{ color: "var(--color-text-muted)" }}>
           {content.description}
         </p>
-        <Link
-          href={content.primaryAction.href}
-          className="mt-8 inline-block rounded-md bg-[var(--color-primary)] px-6 py-3 font-medium text-white hover:no-underline"
-        >
+        <Button href={content.primaryAction.href} variant="primary" size="md" className="mt-8">
           {content.primaryAction.label}
-        </Link>
+        </Button>
       </div>
     </section>
   );

@@ -2,8 +2,8 @@
 
 import type { HeroContent } from "@/types/sections-content";
 import { DEFAULT_HERO_CONTENT } from "@/types/sections-content";
+import { Button } from "@/components/ui/Button";
 import Image from "next/image";
-import Link from "next/link";
 import { useState } from "react";
 
 export interface HeroV1Props {
@@ -95,23 +95,12 @@ export function HeroV1({ content: contentProp }: HeroV1Props) {
           </p>
 
           <div className="flex flex-wrap gap-4 pt-2">
-            <Link
-              href={content.primaryAction.href}
-              className="inline-block rounded-md px-6 py-3 font-medium text-white hover:no-underline"
-              style={{ backgroundColor: "var(--color-primary)" }}
-            >
+            <Button href={content.primaryAction.href} variant="primary" size="md">
               {content.primaryAction.label}
-            </Link>
-            <Link
-              href={content.secondaryAction.href}
-              className="inline-block rounded-md border px-6 py-3 font-medium hover:no-underline"
-              style={{
-                borderColor: "var(--color-border)",
-                color: "var(--color-text)",
-              }}
-            >
+            </Button>
+            <Button href={content.secondaryAction.href} variant="neutral" size="md">
               {content.secondaryAction.label}
-            </Link>
+            </Button>
           </div>
         </div>
 

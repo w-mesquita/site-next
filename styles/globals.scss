@@ -31,6 +31,14 @@ a {
   &:hover {
     text-decoration: underline;
   }
+
+  /* Botões (Button com href) não sublinham: componente usa .no-underline */
+  &.no-underline,
+  &.no-underline:hover,
+  &.no-underline:active,
+  &.no-underline:focus {
+    text-decoration: none !important;
+  }
 }
 
 img {

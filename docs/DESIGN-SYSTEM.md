@@ -13,12 +13,16 @@ Regras: `.cursor/rules/scss-design-tokens.mdc`, `.cursor/rules/design-system-and
 
 ## Tokens principais
 
-- **Cores:** `--color-primary`, `--color-background`, `--color-surface`, `--color-text`, `--color-text-muted`, `--color-border`.
+- **Cores:** `--color-primary`, `--color-primary-hover`, `--color-primary-active`, `--color-background`, `--color-surface`, `--color-text`, `--color-text-muted`, `--color-border`.
 - **Header:** `--header-height`, `--header-bg`, `--header-bg-scrolled`, `--header-text`.
 - **Espaçamento:** `--spacing-xs` a `--spacing-2xl`.
 - **Breakpoints:** `--breakpoint-tablet` (768px), `--breakpoint-desktop` (1024px).
 
 ## Registro de alterações
+
+### 2025-03-06
+
+- **Componente Button:** Novo componente reutilizável em `components/ui/Button.tsx`. Variantes: `primary` (fundo primary, texto branco) e `neutral` (borda, texto, estilo secundário/contato). Tamanhos: `sm`, `md`, `lg`. Estados: hover (`--color-primary-hover`), active/click (`--color-primary-active`), focus-visible (outline), disabled. Pode ser usado como `<Button href="...">` (renderiza Next.js Link) ou `<Button type="submit">` (renderiza button). Tokens adicionados: `--color-primary-active` em `_variables.scss` e `design-tokens.json` (primary.800 / action.primaryActive).
 
 ### 2025-03-05
 

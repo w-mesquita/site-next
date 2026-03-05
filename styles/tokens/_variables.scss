@@ -7,6 +7,7 @@
   // Light theme (off-white base)
   --color-primary: #2563eb;
   --color-primary-hover: #1d4ed8;
+  --color-primary-active: #1e40af;
   --color-primary-light: #3b82f6;
 
   --color-background: #fafafa;
@@ -46,6 +47,7 @@
 }
 
 .dark {
+  --color-primary-active: #1e3a8a;
   --color-background: #0a0a0a;
   --color-surface: #171717;
   --color-text: #fafafa;

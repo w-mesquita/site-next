@@ -1,8 +1,8 @@
 "use client";
 
+import { Button } from "@/components/ui/Button";
 import type { CtaContent } from "@/types/sections-content";
 import { DEFAULT_CTA_CONTENT } from "@/types/sections-content";
-import Link from "next/link";
 
 export interface CtaV1Props {
   content?: CtaContent;
@@ -43,12 +43,9 @@ export function CtaV1({ content: contentProp }: CtaV1Props) {
         <p className="mt-4 max-w-2xl mx-auto text-base md:text-lg" style={{ color: "var(--color-text-muted)" }}>
           {content.text}
         </p>
-        <Link
-          href={content.action.href}
-          className="mt-8 inline-block rounded-md bg-[var(--color-primary)] px-6 py-3 font-medium text-white hover:opacity-90 transition-opacity"
-        >
+        <Button href={content.action.href} variant="primary" size="md" className="mt-8">
           {content.action.label}
-        </Link>
+        </Button>
       </div>
     </section>
   );
