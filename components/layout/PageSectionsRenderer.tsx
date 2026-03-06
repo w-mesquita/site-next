@@ -23,16 +23,26 @@ export function PageSectionsRenderer({ pageId }: PageSectionsRendererProps) {
         const Component = SECTION_COMPONENTS[slot.type as keyof typeof SECTION_COMPONENTS];
         if (!Component) return null;
         const slotKey = `${pageId}-${index}`;
-        if (sectionAcceptsVariant(slot.type)) {
-          return (
+        const content =
+          sectionAcceptsVariant(slot.type) ? (
             <Component
               key={slotKey}
               variant={slot.variant ?? "v1"}
               slotKey={slotKey}
             />
+          ) : (
+            <Component key={slotKey} slotKey={slotKey} />
           );
-        }
-        return <Component key={slotKey} slotKey={slotKey} />;
+        return (
+          <section
+            key={slotKey}
+            id={`section-${index}`}
+            aria-label={`Seção ${index + 1}`}
+            style={{ scrollMarginTop: "61px" }}
+          >
+            {content}
+          </section>
+        );
       })}
     </>
   );

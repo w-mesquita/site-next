@@ -1,3 +1,8 @@
+"use client";
+
+import { useSectionsConfig } from "@/lib/sections-config-context";
+import type { HeaderContent } from "@/types/header-config";
+import { DEFAULT_HEADER_CONTENT } from "@/types/header-config";
 import type { HeaderVariant } from "@/types/sections";
 import { HeaderV1 } from "./HeaderV1";
 import { HeaderV2 } from "./HeaderV2";
@@ -14,8 +19,10 @@ export interface HeaderSectionProps {
 }
 
 export function HeaderSection({ variant }: HeaderSectionProps) {
+  const { config } = useSectionsConfig();
+  const headerContent: HeaderContent = config.headerContent ?? DEFAULT_HEADER_CONTENT;
   const Component = registry[variant] ?? registry.v1;
-  return <Component />;
+  return <Component headerContent={headerContent} />;
 }
 
 export { HeaderV1, HeaderV2, HeaderV3 };

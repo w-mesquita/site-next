@@ -124,19 +124,31 @@ export function SettingsForm() {
             >
               Header
             </label>
-            <select
-              id="settings-header"
-              value={config.header}
-              onChange={(e) => handleChange("header", e.target.value as SectionVariant)}
-              className="w-full rounded-lg border bg-[var(--color-background)] px-4 py-2 text-[var(--color-text)] focus:outline-none focus:ring-2 focus:ring-[var(--color-primary)]"
-              style={{ borderColor: "var(--color-border)" }}
-            >
-              {(["v1", "v2", "v3"] as const).map((v) => (
-                <option key={v} value={v}>
-                  Variante {SECTION_VARIANT_LABELS[v]}
-                </option>
-              ))}
-            </select>
+            <div className="flex flex-wrap items-center gap-2">
+              <select
+                id="settings-header"
+                value={config.header}
+                onChange={(e) => handleChange("header", e.target.value as SectionVariant)}
+                className="w-full rounded-lg border bg-[var(--color-background)] px-4 py-2 text-[var(--color-text)] focus:outline-none focus:ring-2 focus:ring-[var(--color-primary)] sm:w-auto"
+                style={{ borderColor: "var(--color-border)" }}
+              >
+                {(["v1", "v2", "v3"] as const).map((v) => (
+                  <option key={v} value={v}>
+                    Variante {SECTION_VARIANT_LABELS[v]}
+                  </option>
+                ))}
+              </select>
+              <Link
+                href="/settings/header"
+                className="rounded-lg border px-4 py-2 text-sm font-medium transition-colors hover:bg-[var(--color-surface)]"
+                style={{ borderColor: "var(--color-border)", color: "var(--color-text)" }}
+              >
+                Editar Header
+              </Link>
+            </div>
+            <p className="mt-1 text-xs" style={{ color: "var(--color-text-muted)" }}>
+              Use &quot;Editar Header&quot; para top bar, menu com ícones, maiúsculas e modo landing.
+            </p>
           </div>
           <div>
             <label
@@ -177,7 +189,7 @@ export function SettingsForm() {
           Páginas
         </h2>
         <p className="mb-4 text-sm" style={{ color: "var(--color-text-muted)" }}>
-          Marque as páginas que deseja exibir no site. Use o ícone de engrenagem para configurar as 5 seções do corpo de cada página.
+          Marque as páginas que deseja exibir no site. Use o ícone de engrenagem para configurar as 7 seções do corpo de cada página.
         </p>
         <div className="space-y-3">
           {PAGE_IDS.map((pageId) => {

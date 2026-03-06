@@ -2,6 +2,8 @@
 
 import { useEffect } from "react";
 import Link from "next/link";
+import type { HeaderNavItem } from "@/types/header-config";
+import { HEADER_SECTION_INDEX_TOP } from "@/types/header-config";
 import type { NavLink } from "./navLinks";
 
 interface HeaderMobileMenuProps {
@@ -12,6 +14,8 @@ interface HeaderMobileMenuProps {
   onOpen: () => void;
   /** Se true, o botão hamburger fica sempre visível (ex.: Header V3) */
   alwaysShowHamburger?: boolean;
+  /** Em modo landing na home: itens completos para scroll ao topo ou seção */
+  landingScroll?: { menuItems: HeaderNavItem[]; isHome: boolean };
 }
 
 function HamburgerIcon({ className }: { className?: string }) {
@@ -62,6 +66,7 @@ export function HeaderMobileMenu({
   onClose,
   onOpen,
   alwaysShowHamburger = false,
+  landingScroll,
 }: HeaderMobileMenuProps) {
   useEffect(() => {
     if (isOpen) {
@@ -166,16 +171,37 @@ export function HeaderMobileMenu({
               </button>
             </div>
             <nav className="flex flex-1 flex-col gap-1 overflow-auto px-4 py-6" aria-label="Links do menu">
-              {links.map(({ href, label }) => (
-                <Link
-                  key={href}
-                  href={href}
-                  onClick={onClose}
-                  className="rounded-md px-3 py-2 text-base font-medium hover:bg-[var(--color-surface)]"
-                >
-                  {label}
-                </Link>
-              ))}
+              {links.map((link, i) => {
+                const item = landingScroll?.menuItems[i];
+                const handleClick = (e: React.MouseEvent) => {
+                  if (landingScroll?.isHome && item?.sectionIndex !== undefined) {
+                    if (item.sectionIndex === HEADER_SECTION_INDEX_TOP) {
+                      e.preventDefault();
+                      onClose();
+                      window.scrollTo({ top: 0, behavior: "smooth" });
+                      return;
+                    }
+                    if (item.href.startsWith("/#section-")) {
+                      e.preventDefault();
+                      onClose();
+                      const id = item.href.replace("/#", "");
+                      setTimeout(() => document.getElementById(id)?.scrollIntoView({ behavior: "smooth" }), 0);
+                      return;
+                    }
+                  }
+                  onClose();
+                };
+                return (
+                  <Link
+                    key={`${link.href}-${link.label}-${i}`}
+                    href={link.href}
+                    onClick={handleClick}
+                    className="rounded-md px-3 py-2 text-base font-medium hover:bg-[var(--color-surface)]"
+                  >
+                    {link.label}
+                  </Link>
+                );
+              })}
             </nav>
             {cta && (
               <div className="border-t border-[var(--color-border)] p-4">

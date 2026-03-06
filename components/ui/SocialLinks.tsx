@@ -35,9 +35,11 @@ interface SocialLinksProps {
   /** Tamanho dos ícones e espaçamento (header costuma ser menor) */
   size?: "sm" | "md";
   className?: string;
+  /** Quando definido, usa esta cor para todos os ícones (ex.: top bar). */
+  overrideColor?: string | null;
 }
 
-export function SocialLinks({ size = "md", className = "" }: SocialLinksProps) {
+export function SocialLinks({ size = "md", className = "", overrideColor }: SocialLinksProps) {
   const { config } = useSocialConfig();
   const iconSize = size === "sm" ? "h-4 w-4" : "h-5 w-5";
   const gapClass = size === "sm" ? "gap-1.5" : "gap-2";
@@ -57,9 +59,10 @@ export function SocialLinks({ size = "md", className = "" }: SocialLinksProps) {
         const { label, color: defaultColor, path } = ICONS[key];
         const url = config[key].url.trim();
         const color =
-          config.useCustomColor && config.customColor.trim() && /^#[0-9A-Fa-f]{6}$/.test(config.customColor.trim())
+          overrideColor?.trim() ||
+          (config.useCustomColor && config.customColor.trim() && /^#[0-9A-Fa-f]{6}$/.test(config.customColor.trim())
             ? config.customColor.trim()
-            : defaultColor;
+            : defaultColor);
         return (
           <Link
             key={key}

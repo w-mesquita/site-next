@@ -1,5 +1,6 @@
 "use client";
 
+import { usePathname } from "next/navigation";
 import { SettingsLink } from "@/components/ui/SettingsLink";
 import { SocialLinks } from "@/components/ui/SocialLinks";
 import { ThemeToggle } from "@/components/ui/ThemeToggle";
@@ -7,11 +8,25 @@ import Link from "next/link";
 import { AppLogo } from "@/components/ui/AppLogo";
 import { useEffect, useState } from "react";
 import { HeaderMobileMenu } from "./HeaderMobileMenu";
-import { DEFAULT_CTA, DEFAULT_NAV_LINKS } from "./navLinks";
+import { HeaderTopBar } from "./HeaderTopBar";
+import { NavLinkIcon } from "./NavLinkIcon";
+import type { HeaderContent, HeaderNavItem } from "@/types/header-config";
+import { HEADER_SECTION_INDEX_TOP } from "@/types/header-config";
+import type { NavLink } from "./navLinks";
 
-export function HeaderV2() {
+function navItemsToLinks(items: HeaderNavItem[]): NavLink[] {
+  return items.map(({ href, label }) => ({ href, label }));
+}
+
+export interface HeaderV2Props {
+  headerContent: HeaderContent;
+}
+
+export function HeaderV2({ headerContent }: HeaderV2Props) {
+  const pathname = usePathname();
   const [menuOpen, setMenuOpen] = useState(false);
   const [isScrolled, setIsScrolled] = useState(false);
+  const isHome = pathname === "/";
 
   useEffect(() => {
     const handleScroll = () => setIsScrolled(window.scrollY > 20);
@@ -19,8 +34,37 @@ export function HeaderV2() {
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
 
+  const menuClass = [
+    "absolute left-1/2 hidden -translate-x-1/2 items-center gap-6 md:flex text-sm",
+    headerContent.menuUppercase ? "uppercase" : "",
+  ].filter(Boolean).join(" ");
+
+  function handleNavClick(e: React.MouseEvent<HTMLAnchorElement>, item: HeaderNavItem) {
+    if (!headerContent.isLanding || item.sectionIndex === undefined) return;
+    if (item.sectionIndex === HEADER_SECTION_INDEX_TOP && isHome) {
+      e.preventDefault();
+      window.scrollTo({ top: 0, behavior: "smooth" });
+      return;
+    }
+    if (isHome && item.href.startsWith("/#section-")) {
+      e.preventDefault();
+      const id = item.href.replace("/#", "");
+      document.getElementById(id)?.scrollIntoView({ behavior: "smooth" });
+    }
+  }
+
   return (
-    <header
+    <>
+      {headerContent.topBar.visible && (
+        <HeaderTopBar
+          phone={headerContent.topBar.phone}
+          email={headerContent.topBar.email}
+          backgroundColor={headerContent.topBar.backgroundColor}
+          textColor={headerContent.topBar.textColor}
+          showSocial={headerContent.topBar.showSocial}
+        />
+      )}
+      <header
       className={`sticky top-0 z-50 transition-all duration-300 ${
         isScrolled
           ? "border-b border-[var(--color-border)] shadow-md py-3"
@@ -34,42 +78,47 @@ export function HeaderV2() {
       <div className="relative mx-auto flex h-full max-w-content items-center justify-between px-4 sm:px-6">
         <AppLogo className="text-xl font-semibold hover:no-underline" style={{ color: "var(--header-text)" }} />
 
-        <nav
-          className="absolute left-1/2 hidden -translate-x-1/2 items-center gap-6 md:flex"
-          aria-label="Navegação principal"
-        >
-          {DEFAULT_NAV_LINKS.map(({ href, label }) => (
+        <nav className={menuClass} aria-label="Navegação principal">
+          {headerContent.menuItems.map((item) => (
             <Link
-              key={href}
-              href={href}
-              className="text-sm font-medium opacity-90 hover:opacity-100 hover:no-underline"
+              key={`${item.href}-${item.label}`}
+              href={item.href}
+              onClick={(e) => handleNavClick(e, item)}
+              className="inline-flex items-center gap-2 font-medium opacity-90 hover:opacity-100 hover:no-underline"
             >
-              {label}
+              <NavLinkIcon icon={item.icon} />
+              {item.label}
             </Link>
           ))}
         </nav>
 
         <div className="flex items-center gap-2">
-          <SocialLinks size="sm" />
+          {!(headerContent.topBar.visible && headerContent.topBar.showSocial) && (
+            <SocialLinks size="sm" />
+          )}
           <ThemeToggle />
           <SettingsLink />
-          <div className="hidden md:block">
-            <Link
-              href={DEFAULT_CTA.href}
-              className="rounded-md bg-[var(--color-primary)] px-4 py-2 text-sm font-medium text-white hover:no-underline"
-            >
-              {DEFAULT_CTA.label}
-            </Link>
-          </div>
+          {headerContent.cta && (
+            <div className="hidden md:block">
+              <Link
+                href={headerContent.cta.href}
+                className="rounded-md bg-[var(--color-primary)] px-4 py-2 text-sm font-medium text-white hover:no-underline"
+              >
+                {headerContent.cta.label}
+              </Link>
+            </div>
+          )}
           <HeaderMobileMenu
-          links={DEFAULT_NAV_LINKS}
-          cta={DEFAULT_CTA}
-          isOpen={menuOpen}
-          onOpen={() => setMenuOpen(true)}
-          onClose={() => setMenuOpen(false)}
+            links={navItemsToLinks(headerContent.menuItems)}
+            cta={headerContent.cta ?? undefined}
+            isOpen={menuOpen}
+            onOpen={() => setMenuOpen(true)}
+            onClose={() => setMenuOpen(false)}
+            landingScroll={headerContent.isLanding ? { menuItems: headerContent.menuItems, isHome } : undefined}
           />
         </div>
       </div>
     </header>
+    </>
   );
 }

@@ -75,6 +75,10 @@ export function getDefaultPagesConfig(): Record<PageId, PageConfig> {
 export interface SectionsConfig {
   header: HeaderVariant;
   footer: FooterVariant;
+  /** Conteúdo editável do header (top bar, menu, landing). Opcional; quando ausente usa defaults. */
+  headerContent?: import("@/types/header-config").HeaderContent;
+  /** Conteúdo editável do footer. Reservado para uso futuro. */
+  footerContent?: unknown;
   /** Páginas que o usuário escolheu exibir (checkboxes na config). */
   enabledPages: PageId[];
   /** Por página, os 7 slots de seção. */
