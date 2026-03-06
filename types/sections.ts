@@ -23,7 +23,7 @@ export const SECTION_VARIANT_LABELS: Record<SectionVariant, string> = {
 };
 
 /** Tipos de seção que podem aparecer nos 7 slots do corpo da página. */
-export type SectionType = "hero" | "cta" | "features" | "services" | "partners" | "none";
+export type SectionType = "hero" | "cta" | "features" | "services" | "partners" | "contact" | "none";
 
 /** Variantes disponíveis por tipo de seção (hero usa "Slide" em vez de "V3"). */
 export function getVariantsForSectionType(type: SectionType): readonly SectionVariant[] {
@@ -32,6 +32,7 @@ export function getVariantsForSectionType(type: SectionType): readonly SectionVa
   if (type === "features") return ["v1", "v2"];
   if (type === "services") return ["v1", "v2"];
   if (type === "partners") return ["v1", "v2"];
+  if (type === "contact") return ["v1", "v2"];
   return [];
 }
 

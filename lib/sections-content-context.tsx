@@ -10,6 +10,7 @@ import type {
   FeaturesContent,
   ServicesContent,
   PartnersContent,
+  ContactContent,
 } from "@/types/sections-content";
 import { getDefaultContentForSectionType } from "@/types/sections-content";
 import {
@@ -31,12 +32,12 @@ interface SectionsContentContextValue {
   getContentForSlot: (
     slotKey: SlotContentKey,
     sectionType: SectionTypeWithContent
-  ) => HeroContent | CtaContent | FeaturesContent | ServicesContent | PartnersContent;
+  ) => HeroContent | CtaContent | FeaturesContent | ServicesContent | PartnersContent | ContactContent;
   /** Salva o conteúdo de um slot (cada seção salva independente). */
   setContentForSlot: (
     slotKey: SlotContentKey,
     type: SectionTypeWithContent,
-    content: HeroContent | CtaContent | FeaturesContent | ServicesContent | PartnersContent
+    content: HeroContent | CtaContent | FeaturesContent | ServicesContent | PartnersContent | ContactContent
   ) => void;
   /** @deprecated Use setContentForSlot; mantido para compatibilidade. */
   setHeroContent: (hero: SectionsContentConfig["hero"]) => void;
@@ -48,6 +49,8 @@ interface SectionsContentContextValue {
   setServicesContent: (services: SectionsContentConfig["services"]) => void;
   /** @deprecated Use setContentForSlot; mantido para compatibilidade. */
   setPartnersContent: (partners: SectionsContentConfig["partners"]) => void;
+  /** @deprecated Use setContentForSlot; mantido para compatibilidade. */
+  setContactContent: (contact: SectionsContentConfig["contact"]) => void;
 }
 
 const SectionsContentContext = createContext<SectionsContentContextValue | null>(
@@ -130,8 +133,19 @@ export function SectionsContentProvider({
     []
   );
 
+  const setContactContent = useCallback(
+    (contact: SectionsContentConfig["contact"]) => {
+      setContentState((prev) => {
+        const next = { ...prev, contact };
+        setSectionsContentInStorage(next);
+        return next;
+      });
+    },
+    []
+  );
+
   const getContentForSlot = useCallback(
-    (slotKey: SlotContentKey, sectionType: SectionTypeWithContent): HeroContent | CtaContent | FeaturesContent | ServicesContent | PartnersContent => {
+    (slotKey: SlotContentKey, sectionType: SectionTypeWithContent): HeroContent | CtaContent | FeaturesContent | ServicesContent | PartnersContent | ContactContent => {
       const entry = content.contentBySlot?.[slotKey];
       if (entry && entry.type === sectionType) {
         return entry.content;
@@ -141,13 +155,14 @@ export function SectionsContentProvider({
       if (sectionType === "features" && content.features) return content.features;
       if (sectionType === "services" && content.services) return content.services;
       if (sectionType === "partners" && content.partners) return content.partners;
+      if (sectionType === "contact" && content.contact) return content.contact;
       return getDefaultContentForSectionType(sectionType);
     },
     [content]
   );
 
   const setContentForSlot = useCallback(
-    (slotKey: SlotContentKey, type: SectionTypeWithContent, slotContent: HeroContent | CtaContent | FeaturesContent | ServicesContent | PartnersContent) => {
+    (slotKey: SlotContentKey, type: SectionTypeWithContent, slotContent: HeroContent | CtaContent | FeaturesContent | ServicesContent | PartnersContent | ContactContent) => {
       setContentState((prev) => {
         const entry: SlotContentEntry =
           type === "hero"
@@ -158,7 +173,9 @@ export function SectionsContentProvider({
                 ? { type: "features", content: slotContent as FeaturesContent }
                 : type === "services"
                   ? { type: "services", content: slotContent as ServicesContent }
-                  : { type: "partners", content: slotContent as PartnersContent };
+                  : type === "partners"
+                    ? { type: "partners", content: slotContent as PartnersContent }
+                    : { type: "contact", content: slotContent as ContactContent };
         const bySlot: Record<SlotContentKey, SlotContentEntry> = { ...(prev.contentBySlot ?? {}), [slotKey]: entry };
         const next: SectionsContentConfig = { ...prev, contentBySlot: bySlot };
         setSectionsContentInStorage(next);
@@ -180,6 +197,7 @@ export function SectionsContentProvider({
         setFeaturesContent,
         setServicesContent,
         setPartnersContent,
+        setContactContent,
       }}
     >
       {children}

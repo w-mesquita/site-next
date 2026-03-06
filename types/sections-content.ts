@@ -233,6 +233,53 @@ export const DEFAULT_PARTNERS_CONTENT: PartnersContent = {
   textColor: "",
 };
 
+/** Conteúdo da seção Contact (formulário de contato). */
+export interface ContactContent {
+  badge: string;
+  title: string;
+  description: string;
+  /** Rótulo do campo Nome */
+  labelName: string;
+  /** Rótulo do campo Celular/Telefone */
+  labelPhone: string;
+  /** Rótulo do campo Email */
+  labelEmail: string;
+  /** Rótulo do campo Mensagem */
+  labelMessage: string;
+  /** Texto do botão de envio */
+  submitLabel: string;
+  /**
+   * URL para onde o formulário será enviado (POST).
+   * Ex.: Formspree (https://formspree.io/f/SEU_ID), Getform, ou sua API.
+   * Deixe vazio para apenas validar sem enviar.
+   */
+  formActionUrl?: string;
+  /** URL da ilustração (coluna esquerda na V1). Opcional. */
+  imageSrc?: string;
+  backgroundImage?: string;
+  backgroundColor?: string;
+  overlayColor?: string;
+  textColor?: string;
+}
+
+export const DEFAULT_CONTACT_CONTENT: ContactContent = {
+  badge: "Fale conosco",
+  title: "Precisa de mais informações?",
+  description:
+    "Envie sua mensagem que retornaremos o mais breve possível.",
+  labelName: "Nome",
+  labelPhone: "Celular/Telefone",
+  labelEmail: "Email",
+  labelMessage: "Mensagem",
+  submitLabel: "Enviar",
+  formActionUrl: "",
+  imageSrc: "",
+  backgroundImage: "",
+  backgroundColor: "",
+  overlayColor: "",
+  textColor: "",
+};
+
 /** Chave do slot: pageId + índice (ex.: "home-0", "home-1"). Cada slot tem conteúdo independente. */
 export type SlotContentKey = string;
 
@@ -242,7 +289,8 @@ export type SlotContentEntry =
   | { type: "cta"; content: CtaContent }
   | { type: "features"; content: FeaturesContent }
   | { type: "services"; content: ServicesContent }
-  | { type: "partners"; content: PartnersContent };
+  | { type: "partners"; content: PartnersContent }
+  | { type: "contact"; content: ContactContent };
 
 /** Conteúdo editável por slot. Legado hero/cta/features mantido para migração. */
 export interface SectionsContentConfig {
@@ -258,6 +306,8 @@ export interface SectionsContentConfig {
   services?: ServicesContent;
   /** @deprecated Use contentBySlot; usado como fallback quando o slot ainda não foi editado. */
   partners?: PartnersContent;
+  /** @deprecated Use contentBySlot; usado como fallback quando o slot ainda não foi editado. */
+  contact?: ContactContent;
 }
 
 export const DEFAULT_SECTIONS_CONTENT: SectionsContentConfig = {
@@ -267,6 +317,7 @@ export const DEFAULT_SECTIONS_CONTENT: SectionsContentConfig = {
   features: DEFAULT_FEATURES_CONTENT,
   services: DEFAULT_SERVICES_CONTENT,
   partners: DEFAULT_PARTNERS_CONTENT,
+  contact: DEFAULT_CONTACT_CONTENT,
 };
 
 /** Gera a chave do slot para um par (pageId, sectionIndex). */
@@ -275,13 +326,13 @@ export function getSlotContentKey(pageId: string, sectionIndex: number): SlotCon
 }
 
 /** Tipos de seção que possuem página de configuração de conteúdo */
-export const SECTION_TYPES_WITH_CONTENT = ["hero", "cta", "features", "services", "partners"] as const;
+export const SECTION_TYPES_WITH_CONTENT = ["hero", "cta", "features", "services", "partners", "contact"] as const;
 export type SectionTypeWithContent = (typeof SECTION_TYPES_WITH_CONTENT)[number];
 
 /** Retorna o conteúdo padrão para um tipo de seção. */
 export function getDefaultContentForSectionType(
   type: SectionTypeWithContent
-): HeroContent | CtaContent | FeaturesContent | ServicesContent | PartnersContent {
+): HeroContent | CtaContent | FeaturesContent | ServicesContent | PartnersContent | ContactContent {
   switch (type) {
     case "hero":
       return DEFAULT_HERO_CONTENT;
@@ -293,6 +344,8 @@ export function getDefaultContentForSectionType(
       return DEFAULT_SERVICES_CONTENT;
     case "partners":
       return DEFAULT_PARTNERS_CONTENT;
+    case "contact":
+      return DEFAULT_CONTACT_CONTENT;
   }
 }
 

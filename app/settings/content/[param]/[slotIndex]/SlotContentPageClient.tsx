@@ -14,6 +14,7 @@ const SECTION_LABELS: Record<string, string> = {
   features: "Features",
   services: "Services",
   partners: "Partners",
+  contact: "Contact",
 };
 
 const PAGE_LABELS: Record<string, string> = {

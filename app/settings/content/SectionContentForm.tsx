@@ -1,7 +1,7 @@
 "use client";
 
 import { useSectionsContent } from "@/lib/sections-content-context";
-import type { CtaContent, FeaturesContent, HeroContent, SectionTypeWithContent, ServicesContent, ServicesCardIconKey, ServicesCardItem, PartnersContent, PartnersLogoItem, SlotContentKey } from "@/types/sections-content";
+import type { CtaContent, FeaturesContent, HeroContent, SectionTypeWithContent, ServicesContent, ServicesCardIconKey, ServicesCardItem, PartnersContent, PartnersLogoItem, ContactContent, SlotContentKey } from "@/types/sections-content";
 import { getDefaultContentForSectionType } from "@/types/sections-content";
 import { ColorPicker } from "@/components/ui/ColorPicker";
 import Link from "next/link";
@@ -50,6 +50,8 @@ export function SectionContentForm({
     form = <ServicesContentForm sectionLabel={sectionLabel} slotKey={slotKey} />;
   } else if (sectionType === "partners") {
     form = <PartnersContentForm sectionLabel={sectionLabel} slotKey={slotKey} />;
+  } else if (sectionType === "contact") {
+    form = <ContactContentForm sectionLabel={sectionLabel} slotKey={slotKey} />;
   }
 
   return (
@@ -908,6 +910,161 @@ function PartnersContentForm({
         href="/settings"
         className="inline-block rounded-lg px-4 py-2 text-sm font-medium transition-colors hover:opacity-90 bg-[var(--color-primary)] text-white"
       >
+        Voltar às configurações
+      </Link>
+    </div>
+  );
+}
+
+function ContactContentForm({
+  sectionLabel,
+  slotKey,
+}: {
+  sectionLabel: string;
+  slotKey?: SlotContentKey;
+}) {
+  const { content, getContentForSlot, setContentForSlot, setContactContent } = useSectionsContent();
+  const contact: ContactContent = slotKey
+    ? (getContentForSlot(slotKey, "contact") as ContactContent)
+    : (content.contact ?? (getDefaultContentForSectionType("contact") as ContactContent));
+  const setContact = slotKey
+    ? (c: ContactContent) => setContentForSlot(slotKey, "contact", c)
+    : setContactContent;
+
+  return (
+    <div className="mx-auto max-w-2xl space-y-8">
+      <div>
+        <h1 className="text-2xl font-semibold text-[var(--color-text)]">
+          Conteúdo: {sectionLabel}
+        </h1>
+        <p className="mt-1 text-sm text-[var(--color-text-muted)]">
+          Textos da seção e rótulos do formulário de contato (Nome, Celular/Telefone, Email, Mensagem, botão).
+        </p>
+      </div>
+
+      <section className={formSectionClass}>
+        <h2 className="mb-4 text-lg font-semibold text-[var(--color-text)]">Textos da seção</h2>
+        <div className="space-y-4">
+          <div>
+            <label htmlFor="contact-badge" className={labelClass}>Tagline / Badge</label>
+            <input
+              id="contact-badge"
+              type="text"
+              value={contact.badge}
+              onChange={(e) => setContact({ ...contact, badge: e.target.value })}
+              className={inputClass}
+              placeholder="Ex.: Fale conosco"
+            />
+          </div>
+          <div>
+            <label htmlFor="contact-title" className={labelClass}>Título</label>
+            <input
+              id="contact-title"
+              type="text"
+              value={contact.title}
+              onChange={(e) => setContact({ ...contact, title: e.target.value })}
+              className={inputClass}
+              placeholder="Ex.: Precisa de mais informações?"
+            />
+          </div>
+          <div>
+            <label htmlFor="contact-description" className={labelClass}>Descrição</label>
+            <textarea
+              id="contact-description"
+              rows={3}
+              value={contact.description}
+              onChange={(e) => setContact({ ...contact, description: e.target.value })}
+              className={inputClass}
+              placeholder="Parágrafo abaixo do título."
+            />
+          </div>
+          <ColorPicker
+            id="contact-textColor"
+            label="Cor do texto"
+            value={contact.textColor ?? ""}
+            onChange={(v) => setContact({ ...contact, textColor: v })}
+            hint="Opcional. Deixe vazio para usar as cores do tema."
+            placeholder="#hex (vazio = tema)"
+          />
+        </div>
+      </section>
+
+      <section className={formSectionClass}>
+        <h2 className="mb-4 text-lg font-semibold text-[var(--color-text)]">Rótulos do formulário</h2>
+        <div className="space-y-4">
+          <div>
+            <label htmlFor="contact-labelName" className={labelClass}>Rótulo Nome</label>
+            <input id="contact-labelName" type="text" value={contact.labelName} onChange={(e) => setContact({ ...contact, labelName: e.target.value })} className={inputClass} placeholder="Nome" />
+          </div>
+          <div>
+            <label htmlFor="contact-labelPhone" className={labelClass}>Rótulo Celular/Telefone</label>
+            <input id="contact-labelPhone" type="text" value={contact.labelPhone} onChange={(e) => setContact({ ...contact, labelPhone: e.target.value })} className={inputClass} placeholder="Celular/Telefone" />
+          </div>
+          <div>
+            <label htmlFor="contact-labelEmail" className={labelClass}>Rótulo Email</label>
+            <input id="contact-labelEmail" type="text" value={contact.labelEmail} onChange={(e) => setContact({ ...contact, labelEmail: e.target.value })} className={inputClass} placeholder="Email" />
+          </div>
+          <div>
+            <label htmlFor="contact-labelMessage" className={labelClass}>Rótulo Mensagem</label>
+            <input id="contact-labelMessage" type="text" value={contact.labelMessage} onChange={(e) => setContact({ ...contact, labelMessage: e.target.value })} className={inputClass} placeholder="Mensagem" />
+          </div>
+          <div>
+            <label htmlFor="contact-submitLabel" className={labelClass}>Texto do botão</label>
+            <input id="contact-submitLabel" type="text" value={contact.submitLabel} onChange={(e) => setContact({ ...contact, submitLabel: e.target.value })} className={inputClass} placeholder="Enviar" />
+          </div>
+        </div>
+      </section>
+
+      <section className={formSectionClass}>
+        <h2 className="mb-4 text-lg font-semibold text-[var(--color-text)]">Recebimento dos e-mails</h2>
+        <p className="mb-4 text-sm text-[var(--color-text-muted)]">
+          Para receber as mensagens enviadas pelo formulário, informe a URL de envio. Serviços gratuitos: <strong>Formspree</strong> (formspree.io) ou <strong>Getform</strong> (getform.io) — crie uma conta, pegue a URL do formulário e cole abaixo. Deixe vazio para apenas validar o formulário sem enviar.
+        </p>
+        <div>
+          <label htmlFor="contact-formActionUrl" className={labelClass}>URL de envio do formulário</label>
+          <input
+            id="contact-formActionUrl"
+            type="url"
+            value={contact.formActionUrl ?? ""}
+            onChange={(e) => setContact({ ...contact, formActionUrl: e.target.value })}
+            className={inputClass}
+            placeholder="Ex.: https://formspree.io/f/xxxxxxxx"
+          />
+        </div>
+      </section>
+
+      <section className={formSectionClass}>
+        <h2 className="mb-4 text-lg font-semibold text-[var(--color-text)]">Ilustração (V1)</h2>
+        <p className="mb-4 text-sm text-[var(--color-text-muted)]">Na variante V1, a coluna esquerda exibe esta imagem. Deixe vazio para usar o placeholder.</p>
+        <div>
+          <label htmlFor="contact-imageSrc" className={labelClass}>URL da imagem</label>
+          <input
+            id="contact-imageSrc"
+            type="text"
+            value={contact.imageSrc ?? ""}
+            onChange={(e) => setContact({ ...contact, imageSrc: e.target.value })}
+            className={inputClass}
+            placeholder="/contact-illustration.jpg ou https://..."
+          />
+        </div>
+      </section>
+
+      <section className={formSectionClass}>
+        <h2 className="mb-4 text-lg font-semibold text-[var(--color-text)]">Fundo da seção</h2>
+        <div className="space-y-4">
+          <div>
+            <label htmlFor="contact-backgroundImage" className={labelClass}>Imagem de fundo</label>
+            <input id="contact-backgroundImage" type="text" value={contact.backgroundImage ?? ""} onChange={(e) => setContact({ ...contact, backgroundImage: e.target.value })} className={inputClass} placeholder="/bg.jpg ou URL" />
+          </div>
+          <div>
+            <label htmlFor="contact-backgroundColor" className={labelClass}>Cor de fundo</label>
+            <input id="contact-backgroundColor" type="text" value={contact.backgroundColor ?? ""} onChange={(e) => setContact({ ...contact, backgroundColor: e.target.value })} className={inputClass} placeholder="Ex.: #f8fafc" />
+          </div>
+          <ColorPicker id="contact-overlayColor" label="Cor de sobreposição" value={contact.overlayColor ?? ""} onChange={(v) => setContact({ ...contact, overlayColor: v })} withOpacity hint="Com imagem de fundo." placeholder="rgba ou #hex" />
+        </div>
+      </section>
+
+      <Link href="/settings" className="inline-block rounded-lg px-4 py-2 text-sm font-medium transition-colors hover:opacity-90 bg-[var(--color-primary)] text-white">
         Voltar às configurações
       </Link>
     </div>

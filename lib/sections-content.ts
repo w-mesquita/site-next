@@ -1,4 +1,4 @@
-import type { HeroContent, CtaContent, FeaturesContent, ServicesContent, PartnersContent, SectionsContentConfig } from "@/types/sections-content";
+import type { HeroContent, CtaContent, FeaturesContent, ServicesContent, PartnersContent, ContactContent, SectionsContentConfig } from "@/types/sections-content";
 import {
   DEFAULT_SECTIONS_CONTENT,
   DEFAULT_HERO_CONTENT,
@@ -6,6 +6,7 @@ import {
   DEFAULT_FEATURES_CONTENT,
   DEFAULT_SERVICES_CONTENT,
   DEFAULT_PARTNERS_CONTENT,
+  DEFAULT_CONTACT_CONTENT,
 } from "@/types/sections-content";
 import fs from "node:fs";
 import path from "node:path";
@@ -153,6 +154,29 @@ function parsePartnersContent(raw: unknown): PartnersContent {
   };
 }
 
+function parseContactContent(raw: unknown): ContactContent {
+  const def = DEFAULT_CONTACT_CONTENT;
+  if (!raw || typeof raw !== "object") return def;
+  const o = raw as Record<string, unknown>;
+  const labelPhone = typeof o.labelPhone === "string" ? o.labelPhone : (typeof o.labelSurname === "string" ? o.labelSurname : def.labelPhone);
+  return {
+    badge: typeof o.badge === "string" ? o.badge : def.badge,
+    title: typeof o.title === "string" ? o.title : def.title,
+    description: typeof o.description === "string" ? o.description : def.description,
+    labelName: typeof o.labelName === "string" ? o.labelName : def.labelName,
+    labelPhone,
+    labelEmail: typeof o.labelEmail === "string" ? o.labelEmail : def.labelEmail,
+    labelMessage: typeof o.labelMessage === "string" ? o.labelMessage : def.labelMessage,
+    submitLabel: typeof o.submitLabel === "string" ? o.submitLabel : def.submitLabel,
+    formActionUrl: typeof o.formActionUrl === "string" ? o.formActionUrl : def.formActionUrl ?? "",
+    imageSrc: typeof o.imageSrc === "string" ? o.imageSrc : def.imageSrc ?? "",
+    backgroundImage: typeof o.backgroundImage === "string" ? o.backgroundImage : def.backgroundImage ?? "",
+    backgroundColor: typeof o.backgroundColor === "string" ? o.backgroundColor : def.backgroundColor ?? "",
+    overlayColor: typeof o.overlayColor === "string" ? o.overlayColor : def.overlayColor ?? "",
+    textColor: typeof o.textColor === "string" ? o.textColor : def.textColor ?? "",
+  };
+}
+
 /**
  * Retorna o conteúdo das seções (server-side).
  * Lê config/sections-content.json e mescla com defaults.
@@ -173,5 +197,6 @@ export function getSectionsContent(): SectionsContentConfig {
     features: parseFeaturesContent(raw.features),
     services: parseServicesContent(raw.services),
     partners: parsePartnersContent(raw.partners),
+    contact: parseContactContent(raw.contact),
   };
 }

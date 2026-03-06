@@ -8,6 +8,7 @@ import type {
   ServicesCardIconKey,
   PartnersContent,
   PartnersLogoItem,
+  ContactContent,
   SlotContentEntry,
   SlotContentKey,
 } from "@/types/sections-content";
@@ -18,6 +19,7 @@ import {
   DEFAULT_FEATURES_CONTENT,
   DEFAULT_SERVICES_CONTENT,
   DEFAULT_PARTNERS_CONTENT,
+  DEFAULT_CONTACT_CONTENT,
 } from "@/types/sections-content";
 
 const STORAGE_KEY = "sections-content";
@@ -169,6 +171,29 @@ function parseStoredPartners(raw: unknown): PartnersContent {
   };
 }
 
+function parseStoredContact(raw: unknown): ContactContent {
+  const def = DEFAULT_SECTIONS_CONTENT.contact ?? DEFAULT_CONTACT_CONTENT;
+  if (!raw || typeof raw !== "object") return def;
+  const o = raw as Record<string, unknown>;
+  const labelPhone = typeof o.labelPhone === "string" ? o.labelPhone : (typeof o.labelSurname === "string" ? o.labelSurname : def.labelPhone);
+  return {
+    badge: typeof o.badge === "string" ? o.badge : def.badge,
+    title: typeof o.title === "string" ? o.title : def.title,
+    description: typeof o.description === "string" ? o.description : def.description,
+    labelName: typeof o.labelName === "string" ? o.labelName : def.labelName,
+    labelPhone,
+    labelEmail: typeof o.labelEmail === "string" ? o.labelEmail : def.labelEmail,
+    labelMessage: typeof o.labelMessage === "string" ? o.labelMessage : def.labelMessage,
+    submitLabel: typeof o.submitLabel === "string" ? o.submitLabel : def.submitLabel,
+    formActionUrl: typeof o.formActionUrl === "string" ? o.formActionUrl : def.formActionUrl ?? "",
+    imageSrc: typeof o.imageSrc === "string" ? o.imageSrc : def.imageSrc ?? "",
+    backgroundImage: typeof o.backgroundImage === "string" ? o.backgroundImage : def.backgroundImage ?? "",
+    backgroundColor: typeof o.backgroundColor === "string" ? o.backgroundColor : def.backgroundColor ?? "",
+    overlayColor: typeof o.overlayColor === "string" ? o.overlayColor : def.overlayColor ?? "",
+    textColor: typeof o.textColor === "string" ? o.textColor : def.textColor ?? "",
+  };
+}
+
 function parseSlotEntry(raw: unknown): SlotContentEntry | null {
   if (!raw || typeof raw !== "object") return null;
   const o = raw as Record<string, unknown>;
@@ -178,6 +203,7 @@ function parseSlotEntry(raw: unknown): SlotContentEntry | null {
   if (t === "features") return { type: "features", content: parseStoredFeatures(o.content) };
   if (t === "services") return { type: "services", content: parseStoredServices(o.content) };
   if (t === "partners") return { type: "partners", content: parseStoredPartners(o.content) };
+  if (t === "contact") return { type: "contact", content: parseStoredContact(o.content) };
   return null;
 }
 
@@ -210,6 +236,7 @@ export function getSectionsContentFromStorage(): SectionsContentConfig | null {
       features: parseStoredFeatures(parsed.features),
       services: parseStoredServices(parsed.services),
       partners: parseStoredPartners(parsed.partners),
+      contact: parseStoredContact(parsed.contact),
     };
   } catch {
     return null;
