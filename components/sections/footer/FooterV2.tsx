@@ -1,8 +1,14 @@
 import Link from "next/link";
 import { AppLogo } from "@/components/ui/AppLogo";
 import { SocialLinks } from "@/components/ui/SocialLinks";
+import type { HeaderNavItem } from "@/types/header-config";
 
-export function FooterV2() {
+export interface FooterV2Props {
+  menuItems: HeaderNavItem[];
+  cta?: { label: string; href: string } | null;
+}
+
+export function FooterV2({ menuItems, cta }: FooterV2Props) {
   return (
     <footer
       className="border-t border-[var(--color-border)] py-16"
@@ -19,14 +25,21 @@ export function FooterV2() {
         <div>
           <h3 className="font-semibold" style={{ color: "var(--color-text)" }}>Links</h3>
           <ul className="mt-2 space-y-2 text-sm" style={{ color: "var(--color-text-muted)" }}>
-            <li><Link href="/" className="hover:underline">Início</Link></li>
-            <li><Link href="#sobre" className="hover:underline">Sobre</Link></li>
+            {menuItems.map((item) => (
+              <li key={`${item.href}-${item.label}`}>
+                <Link href={item.href} className="hover:underline">{item.label}</Link>
+              </li>
+            ))}
           </ul>
         </div>
         <div>
           <h3 className="font-semibold" style={{ color: "var(--color-text)" }}>Contato</h3>
           <ul className="mt-2 space-y-2 text-sm" style={{ color: "var(--color-text-muted)" }}>
-            <li><Link href="#contato" className="hover:underline">Fale conosco</Link></li>
+            <li>
+              <Link href={cta?.href ?? "#contato"} className="hover:underline">
+                {cta?.label ?? "Fale conosco"}
+              </Link>
+            </li>
           </ul>
         </div>
       </div>

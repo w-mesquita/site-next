@@ -1,8 +1,14 @@
 import Link from "next/link";
 import { AppLogo } from "@/components/ui/AppLogo";
 import { SocialLinks } from "@/components/ui/SocialLinks";
+import type { HeaderNavItem } from "@/types/header-config";
 
-export function FooterV1() {
+export interface FooterV1Props {
+  menuItems: HeaderNavItem[];
+  cta?: { label: string; href: string } | null;
+}
+
+export function FooterV1({ menuItems }: FooterV1Props) {
   return (
     <footer
       className="border-t border-[var(--color-border)] py-12"
@@ -13,8 +19,11 @@ export function FooterV1() {
           <AppLogo className="font-semibold hover:no-underline" style={{ color: "var(--color-text)" }} />
           <p>© {new Date().getFullYear()} Todos os direitos reservados.</p>
           <nav className="flex flex-wrap items-center justify-center gap-6" aria-label="Links do rodapé">
-            <Link href="/" className="hover:underline">Início</Link>
-            <Link href="#contato" className="hover:underline">Contato</Link>
+            {menuItems.map((item) => (
+              <Link key={`${item.href}-${item.label}`} href={item.href} className="hover:underline">
+                {item.label}
+              </Link>
+            ))}
             <SocialLinks size="md" />
           </nav>
         </div>

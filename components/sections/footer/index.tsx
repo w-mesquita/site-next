@@ -1,3 +1,7 @@
+"use client";
+
+import { useSectionsConfig } from "@/lib/sections-config-context";
+import { DEFAULT_HEADER_CONTENT } from "@/types/header-config";
 import type { FooterVariant } from "@/types/sections";
 import { FooterV1 } from "./FooterV1";
 import { FooterV2 } from "./FooterV2";
@@ -14,8 +18,13 @@ export interface FooterSectionProps {
 }
 
 export function FooterSection({ variant }: FooterSectionProps) {
+  const { config } = useSectionsConfig();
+  const headerContent = config.headerContent ?? DEFAULT_HEADER_CONTENT;
+  const menuItems = headerContent.menuItems ?? DEFAULT_HEADER_CONTENT.menuItems;
+  const cta = headerContent.cta ?? null;
+
   const Component = registry[variant] ?? registry.v1;
-  return <Component />;
+  return <Component menuItems={menuItems} cta={cta} />;
 }
 
 export { FooterV1, FooterV2, FooterV3 };
