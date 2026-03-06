@@ -13,6 +13,7 @@ const SECTION_LABELS: Record<(typeof SECTION_TYPES_WITH_CONTENT)[number], string
   cta: "CTA",
   features: "Features",
   services: "Services",
+  partners: "Partners",
 };
 
 interface PageProps {

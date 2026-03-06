@@ -9,6 +9,7 @@ import type {
   CtaContent,
   FeaturesContent,
   ServicesContent,
+  PartnersContent,
 } from "@/types/sections-content";
 import { getDefaultContentForSectionType } from "@/types/sections-content";
 import {
@@ -30,12 +31,12 @@ interface SectionsContentContextValue {
   getContentForSlot: (
     slotKey: SlotContentKey,
     sectionType: SectionTypeWithContent
-  ) => HeroContent | CtaContent | FeaturesContent | ServicesContent;
+  ) => HeroContent | CtaContent | FeaturesContent | ServicesContent | PartnersContent;
   /** Salva o conteúdo de um slot (cada seção salva independente). */
   setContentForSlot: (
     slotKey: SlotContentKey,
     type: SectionTypeWithContent,
-    content: HeroContent | CtaContent | FeaturesContent | ServicesContent
+    content: HeroContent | CtaContent | FeaturesContent | ServicesContent | PartnersContent
   ) => void;
   /** @deprecated Use setContentForSlot; mantido para compatibilidade. */
   setHeroContent: (hero: SectionsContentConfig["hero"]) => void;
@@ -45,6 +46,8 @@ interface SectionsContentContextValue {
   setFeaturesContent: (features: SectionsContentConfig["features"]) => void;
   /** @deprecated Use setContentForSlot; mantido para compatibilidade. */
   setServicesContent: (services: SectionsContentConfig["services"]) => void;
+  /** @deprecated Use setContentForSlot; mantido para compatibilidade. */
+  setPartnersContent: (partners: SectionsContentConfig["partners"]) => void;
 }
 
 const SectionsContentContext = createContext<SectionsContentContextValue | null>(
@@ -116,8 +119,19 @@ export function SectionsContentProvider({
     []
   );
 
+  const setPartnersContent = useCallback(
+    (partners: SectionsContentConfig["partners"]) => {
+      setContentState((prev) => {
+        const next = { ...prev, partners };
+        setSectionsContentInStorage(next);
+        return next;
+      });
+    },
+    []
+  );
+
   const getContentForSlot = useCallback(
-    (slotKey: SlotContentKey, sectionType: SectionTypeWithContent): HeroContent | CtaContent | FeaturesContent | ServicesContent => {
+    (slotKey: SlotContentKey, sectionType: SectionTypeWithContent): HeroContent | CtaContent | FeaturesContent | ServicesContent | PartnersContent => {
       const entry = content.contentBySlot?.[slotKey];
       if (entry && entry.type === sectionType) {
         return entry.content;
@@ -126,13 +140,14 @@ export function SectionsContentProvider({
       if (sectionType === "cta" && content.cta) return content.cta;
       if (sectionType === "features" && content.features) return content.features;
       if (sectionType === "services" && content.services) return content.services;
+      if (sectionType === "partners" && content.partners) return content.partners;
       return getDefaultContentForSectionType(sectionType);
     },
     [content]
   );
 
   const setContentForSlot = useCallback(
-    (slotKey: SlotContentKey, type: SectionTypeWithContent, slotContent: HeroContent | CtaContent | FeaturesContent | ServicesContent) => {
+    (slotKey: SlotContentKey, type: SectionTypeWithContent, slotContent: HeroContent | CtaContent | FeaturesContent | ServicesContent | PartnersContent) => {
       setContentState((prev) => {
         const entry: SlotContentEntry =
           type === "hero"
@@ -141,7 +156,9 @@ export function SectionsContentProvider({
               ? { type: "cta", content: slotContent as CtaContent }
               : type === "features"
                 ? { type: "features", content: slotContent as FeaturesContent }
-                : { type: "services", content: slotContent as ServicesContent };
+                : type === "services"
+                  ? { type: "services", content: slotContent as ServicesContent }
+                  : { type: "partners", content: slotContent as PartnersContent };
         const bySlot: Record<SlotContentKey, SlotContentEntry> = { ...(prev.contentBySlot ?? {}), [slotKey]: entry };
         const next: SectionsContentConfig = { ...prev, contentBySlot: bySlot };
         setSectionsContentInStorage(next);
@@ -162,6 +179,7 @@ export function SectionsContentProvider({
         setCtaContent,
         setFeaturesContent,
         setServicesContent,
+        setPartnersContent,
       }}
     >
       {children}

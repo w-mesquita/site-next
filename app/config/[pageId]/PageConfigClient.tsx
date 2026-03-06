@@ -14,6 +14,7 @@ const SECTION_TYPE_OPTIONS: { value: SectionType; label: string }[] = [
   { value: "cta", label: "CTA" },
   { value: "features", label: "Features" },
   { value: "services", label: "Services" },
+  { value: "partners", label: "Partners" },
 ];
 
 interface PageConfigClientProps {

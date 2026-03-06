@@ -1,7 +1,7 @@
 "use client";
 
 import { useSectionsContent } from "@/lib/sections-content-context";
-import type { CtaContent, FeaturesContent, HeroContent, SectionTypeWithContent, ServicesContent, ServicesCardIconKey, ServicesCardItem, SlotContentKey } from "@/types/sections-content";
+import type { CtaContent, FeaturesContent, HeroContent, SectionTypeWithContent, ServicesContent, ServicesCardIconKey, ServicesCardItem, PartnersContent, PartnersLogoItem, SlotContentKey } from "@/types/sections-content";
 import { getDefaultContentForSectionType } from "@/types/sections-content";
 import { ColorPicker } from "@/components/ui/ColorPicker";
 import Link from "next/link";
@@ -48,6 +48,8 @@ export function SectionContentForm({
     form = <FeaturesContentForm sectionLabel={sectionLabel} slotKey={slotKey} />;
   } else if (sectionType === "services") {
     form = <ServicesContentForm sectionLabel={sectionLabel} slotKey={slotKey} />;
+  } else if (sectionType === "partners") {
+    form = <PartnersContentForm sectionLabel={sectionLabel} slotKey={slotKey} />;
   }
 
   return (
@@ -703,6 +705,198 @@ function ServicesContentForm({
             label="Cor de sobreposição"
             value={services.overlayColor ?? ""}
             onChange={(v) => setServices({ ...services, overlayColor: v })}
+            withOpacity
+            hint="Com imagem de fundo: overlay por cima. Vazio = padrão."
+            placeholder="rgba ou #hex"
+          />
+        </div>
+      </section>
+
+      <Link
+        href="/settings"
+        className="inline-block rounded-lg px-4 py-2 text-sm font-medium transition-colors hover:opacity-90 bg-[var(--color-primary)] text-white"
+      >
+        Voltar às configurações
+      </Link>
+    </div>
+  );
+}
+
+function PartnersContentForm({
+  sectionLabel,
+  slotKey,
+}: {
+  sectionLabel: string;
+  slotKey?: SlotContentKey;
+}) {
+  const { content, getContentForSlot, setContentForSlot, setPartnersContent } = useSectionsContent();
+  const partners: PartnersContent = slotKey
+    ? (getContentForSlot(slotKey, "partners") as PartnersContent)
+    : (content.partners ?? (getDefaultContentForSectionType("partners") as PartnersContent));
+  const setPartners = slotKey
+    ? (p: PartnersContent) => setContentForSlot(slotKey, "partners", p)
+    : setPartnersContent;
+
+  const logos = partners.logos?.length ? partners.logos : [{ logoSrc: "", alt: "Parceiro 1" }];
+
+  function setLogo(index: number, item: PartnersLogoItem) {
+    const next = [...logos];
+    next[index] = item;
+    setPartners({ ...partners, logos: next });
+  }
+
+  function addLogo() {
+    setPartners({ ...partners, logos: [...logos, { logoSrc: "", alt: `Parceiro ${logos.length + 1}` }] });
+  }
+
+  function removeLogo(index: number) {
+    const next = logos.filter((_, i) => i !== index);
+    setPartners({ ...partners, logos: next.length ? next : [{ logoSrc: "", alt: "Parceiro 1" }] });
+  }
+
+  return (
+    <div className="mx-auto max-w-2xl space-y-8">
+      <div>
+        <h1 className="text-2xl font-semibold text-[var(--color-text)]">
+          Conteúdo: {sectionLabel}
+        </h1>
+        <p className="mt-1 text-sm text-[var(--color-text-muted)]">
+          Textos da seção e lista de logos de parceiros (URL da imagem e texto alternativo).
+        </p>
+      </div>
+
+      <section className={formSectionClass}>
+        <h2 className="mb-4 text-lg font-semibold text-[var(--color-text)]">Textos da seção</h2>
+        <div className="space-y-4">
+          <div>
+            <label htmlFor="partners-badge" className={labelClass}>Tagline / Badge</label>
+            <input
+              id="partners-badge"
+              type="text"
+              value={partners.badge}
+              onChange={(e) => setPartners({ ...partners, badge: e.target.value })}
+              className={inputClass}
+              placeholder="Ex.: Partnership"
+            />
+          </div>
+          <div>
+            <label htmlFor="partners-title" className={labelClass}>Título</label>
+            <input
+              id="partners-title"
+              type="text"
+              value={partners.title}
+              onChange={(e) => setPartners({ ...partners, title: e.target.value })}
+              className={inputClass}
+              placeholder="Ex.: Partner Companies"
+            />
+          </div>
+          <div>
+            <label htmlFor="partners-description" className={labelClass}>Descrição</label>
+            <textarea
+              id="partners-description"
+              rows={3}
+              value={partners.description}
+              onChange={(e) => setPartners({ ...partners, description: e.target.value })}
+              className={inputClass}
+              placeholder="Parágrafo abaixo do título."
+            />
+          </div>
+          <ColorPicker
+            id="partners-textColor"
+            label="Cor do texto"
+            value={partners.textColor ?? ""}
+            onChange={(v) => setPartners({ ...partners, textColor: v })}
+            hint="Opcional. Deixe vazio para usar as cores do tema."
+            placeholder="#hex (vazio = tema)"
+          />
+        </div>
+      </section>
+
+      <section className={formSectionClass}>
+        <h2 className="mb-4 text-lg font-semibold text-[var(--color-text)]">Logos dos parceiros</h2>
+        <p className="mb-4 text-sm text-[var(--color-text-muted)]">
+          Adicione a URL da imagem de cada logo e um texto alternativo (acessibilidade).
+        </p>
+        <div className="space-y-6">
+          {logos.map((item, index) => (
+            <div
+              key={index}
+              className="rounded-lg border border-[var(--color-border)] bg-[var(--color-background)] p-4"
+            >
+              <div className="mb-3 flex items-center justify-between">
+                <span className="text-sm font-medium text-[var(--color-text)]">Logo {index + 1}</span>
+                <button
+                  type="button"
+                  onClick={() => removeLogo(index)}
+                  className="rounded px-2 py-1 text-sm text-[var(--color-text-muted)] hover:bg-[var(--color-surface)]"
+                >
+                  Remover
+                </button>
+              </div>
+              <div className="space-y-4">
+                <div>
+                  <label className={labelClass}>URL da imagem</label>
+                  <input
+                    type="text"
+                    value={item.logoSrc}
+                    onChange={(e) => setLogo(index, { ...item, logoSrc: e.target.value })}
+                    className={inputClass}
+                    placeholder="/logo.png ou https://..."
+                  />
+                </div>
+                <div>
+                  <label className={labelClass}>Texto alternativo (alt)</label>
+                  <input
+                    type="text"
+                    value={item.alt ?? ""}
+                    onChange={(e) => setLogo(index, { ...item, alt: e.target.value })}
+                    className={inputClass}
+                    placeholder="Ex.: Parceiro 1"
+                  />
+                </div>
+              </div>
+            </div>
+          ))}
+          <button
+            type="button"
+            onClick={addLogo}
+            className="rounded-lg border border-dashed border-[var(--color-border)] px-4 py-2 text-sm font-medium text-[var(--color-text-muted)] hover:bg-[var(--color-surface)]"
+          >
+            + Adicionar logo
+          </button>
+        </div>
+      </section>
+
+      <section className={formSectionClass}>
+        <h2 className="mb-4 text-lg font-semibold text-[var(--color-text)]">Fundo da seção</h2>
+        <div className="space-y-4">
+          <div>
+            <label htmlFor="partners-backgroundImage" className={labelClass}>Imagem de fundo</label>
+            <input
+              id="partners-backgroundImage"
+              type="text"
+              value={partners.backgroundImage ?? ""}
+              onChange={(e) => setPartners({ ...partners, backgroundImage: e.target.value })}
+              className={inputClass}
+              placeholder="/bg.jpg ou URL"
+            />
+          </div>
+          <div>
+            <label htmlFor="partners-backgroundColor" className={labelClass}>Cor de fundo</label>
+            <input
+              id="partners-backgroundColor"
+              type="text"
+              value={partners.backgroundColor ?? ""}
+              onChange={(e) => setPartners({ ...partners, backgroundColor: e.target.value })}
+              className={inputClass}
+              placeholder="Ex.: #f8fafc, var(--color-surface)"
+            />
+          </div>
+          <ColorPicker
+            id="partners-overlayColor"
+            label="Cor de sobreposição"
+            value={partners.overlayColor ?? ""}
+            onChange={(v) => setPartners({ ...partners, overlayColor: v })}
             withOpacity
             hint="Com imagem de fundo: overlay por cima. Vazio = padrão."
             placeholder="rgba ou #hex"

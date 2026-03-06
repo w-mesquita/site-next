@@ -194,6 +194,45 @@ export const DEFAULT_SERVICES_CONTENT: ServicesContent = {
   textColor: "",
 };
 
+export interface PartnersLogoItem {
+  logoSrc: string;
+  alt?: string;
+}
+
+/** Conteúdo da seção Partners (logos de parceiros). */
+export interface PartnersContent {
+  /** Tagline (ex.: "Partnership") */
+  badge: string;
+  /** Título principal */
+  title: string;
+  /** Descrição/parágrafo */
+  description: string;
+  /** Lista de logos (URL ou caminho + alt opcional) */
+  logos: PartnersLogoItem[];
+  backgroundImage?: string;
+  backgroundColor?: string;
+  overlayColor?: string;
+  textColor?: string;
+}
+
+export const DEFAULT_PARTNERS_CONTENT: PartnersContent = {
+  badge: "Partnership",
+  title: "Partner Companies",
+  description:
+    "Too cultivated use solicitude frequently. Dashwood likewise up consider continue entrance ladyship oh. Wrong guest given purse power is no.",
+  logos: [
+    { logoSrc: "", alt: "Parceiro 1" },
+    { logoSrc: "", alt: "Parceiro 2" },
+    { logoSrc: "", alt: "Parceiro 3" },
+    { logoSrc: "", alt: "Parceiro 4" },
+    { logoSrc: "", alt: "Parceiro 5" },
+  ],
+  backgroundImage: "",
+  backgroundColor: "",
+  overlayColor: "",
+  textColor: "",
+};
+
 /** Chave do slot: pageId + índice (ex.: "home-0", "home-1"). Cada slot tem conteúdo independente. */
 export type SlotContentKey = string;
 
@@ -202,7 +241,8 @@ export type SlotContentEntry =
   | { type: "hero"; content: HeroContent }
   | { type: "cta"; content: CtaContent }
   | { type: "features"; content: FeaturesContent }
-  | { type: "services"; content: ServicesContent };
+  | { type: "services"; content: ServicesContent }
+  | { type: "partners"; content: PartnersContent };
 
 /** Conteúdo editável por slot. Legado hero/cta/features mantido para migração. */
 export interface SectionsContentConfig {
@@ -216,6 +256,8 @@ export interface SectionsContentConfig {
   features?: FeaturesContent;
   /** @deprecated Use contentBySlot; usado como fallback quando o slot ainda não foi editado. */
   services?: ServicesContent;
+  /** @deprecated Use contentBySlot; usado como fallback quando o slot ainda não foi editado. */
+  partners?: PartnersContent;
 }
 
 export const DEFAULT_SECTIONS_CONTENT: SectionsContentConfig = {
@@ -224,6 +266,7 @@ export const DEFAULT_SECTIONS_CONTENT: SectionsContentConfig = {
   cta: DEFAULT_CTA_CONTENT,
   features: DEFAULT_FEATURES_CONTENT,
   services: DEFAULT_SERVICES_CONTENT,
+  partners: DEFAULT_PARTNERS_CONTENT,
 };
 
 /** Gera a chave do slot para um par (pageId, sectionIndex). */
@@ -232,13 +275,13 @@ export function getSlotContentKey(pageId: string, sectionIndex: number): SlotCon
 }
 
 /** Tipos de seção que possuem página de configuração de conteúdo */
-export const SECTION_TYPES_WITH_CONTENT = ["hero", "cta", "features", "services"] as const;
+export const SECTION_TYPES_WITH_CONTENT = ["hero", "cta", "features", "services", "partners"] as const;
 export type SectionTypeWithContent = (typeof SECTION_TYPES_WITH_CONTENT)[number];
 
 /** Retorna o conteúdo padrão para um tipo de seção. */
 export function getDefaultContentForSectionType(
   type: SectionTypeWithContent
-): HeroContent | CtaContent | FeaturesContent | ServicesContent {
+): HeroContent | CtaContent | FeaturesContent | ServicesContent | PartnersContent {
   switch (type) {
     case "hero":
       return DEFAULT_HERO_CONTENT;
@@ -248,6 +291,8 @@ export function getDefaultContentForSectionType(
       return DEFAULT_FEATURES_CONTENT;
     case "services":
       return DEFAULT_SERVICES_CONTENT;
+    case "partners":
+      return DEFAULT_PARTNERS_CONTENT;
   }
 }
 

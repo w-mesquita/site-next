@@ -1,69 +1,45 @@
 "use client";
 
-import type { ServicesContent, ServicesCardItem } from "@/types/sections-content";
-import { DEFAULT_SERVICES_CONTENT } from "@/types/sections-content";
-import { ServiceCardIcon } from "./ServiceCardIcon";
+import Image from "next/image";
+import type { PartnersContent, PartnersLogoItem } from "@/types/sections-content";
+import { DEFAULT_PARTNERS_CONTENT } from "@/types/sections-content";
 
-export interface ServicesV2Props {
-  content?: ServicesContent;
+export interface PartnersV2Props {
+  content?: PartnersContent;
 }
 
 function hasContent(value: string | undefined): boolean {
   return Boolean(value?.trim());
 }
 
-function CardStandard({ item, index }: { item: ServicesCardItem; index: number }) {
-  const titleStyle = { color: "var(--color-text)" };
-  const bodyStyle = { color: "var(--color-text-muted)" };
-  return (
-    <article
-      className="relative flex gap-4 rounded-xl border-l-4 bg-[var(--color-background)] p-6 shadow-sm transition-shadow hover:shadow-md"
-      style={{
-        borderColor: "var(--color-primary)",
-        borderLeftColor: "var(--color-primary)",
-      }}
-    >
-      <ServiceCardIcon icon={item.icon} />
-      <div className="min-w-0 flex-1">
-        <h3 className="text-lg font-bold" style={titleStyle}>
-          {item.title || `Serviço ${index + 1}`}
-        </h3>
-        <p className="mt-2 text-sm leading-relaxed" style={bodyStyle}>
-          {item.message || ""}
-        </p>
+function PartnerLogo({ item, index }: { item: PartnersLogoItem; index: number }) {
+  const src = item.logoSrc?.trim();
+  if (!src) {
+    return (
+      <div
+        className="flex h-14 w-28 flex-shrink-0 items-center justify-center rounded-xl border border-[var(--color-border)] bg-[var(--color-surface)]"
+        aria-hidden
+      >
+        <span className="text-xs text-[var(--color-text-muted)]">Logo {index + 1}</span>
       </div>
-    </article>
+    );
+  }
+  return (
+    <div className="relative flex h-14 w-28 flex-shrink-0 items-center justify-center rounded-xl border border-[var(--color-border)] bg-[var(--color-background)] p-3 transition-shadow hover:shadow-md">
+      <Image
+        src={src}
+        alt={item.alt ?? `Parceiro ${index + 1}`}
+        width={112}
+        height={56}
+        className="max-h-12 w-full object-contain object-center opacity-85 transition-opacity hover:opacity-100"
+        unoptimized={src.startsWith("http")}
+      />
+    </div>
   );
 }
 
-function CardHighlighted({ item, index }: { item: ServicesCardItem; index: number }) {
-  return (
-    <article
-      className="relative flex gap-4 overflow-hidden rounded-xl border-l-4 border-white/30 bg-[var(--color-primary)] p-6 text-white shadow-lg"
-    >
-      <ServiceCardIcon icon={item.icon} bgClassName="bg-white/20" className="text-white flex-shrink-0" />
-      <div className="min-w-0 flex-1">
-        <h3 className="text-lg font-bold text-white">
-          {item.title || `Serviço ${index + 1}`}
-        </h3>
-        <p className="mt-2 text-sm leading-relaxed text-white/90">
-          {item.message || ""}
-        </p>
-      </div>
-      {/* Ondas decorativas */}
-      <div className="absolute -right-4 top-1/2 h-24 w-24 -translate-y-1/2 opacity-25" aria-hidden>
-        <svg viewBox="0 0 100 100" className="h-full w-full" fill="currentColor">
-          <path d="M0 50 Q25 30 50 50 T100 50 Q75 70 50 50 T0 50Z" />
-          <path d="M0 50 Q25 40 50 50 T100 50 Q75 60 50 50 T0 50Z" opacity="0.7" />
-          <path d="M0 50 Q25 60 50 50 T100 50 Q75 40 50 50 T0 50Z" opacity="0.4" />
-        </svg>
-      </div>
-    </article>
-  );
-}
-
-export function ServicesV2({ content: contentProp }: ServicesV2Props) {
-  const content = contentProp ?? DEFAULT_SERVICES_CONTENT;
+export function PartnersV2({ content: contentProp }: PartnersV2Props) {
+  const content = contentProp ?? DEFAULT_PARTNERS_CONTENT;
   const bgImage = content.backgroundImage?.trim();
   const overlayColor = content.overlayColor?.trim();
   const defaultBg = "var(--color-surface)";
@@ -78,7 +54,7 @@ export function ServicesV2({ content: contentProp }: ServicesV2Props) {
   const titleStyle = textColor ? { color: textColor } : { color: "var(--color-text)" };
   const bodyStyle = textColor ? { color: textColor, opacity: 0.9 } : { color: "var(--color-text-muted)" };
   const badgeStyle = textColor ? { color: textColor, opacity: 0.9 } : { color: "var(--color-text-muted)" };
-  const cards = content.cards?.length ? content.cards : DEFAULT_SERVICES_CONTENT.cards;
+  const logos = content.logos?.length ? content.logos : DEFAULT_PARTNERS_CONTENT.logos;
 
   return (
     <section
@@ -91,7 +67,7 @@ export function ServicesV2({ content: contentProp }: ServicesV2Props) {
           backgroundPosition: "center",
         }),
       }}
-      aria-label="Nossos serviços"
+      aria-label="Parceiros"
     >
       {bgImage && (
         <div className="absolute inset-0 z-[1]" style={{ background: overlayStyle }} aria-hidden />
@@ -126,14 +102,10 @@ export function ServicesV2({ content: contentProp }: ServicesV2Props) {
           )}
         </header>
 
-        <div className="mt-12 grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
-          {cards.map((item, index) =>
-            item.highlighted ? (
-              <CardHighlighted key={index} item={item} index={index} />
-            ) : (
-              <CardStandard key={index} item={item} index={index} />
-            )
-          )}
+        <div className="mt-12 grid grid-cols-2 place-items-center gap-6 sm:flex sm:flex-wrap sm:justify-center sm:gap-8 md:gap-10">
+          {logos.map((item, index) => (
+            <PartnerLogo key={index} item={item} index={index} />
+          ))}
         </div>
       </div>
     </section>

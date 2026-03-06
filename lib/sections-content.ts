@@ -1,10 +1,11 @@
-import type { HeroContent, CtaContent, FeaturesContent, ServicesContent, SectionsContentConfig } from "@/types/sections-content";
+import type { HeroContent, CtaContent, FeaturesContent, ServicesContent, PartnersContent, SectionsContentConfig } from "@/types/sections-content";
 import {
   DEFAULT_SECTIONS_CONTENT,
   DEFAULT_HERO_CONTENT,
   DEFAULT_CTA_CONTENT,
   DEFAULT_FEATURES_CONTENT,
   DEFAULT_SERVICES_CONTENT,
+  DEFAULT_PARTNERS_CONTENT,
 } from "@/types/sections-content";
 import fs from "node:fs";
 import path from "node:path";
@@ -124,6 +125,34 @@ function parseServicesContent(raw: unknown): ServicesContent {
   };
 }
 
+function parsePartnersLogo(raw: unknown): PartnersContent["logos"][0] {
+  const def = DEFAULT_PARTNERS_CONTENT.logos[0];
+  if (!raw || typeof raw !== "object") return def;
+  const o = raw as Record<string, unknown>;
+  return {
+    logoSrc: typeof o.logoSrc === "string" ? o.logoSrc : def.logoSrc,
+    alt: typeof o.alt === "string" ? o.alt : def.alt,
+  };
+}
+
+function parsePartnersContent(raw: unknown): PartnersContent {
+  const def = DEFAULT_PARTNERS_CONTENT;
+  if (!raw || typeof raw !== "object") return def;
+  const o = raw as Record<string, unknown>;
+  const rawLogos = o.logos;
+  const logos = Array.isArray(rawLogos) ? rawLogos.map(parsePartnersLogo) : def.logos;
+  return {
+    badge: typeof o.badge === "string" ? o.badge : def.badge,
+    title: typeof o.title === "string" ? o.title : def.title,
+    description: typeof o.description === "string" ? o.description : def.description,
+    logos: logos.length > 0 ? logos : def.logos,
+    backgroundImage: typeof o.backgroundImage === "string" ? o.backgroundImage : def.backgroundImage ?? "",
+    backgroundColor: typeof o.backgroundColor === "string" ? o.backgroundColor : def.backgroundColor ?? "",
+    overlayColor: typeof o.overlayColor === "string" ? o.overlayColor : def.overlayColor ?? "",
+    textColor: typeof o.textColor === "string" ? o.textColor : def.textColor ?? "",
+  };
+}
+
 /**
  * Retorna o conteúdo das seções (server-side).
  * Lê config/sections-content.json e mescla com defaults.
@@ -143,5 +172,6 @@ export function getSectionsContent(): SectionsContentConfig {
     cta: parseCtaContent(raw.cta),
     features: parseFeaturesContent(raw.features),
     services: parseServicesContent(raw.services),
+    partners: parsePartnersContent(raw.partners),
   };
 }

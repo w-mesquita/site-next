@@ -6,6 +6,8 @@ import type {
   ServicesContent,
   ServicesCardItem,
   ServicesCardIconKey,
+  PartnersContent,
+  PartnersLogoItem,
   SlotContentEntry,
   SlotContentKey,
 } from "@/types/sections-content";
@@ -15,6 +17,7 @@ import {
   DEFAULT_CTA_CONTENT,
   DEFAULT_FEATURES_CONTENT,
   DEFAULT_SERVICES_CONTENT,
+  DEFAULT_PARTNERS_CONTENT,
 } from "@/types/sections-content";
 
 const STORAGE_KEY = "sections-content";
@@ -136,6 +139,36 @@ function parseStoredServices(raw: unknown): ServicesContent {
   };
 }
 
+function parseLogoItem(raw: unknown): PartnersLogoItem {
+  const def = DEFAULT_PARTNERS_CONTENT.logos[0];
+  if (!raw || typeof raw !== "object") return def;
+  const o = raw as Record<string, unknown>;
+  return {
+    logoSrc: typeof o.logoSrc === "string" ? o.logoSrc : def.logoSrc,
+    alt: typeof o.alt === "string" ? o.alt : def.alt,
+  };
+}
+
+function parseStoredPartners(raw: unknown): PartnersContent {
+  const def = DEFAULT_SECTIONS_CONTENT.partners ?? DEFAULT_PARTNERS_CONTENT;
+  if (!raw || typeof raw !== "object") return def;
+  const o = raw as Record<string, unknown>;
+  const rawLogos = o.logos;
+  const logos = Array.isArray(rawLogos)
+    ? rawLogos.map((l) => parseLogoItem(l)).filter(Boolean)
+    : def.logos;
+  return {
+    badge: typeof o.badge === "string" ? o.badge : def.badge,
+    title: typeof o.title === "string" ? o.title : def.title,
+    description: typeof o.description === "string" ? o.description : def.description,
+    logos: logos.length > 0 ? logos : def.logos,
+    backgroundImage: typeof o.backgroundImage === "string" ? o.backgroundImage : def.backgroundImage ?? "",
+    backgroundColor: typeof o.backgroundColor === "string" ? o.backgroundColor : def.backgroundColor ?? "",
+    overlayColor: typeof o.overlayColor === "string" ? o.overlayColor : def.overlayColor ?? "",
+    textColor: typeof o.textColor === "string" ? o.textColor : def.textColor ?? "",
+  };
+}
+
 function parseSlotEntry(raw: unknown): SlotContentEntry | null {
   if (!raw || typeof raw !== "object") return null;
   const o = raw as Record<string, unknown>;
@@ -144,6 +177,7 @@ function parseSlotEntry(raw: unknown): SlotContentEntry | null {
   if (t === "cta") return { type: "cta", content: parseStoredCta(o.content) };
   if (t === "features") return { type: "features", content: parseStoredFeatures(o.content) };
   if (t === "services") return { type: "services", content: parseStoredServices(o.content) };
+  if (t === "partners") return { type: "partners", content: parseStoredPartners(o.content) };
   return null;
 }
 
@@ -175,6 +209,7 @@ export function getSectionsContentFromStorage(): SectionsContentConfig | null {
       cta: parseStoredCta(parsed.cta),
       features: parseStoredFeatures(parsed.features),
       services: parseStoredServices(parsed.services),
+      partners: parseStoredPartners(parsed.partners),
     };
   } catch {
     return null;
