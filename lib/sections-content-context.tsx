@@ -20,14 +20,22 @@ import {
   useEffect,
   useState,
 } from "react";
-import {
-  getSectionsContentFromStorage,
-  setSectionsContentInStorage,
-} from "./sections-content-client";
+import { parseSectionsContentFromRaw } from "./sections-content-client";
+import { getSiteDataFromApi, putSiteDataToApi } from "./gestly-api";
+
+export const API_UNAVAILABLE_MESSAGE =
+  "Serviço indisponível. Entre em contato com o administrador.";
 
 interface SectionsContentContextValue {
   content: SectionsContentConfig;
   setContent: (content: SectionsContentConfig) => void;
+  /** true até a primeira resposta da API (GET) ser processada */
+  apiLoading: boolean;
+  /** true quando a carga inicial da API falhou ou não está configurada */
+  apiLoadError: boolean;
+  /** mensagem quando o último save falhou; null quando não há erro */
+  apiSaveError: string | null;
+  clearSaveError: () => void;
   /** Conteúdo do slot (por pageId-sectionIndex); usa default ou legado se não houver entrada. */
   getContentForSlot: (
     slotKey: SlotContentKey,
@@ -67,81 +75,124 @@ export function SectionsContentProvider({
   initialContent,
 }: SectionsContentProviderProps) {
   const [content, setContentState] = useState<SectionsContentConfig>(initialContent);
+  const [apiLoading, setApiLoading] = useState(true);
+  const [apiLoadError, setApiLoadError] = useState(false);
+  const [apiSaveError, setApiSaveError] = useState<string | null>(null);
 
   useEffect(() => {
-    const stored = getSectionsContentFromStorage();
-    if (stored) setContentState(stored);
+    let cancelled = false;
+    getSiteDataFromApi()
+      .then((data) => {
+        if (cancelled) return;
+        // Erro só quando a API não respondeu (null = falha de rede / não configurada)
+        if (data === null) {
+          setApiLoadError(true);
+          return;
+        }
+        setApiLoadError(false);
+        if (data.sectionsContent != null) {
+          const fromApi = parseSectionsContentFromRaw(
+            data.sectionsContent as Record<string, unknown>
+          );
+          if (fromApi) setContentState(fromApi);
+        }
+      })
+      .catch(() => {
+        if (!cancelled) setApiLoadError(true);
+      })
+      .finally(() => {
+        if (!cancelled) setApiLoading(false);
+      });
+    return () => {
+      cancelled = true;
+    };
   }, []);
 
   const setContent = useCallback((newContent: SectionsContentConfig) => {
     setContentState(newContent);
-    setSectionsContentInStorage(newContent);
+    setApiSaveError(null);
+    putSiteDataToApi({
+      sectionsContent: newContent as unknown as Record<string, unknown>,
+    }).then((ok) => {
+      if (!ok) setApiSaveError(API_UNAVAILABLE_MESSAGE);
+    });
   }, []);
+
+  const persistContent = useCallback((next: SectionsContentConfig) => {
+    setApiSaveError(null);
+    putSiteDataToApi({
+      sectionsContent: next as unknown as Record<string, unknown>,
+    }).then((ok) => {
+      if (!ok) setApiSaveError(API_UNAVAILABLE_MESSAGE);
+    });
+  }, []);
+
+  const clearSaveError = useCallback(() => setApiSaveError(null), []);
 
   const setHeroContent = useCallback(
     (hero: SectionsContentConfig["hero"]) => {
       setContentState((prev) => {
         const next = { ...prev, hero };
-        setSectionsContentInStorage(next);
+        persistContent(next);
         return next;
       });
     },
-    []
+    [persistContent]
   );
 
   const setCtaContent = useCallback(
     (cta: SectionsContentConfig["cta"]) => {
       setContentState((prev) => {
         const next = { ...prev, cta };
-        setSectionsContentInStorage(next);
+        persistContent(next);
         return next;
       });
     },
-    []
+    [persistContent]
   );
 
   const setFeaturesContent = useCallback(
     (features: SectionsContentConfig["features"]) => {
       setContentState((prev) => {
         const next = { ...prev, features };
-        setSectionsContentInStorage(next);
+        persistContent(next);
         return next;
       });
     },
-    []
+    [persistContent]
   );
 
   const setServicesContent = useCallback(
     (services: SectionsContentConfig["services"]) => {
       setContentState((prev) => {
         const next = { ...prev, services };
-        setSectionsContentInStorage(next);
+        persistContent(next);
         return next;
       });
     },
-    []
+    [persistContent]
   );
 
   const setPartnersContent = useCallback(
     (partners: SectionsContentConfig["partners"]) => {
       setContentState((prev) => {
         const next = { ...prev, partners };
-        setSectionsContentInStorage(next);
+        persistContent(next);
         return next;
       });
     },
-    []
+    [persistContent]
   );
 
   const setContactContent = useCallback(
     (contact: SectionsContentConfig["contact"]) => {
       setContentState((prev) => {
         const next = { ...prev, contact };
-        setSectionsContentInStorage(next);
+        persistContent(next);
         return next;
       });
     },
-    []
+    [persistContent]
   );
 
   const getContentForSlot = useCallback(
@@ -178,11 +229,11 @@ export function SectionsContentProvider({
                     : { type: "contact", content: slotContent as ContactContent };
         const bySlot: Record<SlotContentKey, SlotContentEntry> = { ...(prev.contentBySlot ?? {}), [slotKey]: entry };
         const next: SectionsContentConfig = { ...prev, contentBySlot: bySlot };
-        setSectionsContentInStorage(next);
+        persistContent(next);
         return next;
       });
     },
-    []
+    [persistContent]
   );
 
   return (
@@ -198,6 +249,10 @@ export function SectionsContentProvider({
         setServicesContent,
         setPartnersContent,
         setContactContent,
+        apiLoading,
+        apiLoadError,
+        apiSaveError,
+        clearSaveError,
       }}
     >
       {children}

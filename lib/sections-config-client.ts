@@ -88,15 +88,14 @@ function isPageConfig(raw: unknown): raw is PageConfig {
 }
 
 /**
- * Lê a configuração de seções do localStorage (apenas no client).
- * Retorna null se não houver valor válido.
+ * Parse de objeto bruto (ex.: resposta da API) para SectionsConfig.
+ * Retorna null se o objeto for inválido.
  */
-export function getSectionsConfigFromStorage(): SectionsConfig | null {
-  if (typeof window === "undefined") return null;
+export function parseSectionsConfigFromRaw(
+  parsed: Record<string, unknown> | null | undefined
+): SectionsConfig | null {
+  if (!parsed || typeof parsed !== "object") return null;
   try {
-    const raw = localStorage.getItem(STORAGE_KEY);
-    if (!raw) return null;
-    const parsed = JSON.parse(raw) as Record<string, unknown>;
     const header = isValidHeaderOrFooterVariant(parsed?.header)
       ? parsed.header
       : null;
@@ -133,6 +132,22 @@ export function getSectionsConfigFromStorage(): SectionsConfig | null {
       enabledPages,
       pages,
     };
+  } catch {
+    return null;
+  }
+}
+
+/**
+ * Lê a configuração de seções do localStorage (apenas no client).
+ * Retorna null se não houver valor válido.
+ */
+export function getSectionsConfigFromStorage(): SectionsConfig | null {
+  if (typeof window === "undefined") return null;
+  try {
+    const raw = localStorage.getItem(STORAGE_KEY);
+    if (!raw) return null;
+    const parsed = JSON.parse(raw) as Record<string, unknown>;
+    return parseSectionsConfigFromRaw(parsed);
   } catch {
     return null;
   }

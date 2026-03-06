@@ -219,15 +219,14 @@ function parseContentBySlot(raw: unknown): Record<SlotContentKey, SlotContentEnt
 }
 
 /**
- * Lê o conteúdo das seções do localStorage (apenas no client).
- * Suporta contentBySlot (por slot) e legado hero/cta/features.
+ * Parse de objeto bruto (ex.: resposta da API) para SectionsContentConfig.
+ * Retorna null se o objeto for inválido.
  */
-export function getSectionsContentFromStorage(): SectionsContentConfig | null {
-  if (typeof window === "undefined") return null;
+export function parseSectionsContentFromRaw(
+  parsed: Record<string, unknown> | null | undefined
+): SectionsContentConfig | null {
+  if (!parsed || typeof parsed !== "object") return null;
   try {
-    const raw = localStorage.getItem(STORAGE_KEY);
-    if (!raw) return null;
-    const parsed = JSON.parse(raw) as Record<string, unknown>;
     const contentBySlot = parseContentBySlot(parsed.contentBySlot);
     return {
       contentBySlot: Object.keys(contentBySlot).length > 0 ? contentBySlot : undefined,
@@ -238,6 +237,22 @@ export function getSectionsContentFromStorage(): SectionsContentConfig | null {
       partners: parseStoredPartners(parsed.partners),
       contact: parseStoredContact(parsed.contact),
     };
+  } catch {
+    return null;
+  }
+}
+
+/**
+ * Lê o conteúdo das seções do localStorage (apenas no client).
+ * Suporta contentBySlot (por slot) e legado hero/cta/features.
+ */
+export function getSectionsContentFromStorage(): SectionsContentConfig | null {
+  if (typeof window === "undefined") return null;
+  try {
+    const raw = localStorage.getItem(STORAGE_KEY);
+    if (!raw) return null;
+    const parsed = JSON.parse(raw) as Record<string, unknown>;
+    return parseSectionsContentFromRaw(parsed);
   } catch {
     return null;
   }
